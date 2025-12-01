@@ -1,42 +1,23 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
+/* Browsers require that @import statements come before any other rules, so URL imports 
+need to be above imports like @import "tailwindcss" which are inlined in the compiled CSS. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap");
+@import "tailwindcss";
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
+@theme {
+  --font-inter: "Inter", "sans-serif";
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+  /*
+  --breakpoint-sm: 480px,
+  --breakpoint-md: 768px,
+  --breakpoint-lg: 976px,
+  --breakpoint-xl: 1440px, */
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
+  --color-primary: #0b1320; /* Main application background, dark panels, and component cards. */
+  --color-primary-accent: #66c0f4; /* Hover states, interactive links, primary active indicators. */
 
-.card {
-  padding: 2em;
-}
+  --color-secondary: #1d2633; /* Background for information sections, list items, and input fields. */
+  --color-secondary-accent: #66a515; /* High-visibility buttons (ADD TO CART), positive highlights. */
 
-.read-the-docs {
-  color: #888;
+  --text-primary: #ffffff; /* Primary readable text (Titles, Prices, main content).*/
+  --text-secondary: #a1a7af; /* Sub-labels, dates, less important information, and disabled states. */
 }
