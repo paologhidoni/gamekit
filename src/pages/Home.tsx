@@ -21,9 +21,7 @@ export default function Home() {
 
   return (
     <>
-      <h1>Home</h1>
-
-      <ul>
+      <ul className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
         {data &&
           data.map((game: Game) => (
             <li key={game.id}>

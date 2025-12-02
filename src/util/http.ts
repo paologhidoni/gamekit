@@ -11,7 +11,7 @@ export async function fetchGames() {
     throw new Error("RAWG API Key is missing. Please replace the placeholder.");
   }
 
-  const API_URL = `https://api.rawg.io/api/games?key=${RAWG_API_KEY}&page_size=20&ordering=-rating`;
+  const API_URL = `https://api.rawg.io/api/games?key=${RAWG_API_KEY}&page_size=60&ordering=-rating`;
 
   try {
     const response = await fetch(API_URL);
@@ -23,12 +23,16 @@ export async function fetchGames() {
       );
     }
 
+    console.log(parsedResponse, "PARSED");
+
     // RAWG API wraps the list of games in a 'results' array
     return parsedResponse.results.map((game: Game) => ({
       id: game.id,
       name: game.name,
       released: game.released,
       background_image: game.background_image,
+      genres: game.genres,
+      rating: game.rating,
     }));
   } catch (error) {
     // Last attempt, rethrow the error

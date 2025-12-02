@@ -1,7 +1,7 @@
 import SearchBar from "./SearchBar";
 import logo from "../assets/logo-tr.png";
 import logoLight from "../assets/logo-light.png";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import { Cog } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
@@ -11,11 +11,11 @@ export default function Navigation() {
 
   return (
     <div className="bg-(--color-bg-primary) text-(--color-text-primary) py-4 px-2 flex flex-col items-center gap-2 md:flex-row md:px-20 lg:px-25">
-      <div id="logo" className="flex md:w-1/3">
+      <Link to="/" className="flex md:w-1/3">
         <img src={logoSource} alt="" className="w-50" />
-      </div>
+      </Link>
 
-      <div className="flex md:w-1/3 justify-center">
+      <div className="flex md:w-1/3 w-full self-stretch md:self-center">
         <SearchBar />
       </div>
 

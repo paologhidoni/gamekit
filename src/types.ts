@@ -4,6 +4,8 @@ export interface Game {
   description?: string;
   released?: string;
   background_image: string;
+  genres: Record<string, any>[];
+  rating: number;
 }
 
 export interface Theme {
