@@ -1,7 +1,9 @@
+import { Search } from "lucide-react";
+
 export default function SearchBar() {
   return (
     <div
-      className="rounded-full transition duration-300"
+      className="rounded-full w-full transition duration-300 relative"
       style={{
         backgroundColor: "var(--color-bg-secondary)",
         color: "var(--color-text-primary)",
@@ -9,8 +11,9 @@ export default function SearchBar() {
         // borderWidth: 2,
       }}
     >
-      <div></div>
-      <input type="text" className="py-2 px-6" />
+      <Search className="absolute left-2 top-1/2 -translate-y-1/2" />
+
+      <input type="text" className="py-2 pl-10 pr-6 w-full" />
     </div>
   );
 }

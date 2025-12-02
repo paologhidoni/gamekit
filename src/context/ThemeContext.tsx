@@ -15,6 +15,7 @@ export const THEMES = {
     "--color-bg-tertiary": "var(--color-dusty-rose)", // Nested panel background (Light Tan)
     "--color-text-primary": "var(--color-ink-black)", // Main text (Dark Gray/Black)
     "--color-text-secondary": "var(--color-white)", // Muted text (using a dark color from your light set)
+    "--color-text-tertiary": "var(--color-dark-green)",
     // "--color-accent-primary": "var(--color-vibrant-lime)", // Primary CTA/Highlight (Neon Green)
     "--color-accent-primary": "var(--color-dark-green)",
     "--color-accent-primary-hover": "var(--color-dark-green-hover)",
@@ -27,6 +28,7 @@ export const THEMES = {
     "--color-bg-tertiary": "var(--color-ink-black)", // Nested panel background
     "--color-text-primary": "var(--color-silver)", // Main text
     "--color-text-secondary": "var(--color-white)", // Muted text - buttons & elements
+    "--color-text-tertiary": "var(--color-malachite)",
     "--color-accent-primary": "var(--color-malachite)", // Primary CTA/Highlight
     "--color-accent-primary-hover": "var(--color-dark-green-hover)",
     "--color-accent-secondary": "var(--color-wisteria)", // Secondary highlight/Border
@@ -38,6 +40,7 @@ export const THEMES = {
     "--color-bg-tertiary": "var(--color-dark-burgundy)", // Nested panel background
     "--color-text-primary": "var(--color-white)", // Main Text
     "--color-text-secondary": "var(--color-gold-yellow)", // Muted text
+    "--color-text-tertiary": "var(--color-gold-yellow)",
     "--color-accent-primary": "var(--color-crimson)", // Primary CTA/Highlight
     "--color-accent-primary-hover": "var(--color-dark-green-hover)",
     "--color-accent-secondary": "var(--color-coral)", // Secondary highlight/Border
