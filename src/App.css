@@ -12,11 +12,18 @@ need to be above imports like @import "tailwindcss" which are inlined in the com
   --breakpoint-lg: 976px,
   --breakpoint-xl: 1440px, */
 
-  --color-primary: #0b1320; /* Main application background, dark panels, and component cards. */
+  --color-primary: #0d1f22; /* Main application background, dark panels, and component cards. */
   --color-primary-accent: #66c0f4; /* Hover states, interactive links, primary active indicators. */
 
   --color-secondary: #1d2633; /* Background for information sections, list items, and input fields. */
   --color-secondary-accent: #66a515; /* High-visibility buttons (ADD TO CART), positive highlights. */
+
+  --color-ink-black: #0d1f22ff;
+  --color-jet-black: #263c40ff;
+
+  --color-silver: #c4bbafff;
+  --color-wisteria: #cb9cf2ff;
+  --color-malachite: #17de6aff;
 
   --text-primary: #ffffff; /* Primary readable text (Titles, Prices, main content).*/
   --text-secondary: #a1a7af; /* Sub-labels, dates, less important information, and disabled states. */
