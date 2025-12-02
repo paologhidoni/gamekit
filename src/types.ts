@@ -5,3 +5,7 @@ export interface Game {
   released?: string;
   background_image: string;
 }
+
+export interface Theme {
+  name: "light" | "dark";
+}

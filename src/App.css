@@ -12,19 +12,28 @@ need to be above imports like @import "tailwindcss" which are inlined in the com
   --breakpoint-lg: 976px,
   --breakpoint-xl: 1440px, */
 
-  --color-primary: #0d1f22; /* Main application background, dark panels, and component cards. */
-  --color-primary-accent: #66c0f4; /* Hover states, interactive links, primary active indicators. */
+  --color-white: #ffffff; /* White */
 
-  --color-secondary: #1d2633; /* Background for information sections, list items, and input fields. */
-  --color-secondary-accent: #66a515; /* High-visibility buttons (ADD TO CART), positive highlights. */
+  /* Light Theme */
+  --color-paper-white: #f5f5dc; /* Main application background, light panels, and component cards. (Beige) */
+  --color-smoke-gray: #e1e1e1; /* Subtle borders, separators, secondary backgrounds. (Light Gray) */
+  --color-dusty-rose: #f0d6c0; /* Accent for subtle interactive elements or mild highlight. (Light Tan/Nude) */
+  --color-soft-lavender: #cc99ff; /* Secondary interactive links, muted highlights. (Light Lavender) */
+  /* --color-vibrant-lime: #17de0a; /* High-visibility buttons (primary CTAs), positive highlights. (Neon Green) */
+  --color-dark-green: #059669; /* High-visibility buttons (primary CTAs), positive highlights. (Neon Green) */
+  --color-dark-green-hover: #0e280c;
 
-  --color-ink-black: #0d1f22ff;
-  --color-jet-black: #263c40ff;
+  /* Dark Theme */
+  --color-ink-black: #0d1f22ff; /* Main application background, dark panels, and component cards. (Very Dark Blue-Gray)  */
+  --color-jet-black: #263c40ff; /* Hover states, interactive links, primary active indicators. (Dark Teal) */
+  --color-silver: #c4bbafff; /* Background for information sections, list items, and input fields. (Muted Tan/Silver) */
+  --color-wisteria: #cb9cf2ff; /* Secondary interactive links, muted highlights. (Medium Violet) */
+  --color-malachite: #17de6aff; /* High-visibility buttons (ADD TO CART), positive highlights. (Vibrant Green) */
 
-  --color-silver: #c4bbafff;
-  --color-wisteria: #cb9cf2ff;
-  --color-malachite: #17de6aff;
-
-  --text-primary: #ffffff; /* Primary readable text (Titles, Prices, main content).*/
-  --text-secondary: #a1a7af; /* Sub-labels, dates, less important information, and disabled states. */
+  /* Sunset Theme */
+  --color-dark-burgundy: #4a0d1f; /* Dark Burgundy */
+  --color-burnt-red: #8a2a3a; /* Burnt Red */
+  --color-gold-yellow: #fad02e; /* Gold/Yellow */
+  --color-crimson: #dc143c; /* Crimson */
+  --color-coral: #ff7f50; /* Coral */
 }
