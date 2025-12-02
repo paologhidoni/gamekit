@@ -15,7 +15,7 @@ export default function ThemeSelector() {
       <select
         value={themeName}
         onChange={handleChange}
-        className="py-4 px-6 pr-11 relative rounded-xl appearance-none cursor-pointer font-bold text-center text-(--color-text-primary) bg-(--color-accent-primary) hover:bg-(--color-accent-primary-hover)"
+        className="py-4 px-6 pr-11 relative rounded-xl appearance-none cursor-pointer font-bold text-center text-(--color-text-secondary) bg-(--color-accent-primary) hover:bg-(--color-accent-primary-hover)"
       >
         {availableThemes.map((themeName) => (
           <option key={themeName} value={themeName}>
@@ -28,7 +28,7 @@ export default function ThemeSelector() {
         className="absolute right-5 top-1/2 transform -translate-y-1/2 pointer-events-none"
         style={{}}
       >
-        <ChevronDown className="text-(--color-text-primary)" />
+        <ChevronDown className="text-(--color-text-secondary)" />
       </div>
     </div>
   );
