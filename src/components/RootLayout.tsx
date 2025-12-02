@@ -1,11 +1,12 @@
 import { Outlet } from "react-router";
+import Navigation from "./Navigation";
 
 export default function RootLayout() {
   return (
     <div className="font-inter">
-      <h1>Root Layout</h1>
+      <Navigation />
 
-      <main>
+      <main className="py-8 px-2 md:px-20 lg:px-25">
         <Outlet />
       </main>
     </div>
