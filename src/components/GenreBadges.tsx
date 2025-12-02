@@ -5,7 +5,7 @@ interface GameBadgesProps {
   game: Game;
 }
 
-function GameBadges({ game }: GameBadgesProps) {
+function GenreBadges({ game }: GameBadgesProps) {
   return (
     <ul className="flex flex-wrap gap-1 mb-2 absolute bottom-2 left-2 z-50 rounded-2xl p-1">
       {game.genres?.length > 0 &&
@@ -21,4 +21,4 @@ function GameBadges({ game }: GameBadgesProps) {
   );
 }
 
-export default React.memo(GameBadges);
+export default React.memo(GenreBadges);

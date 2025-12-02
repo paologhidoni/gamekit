@@ -6,6 +6,7 @@ export interface Game {
   background_image: string;
   genres: Record<string, any>[];
   rating: number;
+  platforms: Record<string, any>[];
 }
 
 export interface Theme {

@@ -33,6 +33,7 @@ export async function fetchGames() {
       background_image: game.background_image,
       genres: game.genres,
       rating: game.rating,
+      platforms: game.platforms,
     }));
   } catch (error) {
     // Last attempt, rethrow the error
