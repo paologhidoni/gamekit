@@ -2,7 +2,7 @@
 
 ## Steps I followed to create this project
 
-1. Iitialise project with **React Typescript Template**:
+1. Initialise project with **React Typescript Template**:
 
    `npm create vite@latest gamekit --template react-ts`
 
@@ -23,3 +23,13 @@
    `npm i clsx`
 
    [Docs](https://www.npmjs.com/package/clsx)
+
+4. Setup **TanStack Query**, formerly known as React Query:
+
+   [Docs](https://tanstack.com/query/latest/docs/framework/react/overview)
+
+5. Install **Lucide** for icons:
+
+   `npm install lucide`
+
+   [Docs](https://lucide.dev/guide/installation)
