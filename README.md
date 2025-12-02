@@ -18,12 +18,6 @@
 
    [Docs](https://tailwindcss.com/docs/installation/framework-guides/react-router)
 
-   Also install the **clxs** library to dynamically build tailwind classes:
-
-   `npm i clsx`
-
-   [Docs](https://www.npmjs.com/package/clsx)
-
 4. Setup **TanStack Query**, formerly known as React Query:
 
    [Docs](https://tanstack.com/query/latest/docs/framework/react/overview)

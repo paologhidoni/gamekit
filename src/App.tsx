@@ -4,6 +4,8 @@ import Home from "./pages/Home";
 import RootLayout from "./components/RootLayout";
 import GameDetail from "./pages/GameDetail";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ThemeContextProvider } from "./context/ThemeContext";
+import Settings from "./pages/Settings";
 
 const router = createBrowserRouter([
   {
@@ -12,6 +14,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "games/:gameId", element: <GameDetail /> },
+      { path: "settings/", element: <Settings /> },
     ],
   },
 ]);
@@ -21,7 +24,9 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <ThemeContextProvider>
+        <RouterProvider router={router} />
+      </ThemeContextProvider>
     </QueryClientProvider>
   );
 }
