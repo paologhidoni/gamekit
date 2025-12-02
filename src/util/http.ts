@@ -4,7 +4,7 @@ const RAWG_API_KEY = import.meta.env.VITE_RAWG_API_KEY;
 
 /**
  * The API function to fetch games from RAWG.
- * @returns {Promise<Array<{ id: number, name: string, released: string, background_image: string }>>}
+ * @returns {Promise<Game[]>}
  */
 export async function fetchGames() {
   if (!RAWG_API_KEY) {
