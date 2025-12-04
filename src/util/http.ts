@@ -23,8 +23,6 @@ export async function fetchGames() {
       );
     }
 
-    console.log(parsedResponse, "PARSED");
-
     // RAWG API wraps the list of games in a 'results' array
     return parsedResponse.results.map((game: Game) => ({
       id: game.id,
