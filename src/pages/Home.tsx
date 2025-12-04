@@ -21,6 +21,14 @@ export default function Home() {
 
   return (
     <>
+<div className="m-auto md:max-w-2/3 lg:max-w-1/2 mb-8">
+        <SearchBar onSearch={setQuery} />
+      </div>
+
+      {isPending && <p>Loading ....</p>}
+
+      {isError && <p>Error: {error.message}</p>}
+
       <ul className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
         {data &&
           data.map((game: Game) => (
