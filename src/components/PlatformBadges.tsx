@@ -1,27 +1,12 @@
 import React from "react";
 import type { Game } from "../types";
-import {
-  SeparatorHorizontal,
-  SeparatorVertical,
-  LucideSeparatorVertical,
-} from "lucide-react";
 
 interface PlatformBadgesProps {
   game: Game;
 }
 
-function Badge({
-  game,
-  platform,
-}: {
-  game: Game;
-  platform: Record<string, any>;
-}) {
-  return (
-    <li key={`${game.name}-platform-${platform.platform.name}`}>
-      <span>{platform.platform.name}</span>
-    </li>
-  );
+function Badge({ platform }: { platform: Record<string, any> }) {
+  return <span>{platform.platform.name}</span>;
 }
 
 function PlatformBadges({ game }: PlatformBadgesProps) {
@@ -30,12 +15,14 @@ function PlatformBadges({ game }: PlatformBadgesProps) {
       {game.platforms?.length > 0 &&
         game.platforms.map((platform, i) =>
           i !== 0 ? (
-            <span className="flex gap-1">
+            <li key={platform.platform.name} className="flex gap-1">
               <span className="text-(--color-accent-primary)">&bull;</span>
-              <Badge game={game} platform={platform} />
-            </span>
+              <Badge platform={platform} />
+            </li>
           ) : (
-            <Badge game={game} platform={platform} />
+            <li key={platform.platform.name}>
+              <Badge platform={platform} />
+            </li>
           )
         )}
     </ul>

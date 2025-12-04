@@ -1,4 +1,4 @@
-import SearchBar from "./SearchBar";
+// import SearchBar from "./SearchBar";
 import logo from "../assets/logo-tr.png";
 import logoLight from "../assets/logo-light.png";
 import { Link, NavLink } from "react-router";
@@ -16,7 +16,7 @@ export default function Navigation() {
       </Link>
 
       <div className="flex md:w-1/3 w-full self-stretch md:self-center order-3 md:order-2">
-        <SearchBar />
+        {/* <SearchBar /> */}
       </div>
 
       <div className="flex md:w-1/3 justify-end order-2 md:order-3">

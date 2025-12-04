@@ -9,7 +9,6 @@ interface GameCardProps {
 }
 
 export default function GameCard({ game }: GameCardProps) {
-  console.log("PLATFORM", game.platforms);
   return (
     <Link
       to={`/games/${game.id}`}
