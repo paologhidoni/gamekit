@@ -30,8 +30,8 @@ export default function GameDetail() {
 
             <img
               src={data[0].background_image}
-              alt=""
-              className="rounded-xl absolute w-full h-full object-cover inset-0"
+              alt={data[0].name}
+              className="rounded-xl absolute w-full h-full object-cover object-top inset-0"
             />
           </section>
 
