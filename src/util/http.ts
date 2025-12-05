@@ -1,4 +1,5 @@
 import type { Game } from "../types";
+import { transformGameData } from "./transformGameData";
 
 const RAWG_API_KEY = import.meta.env.VITE_RAWG_API_KEY;
 
@@ -43,20 +44,12 @@ export async function fetchGames({
     // If we fetched a single game by ID, the response is the game object itself.
     // We wrap it in an array to maintain a consistent return type.
     if (query?.id) {
-      return [parsedResponse];
+      return [transformGameData(parsedResponse)];
     }
 
     // Otherwise, for searches or general lists, the API wraps the games in a 'results' array.
     // RAWG API wraps the list of games in a 'results' array
-    return parsedResponse.results.map((game: Game) => ({
-      id: game.id,
-      name: game.name,
-      released: game.released,
-      background_image: game.background_image,
-      genres: game.genres,
-      rating: game.rating,
-      platforms: game.platforms,
-    }));
+    return parsedResponse.results.map(transformGameData);
   } catch (error) {
     // Last attempt, rethrow the error
     throw error;
