@@ -33,14 +33,8 @@ jobs:
           # Set CI false if needed for some libraries
           CI: false
 
-      - name: Set up Git user for deployment
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@users.noreply.github.com"
-
-      - name: Deploy to GitHub Pages (using npm script)
-        run: |
-          npm run deploy
-        env:
-          CI: false
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v6
+        with:
+          github_token: ${{ secrets.PAT_TOKEN }}
+          publish_dir: ./dist
