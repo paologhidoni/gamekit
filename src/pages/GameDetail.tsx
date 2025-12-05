@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import { fetchGames } from "../util/http";
+import GameDetailSidebar from "../components/GameDetailSidebar";
 
 export default function GameDetail() {
   const { id } = useParams();
@@ -18,11 +19,11 @@ export default function GameDetail() {
       {isError && <p>Error: {error.message}</p>}
 
       {data && (
-        <div className="grid gap-4 md:grid-cols-[2fr_1fr] md:auto-rows-fr">
+        <div className="grid gap-4 lg:grid-cols-[2fr_1fr] lg:auto-rows-fr">
           {/* HERO */}
-          <section className="rounded-xl p-4 order-1 min-h-[30vh] relative md:order-0">
-            <div className="bg-black opacity-65 absolute z-50 rounded-r-xl p-4 bottom-4 left-0">
-              <h1 className="text-3xl md:text-6xl font-bold text-white">
+          <section className="rounded-xl p-4 order-1 min-h-[30vh] relative lg:order-0">
+            <div className="bg-black opacity-70 absolute z-50 rounded-r-xl p-4 bottom-4 left-0">
+              <h1 className="text-3xl lg:text-6xl font-bold text-white">
                 {data[0].name}
               </h1>
             </div>
@@ -35,12 +36,12 @@ export default function GameDetail() {
           </section>
 
           {/* SIDEBAR */}
-          <section className="bg-(--color-bg-secondary) rounded-xl p-6 order-2 md:order-0 md:row-span-2">
-            Section 3
+          <section className="bg-(--color-bg-secondary) rounded-xl order-3 lg:order-0 lg:row-span-2">
+            <GameDetailSidebar game={data[0]} />
           </section>
 
           {/* DESCRIPTION */}
-          <section className="bg-(--color-bg-secondary) rounded-xl p-6 order-3 md:order-0">
+          <section className="bg-(--color-bg-secondary) rounded-xl p-6 order-2 lg:order-0">
             <p
               dangerouslySetInnerHTML={{
                 __html: data[0].description,

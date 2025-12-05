@@ -9,7 +9,7 @@ export function transformGameData(game: Game): Game {
   return {
     id: game.id,
     name: game.name,
-    released: game.released,
+    released: game.released || null,
     background_image: game.background_image,
     genres: game.genres,
     rating: game.rating,
@@ -17,5 +17,20 @@ export function transformGameData(game: Game): Game {
     description: game.description?.includes("Español")
       ? game.description.split("Español")[0].trim()
       : game.description,
+    metacritic: game.metacritic || null,
+    developers: game.developers || [],
+    tags: game.tags || [],
+    multiplayer: game.tags
+      ? game.tags.filter((tag) =>
+          [
+            "Singleplayer",
+            "Co-op",
+            "Local Co-Op",
+            "Online Co-Op",
+            "Co-operative",
+            "Coop",
+          ].includes(tag.name)
+        )
+      : [],
   };
 }
