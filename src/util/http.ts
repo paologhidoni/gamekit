@@ -1,4 +1,3 @@
-import type { Game } from "../types";
 import { transformGameData } from "./transformGameData";
 
 const RAWG_API_KEY = import.meta.env.VITE_RAWG_API_KEY;
@@ -10,7 +9,6 @@ interface QueryType {
 
 /**
  * The API function to fetch games from RAWG.
- * @returns {Promise<Game[]>}
  */
 export async function fetchGames({
   signal,
