@@ -1,5 +1,5 @@
 import "./App.css";
-import { RouterProvider, createBrowserRouter } from "react-router";
+import { RouterProvider, createHashRouter } from "react-router";
 import Home from "./pages/Home";
 import RootLayout from "./components/RootLayout";
 import GameDetail from "./pages/GameDetail";
@@ -7,7 +7,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ThemeContextProvider } from "./context/ThemeContext";
 import Settings from "./pages/Settings";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <RootLayout />,
