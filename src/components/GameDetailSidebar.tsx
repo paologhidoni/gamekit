@@ -27,7 +27,7 @@ export default function GameDetailSidebar({ game }: GameDetailSidebarProps) {
         <p className="p-4">{game.genres.map((tag) => tag.name).join(", ")}</p>
       </section>
 
-      {/* Multiplayer */}
+      {/* MULTIPLAYER */}
       <section>
         <SectionLabel text="MULTIPLAYER" />
         <p className="p-4">
@@ -40,6 +40,14 @@ export default function GameDetailSidebar({ game }: GameDetailSidebarProps) {
         <SectionLabel text="DEVELOPED BY" />
         <p className="p-4">
           {game.developers?.map((dev) => dev.name).join(", ")}
+        </p>
+      </section>
+
+      {/* PLATFORMS */}
+      <section>
+        <SectionLabel text="PLATFORMS" />
+        <p className="p-4">
+          {game.platforms.map((platform) => platform.platform.name).join(", ")}
         </p>
       </section>
     </div>
