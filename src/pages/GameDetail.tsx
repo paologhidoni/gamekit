@@ -30,7 +30,7 @@ export default function GameDetail() {
               <GameRating rating={data[0].rating} />
             </div>
 
-            <div className="absolute z-50 bottom-4 left-0 bg-black opacity-70 rounded-r-xl p-4">
+            <div className="absolute z-50 bottom-4 left-0 bg-black opacity-70 rounded-r-2xl p-4">
               <h1 className="text-3xl lg:text-6xl font-bold text-white wrap-break-words">
                 {data[0].name}
               </h1>
