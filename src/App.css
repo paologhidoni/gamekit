@@ -19,7 +19,6 @@ need to be above imports like @import "tailwindcss" which are inlined in the com
   --color-smoke-gray: #e1e1e1; /* Subtle borders, separators, secondary backgrounds. (Light Gray) */
   --color-dusty-rose: #f0d6c0; /* Accent for subtle interactive elements or mild highlight. (Light Tan/Nude) */
   --color-soft-lavender: #cc99ff; /* Secondary interactive links, muted highlights. (Light Lavender) */
-  /* --color-vibrant-lime: #17de0a; /* High-visibility buttons (primary CTAs), positive highlights. (Neon Green) */
   --color-dark-green: #059669; /* High-visibility buttons (primary CTAs), positive highlights. (Neon Green) */
   --color-dark-green-hover: #0e280c;
 

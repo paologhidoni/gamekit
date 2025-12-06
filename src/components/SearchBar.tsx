@@ -17,13 +17,14 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
 
   return (
     <div
-      className="rounded-full w-full transition duration-300 relative"
+      className="rounded-full w-full transition duration-300 relative focus:border-y-(--color-accent-primary)"
       style={{
         backgroundColor: "var(--color-bg-secondary)",
         color: "var(--color-text-primary)",
       }}
     >
       <Search className="absolute left-2 top-1/2 -translate-y-1/2" />
+
       <form>
         <label htmlFor="search-game-input" className="sr-only">
           Search for a game

@@ -24,15 +24,13 @@ export default function GameDetailSidebar({ game }: GameDetailSidebarProps) {
       {/* GENRES */}
       <section>
         <SectionLabel text="GENRES" />
-        <p className="p-4 flex flex-wrap">
-          {game.genres.map((tag) => tag.name).join(", ")}
-        </p>
+        <p className="p-4">{game.genres.map((tag) => tag.name).join(", ")}</p>
       </section>
 
       {/* Multiplayer */}
       <section>
         <SectionLabel text="MULTIPLAYER" />
-        <p className="p-4 flex flex-wrap">
+        <p className="p-4">
           {game.multiplayer.map((tag) => tag.name).join(", ")}
         </p>
       </section>
