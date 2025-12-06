@@ -13,7 +13,7 @@ export default function GameCard({ game }: GameCardProps) {
   return (
     <Link
       to={`/games/${game.id}`}
-      className="flex flex-col gap-4 p-4 bg-(--color-bg-secondary) rounded-2xl group hover:border-y-2 border-y-(--color-accent-secondary) transition-all transition-100 hover:scale-105"
+      className="flex flex-col gap-4 p-4 bg-(--color-bg-secondary) rounded-2xl group border-y-2 border-y-(--color-accent-primary) hover:border-y-(--color-accent-secondary) transition-all transition-100 hover:scale-105"
     >
       <div className="flex flex-col justify-between">
         <div className="flex justify-between items-center gap-2">

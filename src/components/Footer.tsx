@@ -8,7 +8,7 @@ export default function Footer() {
         <a
           href="https://github.com/paologhidoni"
           target="_blank"
-          className="underline hover:text-(--color-text-secondary)"
+          className="underline hover:text-(--color-text-secondary) transition-colors transition-100"
           rel="noopener noreferrer"
         >
           Paolo Ghidoni
@@ -24,7 +24,7 @@ export default function Footer() {
         <a
           href="https://rawg.io"
           target="_blank"
-          className="underline hover:text-(--color-text-secondary)"
+          className="underline hover:text-(--color-text-secondary) transition-colors transition-100"
           rel="noopener noreferrer"
         >
           RAWG Video Games Database
