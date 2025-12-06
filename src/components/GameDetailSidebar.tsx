@@ -12,7 +12,7 @@ export default function GameDetailSidebar({ game }: GameDetailSidebarProps) {
       {game.released && (
         <section>
           <SectionLabel text="RELEASED" />
-          <p className="p-4">
+          <p className="p-4 md:px-6">
             {new Date(game.released).toLocaleDateString("en-UK", {
               month: "short",
               day: "numeric",
@@ -26,7 +26,9 @@ export default function GameDetailSidebar({ game }: GameDetailSidebarProps) {
       {game.genres.length > 0 && (
         <section>
           <SectionLabel text="GENRES" />
-          <p className="p-4">{game.genres.map((tag) => tag.name).join(", ")}</p>
+          <p className="p-4 md:px-6">
+            {game.genres.map((tag) => tag.name).join(", ")}
+          </p>
         </section>
       )}
 
@@ -34,7 +36,7 @@ export default function GameDetailSidebar({ game }: GameDetailSidebarProps) {
       {game.platforms.length > 0 && (
         <section>
           <SectionLabel text="PLATFORMS" />
-          <p className="p-4">
+          <p className="p-4 md:px-6">
             {game.platforms
               .map((platform) => platform.platform.name)
               .join(", ")}

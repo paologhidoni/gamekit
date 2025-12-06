@@ -31,7 +31,7 @@ export default function GameDetail() {
             </div>
 
             <div className="absolute z-50 bottom-4 left-0 bg-black opacity-70 rounded-r-2xl p-4">
-              <h1 className="text-3xl lg:text-6xl font-bold text-white wrap-break-words">
+              <h1 className="text-2xl lg:text-4xl font-bold text-white wrap-break-words">
                 {data[0].name}
               </h1>
             </div>
@@ -49,7 +49,7 @@ export default function GameDetail() {
           </section>
 
           {/* DESCRIPTION */}
-          <section className="bg-(--color-bg-secondary) rounded-2xl p-6 border-y-2 border-y-(--color-accent-secondary) order-2 lg:order-0">
+          <section className="bg-(--color-bg-secondary) rounded-2xl py-6 px-4 md:px-6 border-y-2 border-y-(--color-accent-secondary) order-2 lg:order-0">
             <p
               dangerouslySetInnerHTML={{
                 __html: data[0].description,
