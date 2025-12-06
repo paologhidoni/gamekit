@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { fetchGames } from "../util/http";
 import GameDetailSidebar from "../components/GameDetailSidebar";
 import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorElement from "../components/ErrorElement";
 
 export default function GameDetail() {
   const { id } = useParams();
@@ -17,7 +18,7 @@ export default function GameDetail() {
     <>
       {isPending && <LoadingSpinner />}
 
-      {isError && <p>Error: {error.message}</p>}
+      {isError && <ErrorElement errorMessage={error.message} />}
 
       {data && (
         <div className="grid gap-4 lg:grid-cols-[2fr_1fr] lg:auto-rows-fr">
