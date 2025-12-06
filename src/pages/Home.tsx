@@ -33,7 +33,10 @@ export default function Home() {
       {!data ||
         (data.length === 0 && (
           <div className="flex flex-col gap-4 items-center">
-            <h1 className="text-3xl font-bold">No games found</h1>
+            <h1 className="text-2xl font-bold text-center">
+              No games found <br />
+              Search again
+            </h1>
             <img src={noGames} alt="No games found" className="w-50" />
           </div>
         ))}

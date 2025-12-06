@@ -7,7 +7,7 @@ interface ErrorElementProps {
 export default function ErrorElement({ errorMessage }: ErrorElementProps) {
   return (
     <div className="flex flex-col gap-4 items-center p-10 text-center">
-      <h1 className="text-3xl font-bold">
+      <h1 className="text-2xl font-bold">
         Oh snap! <br /> An unexpected error occurred!
       </h1>
 
