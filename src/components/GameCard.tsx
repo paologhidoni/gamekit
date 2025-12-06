@@ -1,8 +1,8 @@
 import { Link } from "react-router";
 import type { Game } from "../types";
 import GameBadges from "./GenreBadges";
-import { Star } from "lucide-react";
 import PlatformBadges from "./PlatformBadges";
+import GameRating from "./GameRating";
 
 interface GameCardProps {
   game: Game;
@@ -20,15 +20,7 @@ export default function GameCard({ game }: GameCardProps) {
             {game.name}
           </h2>
 
-          <span className="flex flex-col items-center">
-            <span className="text-amber-500">
-              <Star size={20} />
-            </span>
-
-            <span className="font-bold text-sm text-(--color-text-tertiary) italic">
-              {game.rating}
-            </span>
-          </span>
+          <GameRating rating={game.rating} />
         </div>
 
         <PlatformBadges game={game} />
