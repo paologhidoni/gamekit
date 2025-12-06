@@ -8,7 +8,6 @@ export default function Settings() {
       </h1>
 
       <ThemeSelector />
-      {/* <Button text="Back to home" handleOnClick={handleNavigateBack} /> */}
     </div>
   );
 }
