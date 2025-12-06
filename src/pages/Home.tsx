@@ -4,6 +4,9 @@ import type { Game } from "../types";
 import GameCard from "../components/GameCard";
 import { useState } from "react";
 import SearchBar from "../components/SearchBar";
+import LoadingSpinner from "../components/LoadingSpinner";
+import noGames from "../assets/no-games.png";
+import ErrorElement from "../components/ErrorElement";
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -23,9 +26,17 @@ export default function Home() {
         <SearchBar onSearch={setQuery} />
       </div>
 
-      {isPending && <p>Loading ....</p>}
+      {isPending && <LoadingSpinner />}
 
-      {isError && <p>Error: {error.message}</p>}
+      {isError && <ErrorElement errorMessage={error.message} />}
+
+      {!data ||
+        (data.length === 0 && (
+          <div className="flex flex-col gap-4 items-center">
+            <h1 className="text-3xl font-bold">No games found</h1>
+            <img src={noGames} alt="No games found" className="w-50" />
+          </div>
+        ))}
 
       <ul className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
         {data &&

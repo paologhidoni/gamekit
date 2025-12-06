@@ -6,11 +6,13 @@ import GameDetail from "./pages/GameDetail";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ThemeContextProvider } from "./context/ThemeContext";
 import Settings from "./pages/Settings";
+import ErrorElement from "./components/ErrorElement";
 
 const router = createHashRouter([
   {
     path: "/",
     element: <RootLayout />,
+    errorElement: <ErrorElement />,
     children: [
       { index: true, element: <Home /> },
       { path: "games/:id", element: <GameDetail /> },

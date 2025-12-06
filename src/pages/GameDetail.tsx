@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import { fetchGames } from "../util/http";
 import GameDetailSidebar from "../components/GameDetailSidebar";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function GameDetail() {
   const { id } = useParams();
@@ -14,7 +15,7 @@ export default function GameDetail() {
 
   return (
     <>
-      {isPending && <p>Loading ....</p>}
+      {isPending && <LoadingSpinner />}
 
       {isError && <p>Error: {error.message}</p>}
 
