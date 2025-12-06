@@ -11,7 +11,7 @@ export default function GameRating({ rating }: GameRatingProps) {
         <Star size={20} />
       </span>
 
-      <span className="font-bold text-sm text-(--color-text-tertiary) italic">
+      <span className="font-bold text-sm text-(--color-text-tertiary)">
         {rating}
       </span>
     </span>
