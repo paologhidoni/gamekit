@@ -15,7 +15,7 @@ export default function ThemeSelector() {
       <select
         value={themeName}
         onChange={handleChange}
-        className="py-4 px-6 pr-11 relative rounded-xl appearance-none cursor-pointer font-bold text-center text-(--color-text-secondary) bg-(--color-accent-primary) hover:bg-(--color-accent-primary-t2)"
+        className="py-4 px-6 pr-11 relative rounded-2xl appearance-none cursor-pointer font-bold text-center text-(--color-text-secondary) bg-(--color-accent-primary) hover:bg-(--color-accent-primary-t2)"
       >
         {availableThemes.map((themeName) => (
           <option key={themeName} value={themeName}>

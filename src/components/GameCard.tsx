@@ -3,6 +3,7 @@ import type { Game } from "../types";
 import GameBadges from "./GenreBadges";
 import PlatformBadges from "./PlatformBadges";
 import GameRating from "./GameRating";
+import BgImage from "./BgImage";
 
 interface GameCardProps {
   game: Game;
@@ -27,11 +28,7 @@ export default function GameCard({ game }: GameCardProps) {
       </div>
 
       <div className="relative w-full h-64">
-        <img
-          src={game.background_image}
-          alt={game.name}
-          className="absolute inset-0 h-full w-full object-cover rounded-2xl group-hover:scale-105 transition-all transition-100"
-        />
+        <BgImage gameName={game.name} gameBgImage={game.background_image} />
 
         <GameBadges game={game} />
       </div>
