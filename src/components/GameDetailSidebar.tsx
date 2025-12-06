@@ -28,12 +28,14 @@ export default function GameDetailSidebar({ game }: GameDetailSidebarProps) {
       </section>
 
       {/* MULTIPLAYER */}
-      <section>
-        <SectionLabel text="MULTIPLAYER" />
-        <p className="p-4">
-          {game.multiplayer.map((tag) => tag.name).join(", ")}
-        </p>
-      </section>
+      {game.multiplayer.length > 0 && (
+        <section>
+          <SectionLabel text="MULTIPLAYER" />
+          <p className="p-4">
+            {game.multiplayer.map((tag) => tag.name).join(", ")}
+          </p>
+        </section>
+      )}
 
       {/* DEVELOPERS */}
       <section>
