@@ -1,19 +1,12 @@
 // import SearchBar from "./SearchBar";
-import logo from "../assets/logo-tr.png";
-import logoLight from "../assets/logo-light.png";
-import { Link, NavLink } from "react-router";
+import { NavLink } from "react-router";
 import { Cog } from "lucide-react";
-import { useTheme } from "../context/ThemeContext";
+import Logo from "./Logo";
 
 export default function Navigation() {
-  const { themeName } = useTheme();
-  const logoSource = themeName === "light" ? logo : logoLight;
-
   return (
     <div className="bg-(--color-bg-primary) text-(--color-text-primary) py-4 px-2 flex flex-col items-center gap-2 md:flex-row md:px-20 lg:px-25">
-      <Link to="/" className="flex md:w-1/3 order-1 md:order-1">
-        <img src={logoSource} alt="" className="w-50 md:-ml-5" />
-      </Link>
+      <Logo extraClasses="md:w-1/3 order-1 md:order-1" />
 
       <div className="flex md:w-1/3 w-full self-stretch md:self-center order-3 md:order-2">
         {/* <SearchBar /> */}
