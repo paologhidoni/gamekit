@@ -4,7 +4,11 @@ An interactive **Game Discovery Platform** built with **React + TypeScript**, al
 
 <a href="https://paologhidoni.github.io/gamekit/" target="_blank">🚀 Live Demo: GameKit</a>
 
-<img src="./public/gamekit.png" alt="GameKit Homepage Preview"/>
+<img src="./public/gamekit.png" alt="GameKit Homepage Preview, dark theme"/>
+
+<img src="./public/gamekit-2.png" alt="GameKit game detail page Preview, sunset theme"/>
+
+<img src="./public/gamekit-3.png" alt="GameKit Homepage Preview, light theme"/>
 
 ## 🚀 Features
 
