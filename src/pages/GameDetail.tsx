@@ -31,7 +31,7 @@ export default function GameDetail() {
             </div>
 
             <div className="absolute z-50 bottom-4 left-0 bg-black opacity-70 rounded-r-2xl p-4 md:pl-6">
-              <h1 className="text-2xl lg:text-4xl font-bold text-white wrap-break-words">
+              <h1 className="font-gonadaltes tracking-wider uppercase text-xl lg:text-3xl font-bold text-white wrap-break-words">
                 {data[0].name}
               </h1>
             </div>

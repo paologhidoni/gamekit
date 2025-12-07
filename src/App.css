@@ -1,10 +1,21 @@
 /* Browsers require that @import statements come before any other rules, so URL imports 
 need to be above imports like @import "tailwindcss" which are inlined in the compiled CSS. */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap");
+@font-face {
+  font-family: Gonadadaltes;
+  src: url("./assets/fonts/GonadaltesDemo-KVe2W.ttf");
+}
+
+@font-face {
+  font-family: MonguleRegular;
+  src: url("./assets/fonts/MonguleRegular-ov2Y0.ttf");
+}
+
 @import "tailwindcss";
 
 @theme {
   --font-inter: "Inter", "sans-serif";
+  --font-gonadaltes: "MonguleRegular", "sans-serif";
 
   /*
   --breakpoint-sm: 480px,
