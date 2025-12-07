@@ -1,5 +1,5 @@
 import "./App.css";
-import { RouterProvider, createHashRouter } from "react-router";
+import { RouterProvider, createBrowserRouter } from "react-router";
 import Home from "./pages/Home";
 import RootLayout from "./components/RootLayout";
 import GameDetail from "./pages/GameDetail";
@@ -8,7 +8,7 @@ import { ThemeContextProvider } from "./context/ThemeContext";
 import Settings from "./pages/Settings";
 import ErrorElement from "./components/ErrorElement";
 
-const router = createHashRouter([
+const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
