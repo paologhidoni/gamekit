@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { config } from "dotenv";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+
 config({ path: ".env.backend" });
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
