@@ -1,6 +1,6 @@
 # GameKit
 
-An interactive **Game Discovery Platform** built with **React + TypeScript**, allowing users to browse, search, and discover games using the [RAWG Video Games Database API](https://rawg.io/apidocs).
+A full-stack **Game Discovery Platform** built with **React + TypeScript and Vercel serverless functions**, allowing users to browse, search, and discover games using the [RAWG Video Games Database API](https://rawg.io/apidocs), with authentication and user data stored in Supabase.
 
 <a href="https://gamekit-7h67h9ioc-paologhidonis-projects.vercel.app/" target="_blank">🚀 Live Demo: GameKit</a>
 
@@ -39,8 +39,7 @@ An interactive **Game Discovery Platform** built with **React + TypeScript**, al
 
 ### Deployment
 
-- **GitHub Actions** – For continuous integration and deployment.
-- **GitHub Pages** – For hosting the live application.
+The GitHub repository is connected to the Vercel project, which is deployed every time a push to `main` occurs.
 
 ## 📦 Installation
 
@@ -93,13 +92,10 @@ An interactive **Game Discovery Platform** built with **React + TypeScript**, al
 
 ## 🔥 Future Enhancements
 
-Advanced Filtering – Filter games by more criteria: genre, platform, release date, ratings, etc.
-
 - [x] **User Authentication** – Allow users to create accounts, sign in and sign out.
 - [ ] **Game Favourites** – Allow users to save favourite games in their account.
 - [x] **Profile & Settings Pages** – More personalized user settings.
 - [ ] **Advanced Filtering Options** – Add more granular filtering, such as by genre, platform, release date, popularity, ratings, developers, or publishers.
-- [ ] **Game Favourites** – Implement a feature for users to save games as favourites.
 - [ ] **State Management Improvement** – Integrate a state management library like Zustand or Redux Toolkit for more complex state.
 - [ ] **End-to-End Testing** – Add end-to-end tests using Playwright.
 
