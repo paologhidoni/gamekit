@@ -12,15 +12,23 @@ export async function fetchGames({
   signal: AbortSignal;
   query?: QueryType;
 }) {
-  // Build query params to send to backend
   const params = new URLSearchParams();
+  let url = "/api/";
 
-  if (query?.searchTerm) params.set("search", query.searchTerm);
-  if (query?.genre) params.set("genre", query.genre);
-  if (query?.platform) params.set("platform", query.platform);
-  if (query?.id) params.set("id", query.id);
+  // This either fetches an individual game by ID or an array of games by filter values
+  if (query?.id) {
+    url += "game?";
+    params.set("id", encodeURIComponent(query.id));
+  } else {
+    url += "games?";
+    if (query?.searchTerm)
+      params.set("search", encodeURIComponent(query.searchTerm));
+    if (query?.genre) params.set("genre", encodeURIComponent(query.genre));
+    if (query?.platform)
+      params.set("platform", encodeURIComponent(query.platform));
+  }
 
-  const url = `/api/games?${params.toString()}`;
+  url += params.toString();
 
   try {
     const response = await fetch(url, { signal });
@@ -30,7 +38,7 @@ export async function fetchGames({
       throw new Error(data.error || "Failed to fetch games.");
     }
 
-    return data.games;
+    return query?.id ? data.game : data.games;
   } catch (error) {
     throw error;
   }
