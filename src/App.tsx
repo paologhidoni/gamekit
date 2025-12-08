@@ -8,6 +8,7 @@ import { ThemeContextProvider } from "./context/ThemeContext";
 import Settings from "./pages/Settings";
 import ErrorElement from "./components/ErrorElement";
 import Authentication from "./pages/Authentication";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -17,8 +18,14 @@ const router = createBrowserRouter([
     children: [
       { path: "auth", element: <Authentication /> },
       { index: true, element: <Home /> },
-      { path: "games/:id", element: <GameDetail /> },
-      { path: "settings/", element: <Settings /> },
+      // Group all protected routes under a single parent
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { path: "games/:id", element: <GameDetail /> },
+          { path: "settings", element: <Settings /> },
+        ],
+      },
     ],
   },
 ]);
