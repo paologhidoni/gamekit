@@ -6,6 +6,7 @@ interface ButtonProps {
   handleOnClick?: () => void;
   variant?: "variant-1" | "variant-2";
   extraClasses?: string;
+  disabled?: boolean;
 }
 
 function Button({
@@ -23,7 +24,7 @@ function Button({
   const classes = variants[variant];
 
   return (
-    <button type={type} onClick={handleOnClick} className={classes}>
+    <button type={type} onClick={handleOnClick} className={classes} disabled>
       {text}
     </button>
   );
