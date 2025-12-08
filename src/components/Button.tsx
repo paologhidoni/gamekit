@@ -15,6 +15,7 @@ function Button({
   handleOnClick,
   variant = "variant-1",
   extraClasses,
+  disabled = false,
 }: ButtonProps) {
   const variants = {
     "variant-1": `py-3 px-5 rounded-2xl w-fit font-bold border-2 border-(--color-accent-primary) bg-(--color-accent-primary) cursor-pointer transition-colors duration-100 text-(--color-text-secondary) hover:bg-(--color-accent-secondary) hover:border-(--color-accent-secondary) ${extraClasses}`,
@@ -24,7 +25,12 @@ function Button({
   const classes = variants[variant];
 
   return (
-    <button type={type} onClick={handleOnClick} className={classes} disabled>
+    <button
+      type={type}
+      onClick={handleOnClick}
+      className={classes}
+      disabled={disabled}
+    >
       {text}
     </button>
   );
