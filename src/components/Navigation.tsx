@@ -1,6 +1,6 @@
 // import SearchBar from "./SearchBar";
 import { NavLink } from "react-router";
-import { Cog } from "lucide-react";
+import { Cog, User2 } from "lucide-react";
 import Logo from "./Logo";
 
 export default function Navigation() {
@@ -15,13 +15,11 @@ export default function Navigation() {
       <div className="flex md:w-1/3 justify-end order-2 md:order-3">
         <nav>
           <ul className="flex gap-3 justify-center text-center md:justify-end">
-            {/* <li>
-              <a href="#">Log in</a>
-            </li>
-
             <li>
-              <a href="#">Sign up</a>
-            </li> */}
+              <NavLink to="/auth?mode=login">
+                <User2 />
+              </NavLink>
+            </li>
 
             <li>
               <NavLink to="/settings">
