@@ -14,7 +14,7 @@ A full-stack **Game Discovery Platform** built with **React + TypeScript and Ver
 
 - 🎮 **Game Discovery** – Browse an extensive library of games from the RAWG API.
 - 🔍 **Fuzzy Search** – Find games by name, search functionality to be expanded soon.
-- ℹ️ **Detailed Game Information** – View game details including descriptions, ratings, screenshots, and trailers.
+- ℹ️ **Detailed Game Information** – View game details including descriptions, ratings, screenshots and trailers.
 - 🔐 **Authentication & User Settings** – Account creation and Login via Supabase to access your personal settings.
 - 💾 **User Data Storage** – Work in progress: Preferences and future favourites are stored securely in Supabase.
 - 📱 **Responsive Design** – A seamless experience across desktop and mobile devices.
@@ -95,7 +95,7 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
 - [x] **User Authentication** – Allow users to create accounts, sign in and sign out.
 - [ ] **Game Favourites** – Allow users to save favourite games in their account.
 - [x] **Profile & Settings Pages** – More personalized user settings.
-- [ ] **Advanced Filtering Options** – Add more granular filtering, such as by genre, platform, release date, popularity, ratings, developers, or publishers.
+- [ ] **Advanced Filtering Options** – Add more granular filtering, such as by genre, platform, release date, popularity, ratings, developers or publishers.
 - [ ] **State Management Improvement** – Integrate a state management library like Zustand or Redux Toolkit for more complex state.
 - [ ] **End-to-End Testing** – Add end-to-end tests using Playwright.
 
