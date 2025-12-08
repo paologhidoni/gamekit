@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     children: [
       { path: "auth", element: <Authentication /> },
       { index: true, element: <Home /> },
-      { path: "games/:id", element: <GameDetail /> },
+      { path: "game/:id", element: <GameDetail /> },
       // Group all protected routes under a single parent
       {
         element: <ProtectedRoute />,
