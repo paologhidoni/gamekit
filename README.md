@@ -2,7 +2,7 @@
 
 An interactive **Game Discovery Platform** built with **React + TypeScript**, allowing users to browse, search, and discover games using the [RAWG Video Games Database API](https://rawg.io/apidocs).
 
-<a href="https://paologhidoni.github.io/gamekit/](https://gamekit-7h67h9ioc-paologhidonis-projects.vercel.app/" target="_blank">🚀 Live Demo: GameKit</a>
+<a href="https://gamekit-7h67h9ioc-paologhidonis-projects.vercel.app/" target="_blank">🚀 Live Demo: GameKit</a>
 
 <img src="./public/gamekit.png" alt="GameKit Homepage Preview, dark theme"/>
 
