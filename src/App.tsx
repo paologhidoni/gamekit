@@ -7,6 +7,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ThemeContextProvider } from "./context/ThemeContext";
 import Settings from "./pages/Settings";
 import ErrorElement from "./components/ErrorElement";
+import Authentication from "./pages/Authentication";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,7 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <ErrorElement />,
     children: [
+      { path: "auth", element: <Authentication /> },
       { index: true, element: <Home /> },
       { path: "games/:id", element: <GameDetail /> },
       { path: "settings/", element: <Settings /> },

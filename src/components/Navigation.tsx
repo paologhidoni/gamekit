@@ -18,6 +18,7 @@ export default function Navigation() {
             <li>
               <NavLink to="/auth?mode=login">
                 <User2 />
+                <span className="sr-only">Log In</span>
               </NavLink>
             </li>
 
