@@ -93,7 +93,7 @@ export default function Authentication() {
         <div className="flex justify-between items-center flex-wrap gap-4">
           <Button
             type="button"
-            text={isLogin ? "Create a new user" : "Login to your account"}
+            text={isLogin ? "Create account" : "Login"}
             handleOnClick={handleAuthChoice}
             variant="variant-2"
           />
