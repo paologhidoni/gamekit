@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchGames } from "../util/http";
-import type { Game } from "../types";
+import type { Game } from "../../types";
 import GameCard from "../components/GameCard";
 import { useState } from "react";
 import SearchBar from "../components/SearchBar";

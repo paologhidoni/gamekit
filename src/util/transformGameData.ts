@@ -1,4 +1,4 @@
-import type { Game } from "../types";
+import type { Game } from "../../types";
 
 /**
  * Transforms a single game object from the RAWG API into our desired format.
