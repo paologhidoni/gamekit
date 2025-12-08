@@ -5,14 +5,15 @@ import { config } from "dotenv";
 
 config({ path: ".env.backend" });
 
-const RAWG_KEY = process.env.RAWG_API_KEY;
+const RAWG_API_KEY = process.env.RAWG_API_KEY;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     // const user = await requireAuth(req, res);
 
     // if (!user) return; // exit if unauthorized
-    if (!RAWG_KEY) throw new Error("Missing RAWG_KEY environment variable");
+    if (!RAWG_API_KEY)
+      throw new Error("Missing RAWG_API_KEY environment variable");
 
     // Call RAWG API safely
     const { searchTerm, genre, platform } = req.query;
@@ -27,7 +28,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const lastMonthStr = lastMonth.toISOString().split("T")[0];
 
     const params = new URLSearchParams();
-    params.set("key", RAWG_KEY);
+    params.set("key", RAWG_API_KEY);
     params.set("dates", `${lastMonthStr},${todayStr}`);
     params.set("ordering", "-added");
     params.set("page_size", "40");
