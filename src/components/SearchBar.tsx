@@ -35,7 +35,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           id="search-game-input"
           onChange={debouncedInputChange}
           type="text"
-          className="py-2 pl-10 pr-6 w-full bg-transparent rounded-full focus:outline-none"
+          className="py-2 pl-10 pr-6 w-full rounded-full outline-none"
         />
       </form>
     </div>

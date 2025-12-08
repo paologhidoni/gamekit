@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchGames } from "../util/http";
-import type { Game } from "../types";
+import type { Game } from "../../types";
 import GameCard from "../components/GameCard";
 import { useState } from "react";
 import SearchBar from "../components/SearchBar";
@@ -14,6 +14,8 @@ export default function Home() {
   const { data, isPending, isError, error } = useQuery({
     // The queryKey now includes the query state.
     // This ensures React Query caches different searches separately.
+
+    // TODO: Implement platform & genre queries
     queryKey: ["games", { searchTerm: query }],
     queryFn: ({ signal }) =>
       fetchGames({ signal, query: { searchTerm: query } }),

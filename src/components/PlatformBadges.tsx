@@ -1,5 +1,5 @@
 import React from "react";
-import type { Game } from "../types";
+import type { Game } from "../../types";
 
 interface PlatformBadgesProps {
   game: Game;
