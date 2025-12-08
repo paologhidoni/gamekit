@@ -29,6 +29,15 @@ export default function Navigation() {
       <div className="flex md:w-1/3 justify-end order-2 md:order-3">
         <nav>
           <ul className="flex gap-3 justify-center text-center md:justify-end">
+            {user && (
+              <li>
+                <NavLink to="/settings" title="Settings">
+                  <Cog />
+                  <span className="sr-only">Settings</span>
+                </NavLink>
+              </li>
+            )}
+
             <li>
               <button
                 type="button"
@@ -40,15 +49,6 @@ export default function Navigation() {
                 <span className="sr-only">{user ? "Sign Out" : "Log In"}</span>
               </button>
             </li>
-
-            {user && (
-              <li>
-                <NavLink to="/settings" title="Settings">
-                  <Cog />
-                  <span className="sr-only">Settings</span>
-                </NavLink>
-              </li>
-            )}
           </ul>
         </nav>
       </div>
