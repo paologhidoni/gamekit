@@ -22,7 +22,7 @@ export async function fetchGames({
   } else {
     url += "games?";
     if (query?.searchTerm)
-      params.set("search", encodeURIComponent(query.searchTerm));
+      params.set("searchTerm", encodeURIComponent(query.searchTerm));
     if (query?.genre) params.set("genre", encodeURIComponent(query.genre));
     if (query?.platform)
       params.set("platform", encodeURIComponent(query.platform));
