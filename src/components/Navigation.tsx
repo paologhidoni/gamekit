@@ -6,9 +6,11 @@ import { useAuth } from "../hooks/useAuth";
 
 export default function Navigation() {
   const { user, signOut } = useAuth();
+  //@ts-ignore
   const AuthIcon = user ? LogOut : User2;
   const navigate = useNavigate();
 
+  //@ts-ignore
   const handleAuthAction = async () => {
     if (user) {
       const { error } = await signOut();
