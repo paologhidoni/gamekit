@@ -37,7 +37,7 @@ export default function Navigation() {
                 </NavLink>
               </li>
             )}
-
+            {/* 
             <li>
               <button
                 type="button"
@@ -48,7 +48,7 @@ export default function Navigation() {
                 <AuthIcon />
                 <span className="sr-only">{user ? "Sign Out" : "Log In"}</span>
               </button>
-            </li>
+            </li> */}
           </ul>
         </nav>
       </div>
