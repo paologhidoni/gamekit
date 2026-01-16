@@ -83,6 +83,8 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
     npm run local
     ```
 
+    > **Note:** This command uses `vercel dev`. You may need to run `npx vercel login` periodically if your local session expires, to ensure the frontend can communicate with the backend functions.
+
 ## 🎯 Project Goals
 
 - [x] Build a responsive and interactive interface for game discovery.
