@@ -42,6 +42,8 @@ export default function Authentication() {
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
     } finally {
+      setEmail("");
+      setPassword("");
       setLoading(false);
     }
   };
