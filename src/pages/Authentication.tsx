@@ -22,10 +22,15 @@ export default function Authentication() {
     setIsSignedUp(false);
 
     try {
-      const credentials = { email, password };
       const { error } = isLogin
-        ? await signIn(credentials)
-        : await signUp(credentials);
+        ? await signIn({ email, password })
+        : await signUp({
+            email,
+            password,
+            options: {
+              emailRedirectTo: window.location.origin,
+            },
+          });
 
       if (error) throw error;
 
