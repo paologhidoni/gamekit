@@ -6,6 +6,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorElement from "../components/ErrorElement";
 import GameRating from "../components/GameRating";
 import BgImage from "../components/BgImage";
+import DOMPurify from "dompurify";
 
 export default function GameDetail() {
   const { id } = useParams();
@@ -15,6 +16,8 @@ export default function GameDetail() {
     queryFn: ({ signal }) => fetchGames({ signal, query: { id } }),
     staleTime: 5000,
   });
+
+  const description = data?.description ? DOMPurify.sanitize(data.description) : "";
 
   return (
     <>
@@ -52,7 +55,7 @@ export default function GameDetail() {
           <section className="bg-(--color-bg-secondary) rounded-2xl py-6 px-4 md:px-6 border-y-2 border-y-(--color-accent-secondary) order-2 lg:order-0">
             <p
               dangerouslySetInnerHTML={{
-                __html: data.description,
+                __html: description,
               }}
               className="leading-6.5"
             />
