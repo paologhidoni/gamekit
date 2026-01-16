@@ -6,11 +6,9 @@ import { useAuth } from "../hooks/useAuth";
 
 export default function Navigation() {
   const { user, signOut } = useAuth();
-  //@ts-ignore
   const AuthIcon = user ? LogOut : User2;
   const navigate = useNavigate();
 
-  //@ts-ignore
   const handleAuthAction = async () => {
     if (user) {
       const { error } = await signOut();
@@ -39,7 +37,7 @@ export default function Navigation() {
                 </NavLink>
               </li>
             )}
-            {/* 
+
             <li>
               <button
                 type="button"
@@ -50,7 +48,7 @@ export default function Navigation() {
                 <AuthIcon />
                 <span className="sr-only">{user ? "Sign Out" : "Log In"}</span>
               </button>
-            </li> */}
+            </li>
           </ul>
         </nav>
       </div>
