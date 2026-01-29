@@ -17,7 +17,7 @@ export default function GameCard({ game }: GameCardProps) {
     >
       <div className="flex flex-col justify-between">
         <div className="flex justify-between items-center gap-2">
-          <h2 className="font-gonadaltes tracking-wider uppercase text-xl text-(--color-text-tertiary) font-bold mb-1 wrap-break-words">
+          <h2 className="font-gonadaltes tracking-wider uppercase text-lg text-(--color-text-tertiary) font-bold mb-1 wrap-break-words">
             {game.name}
           </h2>
 
