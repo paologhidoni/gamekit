@@ -1,4 +1,4 @@
-import type { Game } from "../types";
+import type { Game } from "../../types";
 import SectionLabel from "./SectionLabel";
 
 interface GameDetailSidebarProps {
