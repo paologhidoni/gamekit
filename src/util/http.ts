@@ -1,3 +1,5 @@
+import getCroppedImageUrl from "./image-url";
+
 interface QueryType {
   id?: string;
   searchTerm?: string;
@@ -36,7 +38,15 @@ export async function fetchGames({
       throw new Error(data.error || "Failed to fetch games.");
     }
 
-    return query?.id ? data.game : data.games;
+    if (query?.id) {
+      return data.game;
+    } else {
+      return data.games.map((game: any) => ({
+        ...game,
+        // Optimize for List View (Cards)
+        background_image: getCroppedImageUrl(game.background_image, 600, 400),
+      }));
+    }
   } catch (error) {
     throw error;
   }
