@@ -18,14 +18,12 @@ export async function fetchGames({
   // This either fetches an individual game by ID or an array of games by filter values
   if (query?.id) {
     url += "game?";
-    params.set("id", encodeURIComponent(query.id));
+    params.set("id", query.id);
   } else {
     url += "games?";
-    if (query?.searchTerm)
-      params.set("searchTerm", encodeURIComponent(query.searchTerm));
-    if (query?.genre) params.set("genre", encodeURIComponent(query.genre));
-    if (query?.platform)
-      params.set("platform", encodeURIComponent(query.platform));
+    if (query?.searchTerm) params.set("searchTerm", query.searchTerm);
+    if (query?.genre) params.set("genre", query.genre);
+    if (query?.platform) params.set("platform", query.platform);
   }
 
   url += params.toString();
