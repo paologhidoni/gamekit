@@ -1,4 +1,4 @@
-import errorImg from "../assets/scared-luigi.png";
+import errorImg from "../assets/scared-luigi.webp";
 
 interface ErrorElementProps {
   errorMessage?: string;
