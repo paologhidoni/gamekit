@@ -45,6 +45,7 @@ export default function GameDetail() {
               gameName={data.name}
               gameBgImage={data.background_image}
               extraClasses="object-top"
+              priority={true}
             />
           </section>
 

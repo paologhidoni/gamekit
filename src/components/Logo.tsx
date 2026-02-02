@@ -1,5 +1,5 @@
-import logo from "../assets/logo-tr.png";
-import logoLight from "../assets/logo-light.png";
+import logo from "../assets/logo-tr.webp";
+import logoLight from "../assets/logo-light.webp";
 import { useTheme } from "../context/ThemeContext";
 import { Link } from "react-router";
 

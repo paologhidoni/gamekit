@@ -1,3 +1,5 @@
+import getCroppedImageUrl from "./image-url";
+
 interface QueryType {
   id?: string;
   searchTerm?: string;
@@ -18,14 +20,12 @@ export async function fetchGames({
   // This either fetches an individual game by ID or an array of games by filter values
   if (query?.id) {
     url += "game?";
-    params.set("id", encodeURIComponent(query.id));
+    params.set("id", query.id);
   } else {
     url += "games?";
-    if (query?.searchTerm)
-      params.set("searchTerm", encodeURIComponent(query.searchTerm));
-    if (query?.genre) params.set("genre", encodeURIComponent(query.genre));
-    if (query?.platform)
-      params.set("platform", encodeURIComponent(query.platform));
+    if (query?.searchTerm) params.set("searchTerm", query.searchTerm);
+    if (query?.genre) params.set("genre", query.genre);
+    if (query?.platform) params.set("platform", query.platform);
   }
 
   url += params.toString();
@@ -38,7 +38,15 @@ export async function fetchGames({
       throw new Error(data.error || "Failed to fetch games.");
     }
 
-    return query?.id ? data.game : data.games;
+    if (query?.id) {
+      return data.game;
+    } else {
+      return data.games.map((game: any) => ({
+        ...game,
+        // Optimize for List View (Cards)
+        background_image: getCroppedImageUrl(game.background_image, 600, 400),
+      }));
+    }
   } catch (error) {
     throw error;
   }

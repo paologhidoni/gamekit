@@ -5,7 +5,7 @@ import GameCard from "../components/GameCard";
 import { useState } from "react";
 import SearchBar from "../components/SearchBar";
 import LoadingSpinner from "../components/LoadingSpinner";
-import noGames from "../assets/no-games.png";
+import noGames from "../assets/no-games.webp";
 import ErrorElement from "../components/ErrorElement";
 
 export default function Home() {
@@ -45,9 +45,9 @@ export default function Home() {
 
       <ul className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
         {data &&
-          data.map((game: Game) => (
+          data.map((game: Game, index: number) => (
             <li key={game.id}>
-              <GameCard game={game} />
+              <GameCard game={game} priority={index < 4} />
             </li>
           ))}
       </ul>

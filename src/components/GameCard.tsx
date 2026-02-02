@@ -7,9 +7,10 @@ import BgImage from "./BgImage";
 
 interface GameCardProps {
   game: Game;
+  priority?: boolean;
 }
 
-export default function GameCard({ game }: GameCardProps) {
+export default function GameCard({ game, priority = false }: GameCardProps) {
   return (
     <Link
       to={`/game/${game.id}`}
@@ -28,7 +29,11 @@ export default function GameCard({ game }: GameCardProps) {
       </div>
 
       <div className="relative w-full h-64">
-        <BgImage gameName={game.name} gameBgImage={game.background_image} />
+        <BgImage
+          gameName={game.name}
+          gameBgImage={game.background_image}
+          priority={priority}
+        />
 
         <GameBadges game={game} />
       </div>
