@@ -40,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (searchTerm) {
       params.delete("dates");
       params.delete("ordering");
-      params.set("search", encodeURIComponent(String(searchTerm)));
+      params.set("search", String(searchTerm));
     }
 
     // https://api.rawg.io/api/games?key=YOUR_KEY&genres=action
