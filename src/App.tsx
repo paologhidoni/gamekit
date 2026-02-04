@@ -10,6 +10,8 @@ import ErrorElement from "./components/ErrorElement";
 import Authentication from "./pages/Authentication";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+const queryClient = new QueryClient();
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -27,8 +29,6 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
-const queryClient = new QueryClient();
 
 function App() {
   return (
