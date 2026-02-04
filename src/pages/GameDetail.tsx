@@ -1,5 +1,5 @@
-import { QueryClient, useQuery } from "@tanstack/react-query";
-import { type LoaderFunctionArgs, useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router";
 import { fetchGames } from "../util/http";
 import GameDetailSidebar from "../components/GameDetailSidebar";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -8,42 +8,14 @@ import GameRating from "../components/GameRating";
 import BgImage from "../components/BgImage";
 import DOMPurify from "dompurify";
 
-export const gameDetailQuery = (id: string) => ({
-  queryKey: ["singleGame", { id }],
-  queryFn: ({ signal }: { signal: AbortSignal }) =>
-    fetchGames({ signal, query: { id } }),
-  staleTime: 5000,
-});
-
-export const loader =
-  (queryClient: QueryClient) =>
-  async ({ params }: LoaderFunctionArgs) => {
-    const { id } = params;
-    if (!id) throw new Error("No game ID provided");
-
-    // Start fetching early!
-    // This allows the data to be ready (or fetching) by the time the component renders
-    const data = await queryClient.ensureQueryData(gameDetailQuery(id));
-
-    // LCP Optimization: Preload the hero image
-    if (data?.background_image) {
-      const link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "image";
-      link.href = data.background_image;
-      link.fetchPriority = "high";
-      document.head.appendChild(link);
-    }
-
-    return data;
-  };
-
 export default function GameDetail() {
   const { id } = useParams();
 
-  const { data, isPending, isError, error } = useQuery(
-    gameDetailQuery(id as string)
-  );
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ["singleGame", { id }],
+    queryFn: ({ signal }) => fetchGames({ signal, query: { id } }),
+    staleTime: 5000,
+  });
 
   const description = data?.description
     ? DOMPurify.sanitize(data.description)
