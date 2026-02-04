@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery } from "@tanstack/react-query";
 import { fetchGames } from "../util/http";
 import type { Game } from "../../types";
 import GameCard from "../components/GameCard";
@@ -7,20 +7,49 @@ import SearchBar from "../components/SearchBar";
 import LoadingSpinner from "../components/LoadingSpinner";
 import noGames from "../assets/no-games.webp";
 import ErrorElement from "../components/ErrorElement";
+import { type LoaderFunctionArgs, useLoaderData } from "react-router";
+import getCroppedImageUrl from "../util/image-url";
+
+export const homeQuery = (searchTerm: string = "") => ({
+  queryKey: ["games", { searchTerm }],
+  queryFn: ({ signal }: { signal: AbortSignal }) =>
+    fetchGames({ signal, query: { searchTerm } }),
+  staleTime: 5000,
+});
+
+export const loader =
+  (queryClient: QueryClient) =>
+  async ({ request }: LoaderFunctionArgs) => {
+    const url = new URL(request.url);
+    const searchTerm = url.searchParams.get("search") || "";
+
+    const data = await queryClient.ensureQueryData(homeQuery(searchTerm));
+
+    // LCP Optimization: Preload the first game image (cropped 600x400)
+    if (data && data.length > 0 && data[0].background_image) {
+      const firstGameImage = getCroppedImageUrl(
+        data[0].background_image,
+        600,
+        400
+      );
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.href = firstGameImage;
+      link.fetchPriority = "high";
+      document.head.appendChild(link);
+    }
+
+    return { searchTerm };
+  };
 
 export default function Home() {
-  const [query, setQuery] = useState("");
+  const { searchTerm: initialSearchTerm } = useLoaderData() as {
+    searchTerm: string;
+  };
+  const [query, setQuery] = useState(initialSearchTerm);
 
-  const { data, isPending, isError, error } = useQuery({
-    // The queryKey now includes the query state.
-    // This ensures React Query caches different searches separately.
-
-    // TODO: Implement platform & genre queries
-    queryKey: ["games", { searchTerm: query }],
-    queryFn: ({ signal }) =>
-      fetchGames({ signal, query: { searchTerm: query } }),
-    staleTime: 5000,
-  });
+  const { data, isPending, isError, error } = useQuery(homeQuery(query));
 
   return (
     <>

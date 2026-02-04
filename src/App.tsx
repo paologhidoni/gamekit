@@ -1,14 +1,16 @@
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router";
-import Home from "./pages/Home";
+import Home, { loader as homeLoader } from "./pages/Home";
 import RootLayout from "./components/RootLayout";
-import GameDetail from "./pages/GameDetail";
+import GameDetail, { loader as gameDetailLoader } from "./pages/GameDetail";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ThemeContextProvider } from "./context/ThemeContext";
 import Settings from "./pages/Settings";
 import ErrorElement from "./components/ErrorElement";
 import Authentication from "./pages/Authentication";
 import ProtectedRoute from "./components/ProtectedRoute";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -17,8 +19,12 @@ const router = createBrowserRouter([
     errorElement: <ErrorElement />,
     children: [
       { path: "auth", element: <Authentication /> },
-      { index: true, element: <Home /> },
-      { path: "game/:id", element: <GameDetail /> },
+      { index: true, element: <Home />, loader: homeLoader(queryClient) },
+      {
+        path: "game/:id",
+        element: <GameDetail />,
+        loader: gameDetailLoader(queryClient),
+      },
       // Group all protected routes under a single parent
       {
         element: <ProtectedRoute />,
@@ -27,8 +33,6 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
-const queryClient = new QueryClient();
 
 function App() {
   return (
