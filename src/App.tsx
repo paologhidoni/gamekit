@@ -1,14 +1,18 @@
+import { Suspense, lazy } from "react";
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router";
-import Home from "./pages/Home";
 import RootLayout from "./components/RootLayout";
-import GameDetail from "./pages/GameDetail";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ThemeContextProvider } from "./context/ThemeContext";
-import Settings from "./pages/Settings";
 import ErrorElement from "./components/ErrorElement";
-import Authentication from "./pages/Authentication";
 import ProtectedRoute from "./components/ProtectedRoute";
+import LoadingSpinner from "./components/LoadingSpinner";
+
+// Lazy load page components
+const Home = lazy(() => import("./pages/Home"));
+const GameDetail = lazy(() => import("./pages/GameDetail"));
+const Settings = lazy(() => import("./pages/Settings"));
+const Authentication = lazy(() => import("./pages/Authentication"));
 
 const queryClient = new QueryClient();
 
@@ -18,13 +22,43 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <ErrorElement />,
     children: [
-      { path: "auth", element: <Authentication /> },
-      { index: true, element: <Home /> },
-      { path: "game/:id", element: <GameDetail /> },
+      {
+        path: "auth",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <Authentication />
+          </Suspense>
+        ),
+      },
+      {
+        index: true,
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <Home />
+          </Suspense>
+        ),
+      },
+      {
+        path: "game/:id",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <GameDetail />
+          </Suspense>
+        ),
+      },
       // Group all protected routes under a single parent
       {
         element: <ProtectedRoute />,
-        children: [{ path: "settings", element: <Settings /> }],
+        children: [
+          {
+            path: "settings",
+            element: (
+              <Suspense fallback={<LoadingSpinner />}>
+                <Settings />
+              </Suspense>
+            ),
+          },
+        ],
       },
     ],
   },
