@@ -20,6 +20,7 @@ export default function Logo({ extraClasses }: logoProps) {
         alt="GameKit Home"
         className="w-50 md:-ml-5"
         fetchPriority="high"
+        loading="eager"
       />
     </Link>
   );
