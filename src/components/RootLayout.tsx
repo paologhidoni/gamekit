@@ -1,10 +1,11 @@
-import { Outlet } from "react-router";
+import { Outlet, ScrollRestoration } from "react-router";
 import Navigation from "./Navigation";
 import Footer from "./Footer";
 
 export default function RootLayout() {
   return (
     <div className="font-inter">
+      <ScrollRestoration />
       <Navigation />
 
       <main className="pb-8 px-2 min-h-screen bg-(--color-bg-primary) text-(--color-text-primary) transition-colors duration-100 md:px-20 lg:px-24 2xl:px-56">

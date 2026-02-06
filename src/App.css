@@ -4,11 +4,13 @@ need to be above imports like @import "tailwindcss" which are inlined in the com
 @font-face {
   font-family: Gonadadaltes;
   src: url("./assets/fonts/GonadaltesDemo-KVe2W.ttf");
+  font-display: swap;
 }
 
 @font-face {
   font-family: MonguleRegular;
   src: url("./assets/fonts/MonguleRegular-ov2Y0.ttf");
+  font-display: swap;
 }
 
 @import "tailwindcss";
