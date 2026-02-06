@@ -15,7 +15,12 @@ export default function Logo({ extraClasses }: logoProps) {
 
   return (
     <Link to="/" className={classes}>
-      <img src={logoSource} alt="GameKit Home" className="w-50 md:-ml-5" />
+      <img
+        src={logoSource}
+        alt="GameKit Home"
+        className="w-50 md:-ml-5"
+        fetchPriority="high"
+      />
     </Link>
   );
 }
