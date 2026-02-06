@@ -18,9 +18,11 @@ export default function Logo({ extraClasses }: logoProps) {
       <img
         src={logoSource}
         alt="GameKit Home"
-        className="w-50 md:-ml-5"
+        className="md:-ml-5"
         fetchPriority="high"
         loading="eager"
+        width={200}
+        height={60}
       />
     </Link>
   );
