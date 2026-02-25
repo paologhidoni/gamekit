@@ -1,15 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
-import { fetchGames } from "../util/http";
 import GameDetailSidebar from "../components/GameDetailSidebar";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorElement from "../components/ErrorElement";
 import GameRating from "../components/GameRating";
 import BgImage from "../components/BgImage";
 import DOMPurify from "dompurify";
+import { useSearch } from "../context/SearchContext";
 
 export default function GameDetail() {
   const { id } = useParams();
+  const { fetchGames } = useSearch();
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["singleGame", { id }],

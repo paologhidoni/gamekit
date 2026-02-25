@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchGames } from "../util/http";
 import type { Game } from "../../types";
 import GameCard from "../components/GameCard";
 import { useState } from "react";
@@ -7,18 +6,22 @@ import SearchBar from "../components/SearchBar";
 import LoadingSpinner from "../components/LoadingSpinner";
 import noGames from "../assets/no-games.webp";
 import ErrorElement from "../components/ErrorElement";
+import { useSearch } from "../context/SearchContext";
 
 export default function Home() {
   const [query, setQuery] = useState("");
+  const { isAiSearch, fetchGames, fetchAiGames } = useSearch();
 
   const { data, isPending, isError, error } = useQuery({
     // The queryKey now includes the query state.
     // This ensures React Query caches different searches separately.
 
     // TODO: Implement platform & genre queries
-    queryKey: ["games", { searchTerm: query }],
+    queryKey: ["games", { searchTerm: query, isAiSearch }],
     queryFn: ({ signal }) =>
-      fetchGames({ signal, query: { searchTerm: query } }),
+      isAiSearch
+        ? fetchAiGames({ signal, query: { searchTerm: query } })
+        : fetchGames({ signal, query: { searchTerm: query } }),
     staleTime: 5000,
   });
 
