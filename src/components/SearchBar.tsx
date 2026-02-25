@@ -1,19 +1,29 @@
-import { Search } from "lucide-react";
-import { useCallback, useRef } from "react";
+import { Search, Sparkles } from "lucide-react";
+import { useCallback, type ChangeEvent } from "react";
 import useDebounce from "../hooks/useDebounce";
+import { useSearch } from "../context/SearchContext";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
 }
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { isAiSearch } = useSearch();
 
-  const handleInputChange = useCallback(() => {
-    onSearch(inputRef.current?.value ?? "");
-  }, [onSearch]);
+  const handleInputChange = useCallback(
+    (value: string) => {
+      onSearch(value);
+    },
+    [onSearch],
+  );
 
   const debouncedInputChange = useDebounce(handleInputChange);
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    debouncedInputChange(e.target.value);
+  };
 
   return (
     <div
@@ -23,20 +33,31 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         color: "var(--color-text-primary)",
       }}
     >
-      <Search className="absolute left-2 top-1/2 -translate-y-1/2" />
+      {isAiSearch ? (
+        <Sparkles className="absolute left-2 top-1/2 -translate-y-1/2" />
+      ) : (
+        <Search className="absolute left-2 top-1/2 -translate-y-1/2" />
+      )}
 
       <form>
         <label htmlFor="search-game-input" className="sr-only">
           Search for a game
         </label>
 
-        <input
-          ref={inputRef}
-          id="search-game-input"
-          onChange={debouncedInputChange}
-          type="text"
-          className="py-2 pl-10 pr-6 w-full rounded-full outline-none"
-        />
+        {isAiSearch ? (
+          <textarea
+            id=""
+            onChange={handleChange}
+            className="py-2 pl-10 pr-6 w-full rounded-full outline-none"
+          ></textarea>
+        ) : (
+          <input
+            id="search-game-input"
+            onChange={handleChange}
+            type="text"
+            className="py-2 pl-10 pr-6 w-full rounded-full outline-none"
+          />
+        )}
       </form>
     </div>
   );
