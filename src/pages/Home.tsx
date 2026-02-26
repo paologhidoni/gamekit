@@ -7,23 +7,25 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import noGames from "../assets/no-games.webp";
 import ErrorElement from "../components/ErrorElement";
 import { useSearch } from "../context/SearchContext";
+import AiExplanation from "../components/AiExplanation";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const { isAiSearch, fetchGames, fetchAiGames } = useSearch();
 
   const { data, isPending, isError, error } = useQuery({
-    // The queryKey now includes the query state.
-    // This ensures React Query caches different searches separately.
-
-    // TODO: Implement platform & genre queries
     queryKey: ["games", { searchTerm: query, isAiSearch }],
     queryFn: ({ signal }) =>
       isAiSearch
         ? fetchAiGames({ signal, query: { searchTerm: query } })
         : fetchGames({ signal, query: { searchTerm: query } }),
     staleTime: 5000,
+    enabled: isAiSearch ? query.trim().length > 0 : true, // AI search requires query, regular search works without
   });
+
+  // Handle AI search response structure
+  const games = isAiSearch ? data?.games : data;
+  const explanation = isAiSearch ? data?.explanation : null;
 
   return (
     <>
@@ -31,24 +33,30 @@ export default function Home() {
         <SearchBar onSearch={setQuery} />
       </div>
 
-      {isPending && <LoadingSpinner />}
+      {isPending && query.trim().length > 0 && <LoadingSpinner />}
 
       {isError && <ErrorElement errorMessage={error.message} />}
 
-      {!data ||
-        (data.length === 0 && (
-          <div className="flex flex-col gap-4 items-center">
-            <h1 className="text-2xl font-bold text-center">
-              No games found <br />
-              Search again
-            </h1>
-            <img src={noGames} alt="No games found" className="w-50" />
-          </div>
-        ))}
+      {/* AI Explanation */}
+      {isAiSearch && explanation && games && games.length > 0 && (
+        <AiExplanation explanation={explanation} gameCount={games.length} />
+      )}
 
+      {/* No Results */}
+      {!isPending && games && games.length === 0 && (
+        <div className="flex flex-col gap-4 items-center">
+          <h1 className="text-2xl font-bold text-center">
+            No games found <br />
+            Search again
+          </h1>
+          <img src={noGames} alt="No games found" className="w-50" />
+        </div>
+      )}
+
+      {/* Game Grid */}
       <ul className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
-        {data &&
-          data.map((game: Game, index: number) => (
+        {games &&
+          games.map((game: Game, index: number) => (
             <li key={game.id}>
               <GameCard game={game} priority={index < 4} />
             </li>
