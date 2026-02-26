@@ -30,7 +30,7 @@ interface SearchContextType {
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
 export function SearchContextProvider({ children }: { children: ReactNode }) {
-  const [isAiSearch, setIsAiSearch] = useState(true);
+  const [isAiSearch, setIsAiSearch] = useState(false);
 
   const fetchGames = useCallback(
     async ({ signal, query }: { signal: AbortSignal; query?: QueryType }) => {
