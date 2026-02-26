@@ -1,5 +1,5 @@
 export interface Game {
-  id: string;
+  id: number;
   name: string;
   genres: Record<string, any>[];
   rating: number;
@@ -7,7 +7,7 @@ export interface Game {
   description: string | null;
   released: string | null;
   background_image: string;
-  metacritic: string | null;
+  metacritic: number | null;
   developers: Record<string, any>[];
   tags?: Record<string, any>[];
   multiplayer: Record<string, any>[];
