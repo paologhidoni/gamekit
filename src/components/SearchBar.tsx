@@ -46,9 +46,10 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
 
         {isAiSearch ? (
           <textarea
-            id=""
+            id="search-game-input"
             onChange={handleChange}
             className="py-2 pl-10 pr-6 w-full rounded-full outline-none"
+            placeholder="Describe games... e.g. 'Platformers on PC Engine'"
           ></textarea>
         ) : (
           <input
@@ -56,6 +57,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             onChange={handleChange}
             type="text"
             className="py-2 pl-10 pr-6 w-full rounded-full outline-none"
+            placeholder="Search games by title..."
           />
         )}
       </form>
