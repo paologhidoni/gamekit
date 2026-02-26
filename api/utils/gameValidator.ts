@@ -1,5 +1,5 @@
-import { getPlatformId, getGenreId } from "./rawgCache";
-import { calculateNameScore } from "./nameNormalizer";
+import { getPlatformId, getGenreId } from "./rawgCache.js";
+import { calculateNameScore } from "./nameNormalizer.js";
 
 /**
  * This is the critical quality control step in my AI search feature.
@@ -56,6 +56,12 @@ export async function validateCandidates(
   // (e.g., "Game Boy" → 26). This is essential for making precise API calls later.
   const platformId = intent.platform ? getPlatformId(intent.platform) : null;
   const genreId = intent.genre ? getGenreId(intent.genre) : null;
+
+  // If platform was specified but doesn't exist in RAWG, return empty array to trigger fallback
+  if (intent.platform && !platformId) {
+    console.log(`Platform "${intent.platform}" not found in RAWG database`);
+    return [];
+  }
 
   // Smart batching: validate top 5 first
   // Instead of wastefully calling the RAWG API for all 8 candidates at once, it first creates a "batch" of only the top 5.
