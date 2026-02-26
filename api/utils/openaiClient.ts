@@ -38,8 +38,12 @@ PLATFORM VOCABULARY (use ONLY these):
 NES, SNES, Genesis, PC Engine, PlayStation, PS2, PS3, PS4, PS5,
 Nintendo 64, GameCube, Wii, Wii U, Nintendo Switch,
 Xbox, Xbox 360, Xbox One, Xbox Series X,
-Game Boy, Game Boy Advance, Nintendo DS, Nintendo 3DS,
-PSP, PS Vita, Dreamcast, Saturn, PC
+Game Boy, Game Boy Color, Game Boy Advance, Nintendo DS, Nintendo 3DS,
+PSP, PS Vita, WonderSwan, Neo Geo Pocket, Dreamcast, Saturn, PC,
+3DO, Atari Jaguar, Atari 2600, Atari 5200, Atari 7800, Neo Geo,
+Sega Master System, Sega CD, Sega 32X, Game Gear,
+Philips CD-i, Virtual Boy, Vectrex, Atari Lynx,
+Commodore 64, Amiga, ZX Spectrum, MSX, PC-98
 
 OUTPUT: Use recommend_games tool ONLY for game-related queries`;
 
