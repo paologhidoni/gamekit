@@ -108,13 +108,24 @@ function generateExplanation(intent: any, games: any[]): string {
 
   if (intent.mood) parts.push(intent.mood);
   if (intent.genre) parts.push(intent.genre);
-  if (intent.platform) parts.push(`on ${intent.platform}`);
+
+  // Check if platform was requested but not available
+  const platformId = intent.platform ? getPlatformId(intent.platform) : null;
+  const platformUnavailable = intent.platform && !platformId;
+
+  if (intent.platform && !platformUnavailable) {
+    parts.push(`on ${intent.platform}`);
+  }
 
   const criteria = parts.join(" ");
 
-  return `Found ${games.length} ${criteria} games that match your search.${
-    intent.mood
-      ? ` These games capture the ${intent.mood} atmosphere you're looking for.`
-      : ""
-  }`;
+  let explanation = `Found ${games.length} games that match your search: ${criteria}.`;
+
+  if (platformUnavailable) {
+    explanation += ` Note: ${intent.platform} is not available in our database, so we've shown ${intent.genre || "games"} from other platforms instead.`;
+  } else if (intent.mood) {
+    explanation += ` These games capture the ${intent.mood} atmosphere you're looking for.`;
+  }
+
+  return explanation;
 }
