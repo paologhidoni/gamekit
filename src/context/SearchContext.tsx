@@ -70,29 +70,32 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  /**
+   * take a user's search term, send it to the /api/ai-search endpoint
+   * and then format the response to display data on the UI.
+   */
   const fetchAiGames = useCallback(
     async ({ signal, query }: { signal: AbortSignal; query?: QueryType }) => {
-      const params = new URLSearchParams();
-      let url = "/api/games?";
-
-      if (query?.searchTerm) {
-        params.set("searchTerm", query.searchTerm);
-        params.set("isAiSearch", "true");
+      if (!query?.searchTerm) {
+        throw new Error("Search term required for AI search");
       }
 
-      url += params.toString();
-
-      const response = await fetch(url, { signal });
+      const params = new URLSearchParams({ query: query.searchTerm });
+      const response = await fetch(`/api/ai-search?${params}`, { signal });
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to fetch games.");
+        throw new Error(data.error || "AI search failed");
       }
 
-      return data.games.map((game: any) => ({
-        ...game,
-        background_image: getCroppedImageUrl(game.background_image, 600, 400),
-      }));
+      return {
+        explanation: data.explanation,
+        games: data.games.map((game: any) => ({
+          ...game,
+          background_image: getCroppedImageUrl(game.background_image, 600, 400),
+        })),
+        metadata: data.metadata,
+      };
     },
     [],
   );
