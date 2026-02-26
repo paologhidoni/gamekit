@@ -1,4 +1,7 @@
 import OpenAI from "openai";
+import { config } from "dotenv";
+
+config({ path: ".env.backend" });
 
 /**
  * This is the central hub for communicating with the OpenAI API. It's designed to transform a user's natural language
