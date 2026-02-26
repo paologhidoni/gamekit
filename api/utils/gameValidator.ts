@@ -38,8 +38,13 @@ interface ValidatedGame {
   background_image: string;
   metacritic: number | null;
   released: string;
+  rating: number;
   genres: any[];
   platforms: any[];
+  description: string | null;
+  developers: any[];
+  tags: any[];
+  multiplayer: any[];
   validationScore: number;
 }
 
