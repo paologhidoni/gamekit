@@ -1,9 +1,13 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { config } from "dotenv";
-import { interpretQuery } from "./utils/openaiClient";
-import { validateCandidates } from "./utils/gameValidator";
-import { initializeCache, getPlatformId, getGenreId } from "./utils/rawgCache";
-import { transformGameData } from "./utils/transformGameData";
+import { interpretQuery } from "./utils/openaiClient.js";
+import { validateCandidates } from "./utils/gameValidator.js";
+import {
+  initializeCache,
+  getPlatformId,
+  getGenreId,
+} from "./utils/rawgCache.js";
+import { transformGameData } from "./utils/transformGameData.js";
 
 config({ path: ".env.backend" });
 
@@ -34,6 +38,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Send the user's raw text query to the openaiClient, which uses the OpenAI API to convert it into a structured object
     // containing the intent (what the user wants) and a list of candidates (the AI's game suggestions).
     const { intent, candidates } = await interpretQuery(query);
+    // console.log(
+    //   "OpenAI Response:",
+    //   JSON.stringify({ intent, candidates }, null, 2),
+    // );
 
     // Step 2: Validate candidates against RAWG
     // The AI's candidates are passed to your gameValidator, which uses the hybrid scoring system to check them against the real
@@ -44,7 +52,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // If the AI's suggestions were poor and very few (less than 3) passed validation, the system doesn't fail. Instead, it calls the
     // fallbackSearch function, which performs a traditional, structured search on the RAWG API using the intent data.
     // This ensures the user almost always gets a useful result.
-    if (validatedGames.length < 3) {
+    const usedFallback = validatedGames.length < 3;
+    if (usedFallback) {
       validatedGames = await fallbackSearch(intent);
     }
 
@@ -60,7 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       metadata: {
         intent,
         validatedCount: validatedGames.length,
-        usedFallback: validatedGames.length < 3,
+        usedFallback,
       },
     });
   } catch (err) {
