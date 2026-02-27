@@ -48,15 +48,15 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
       <div className="flex items-center justify-end gap-2">
         <label
           htmlFor="ai-toggle"
-          className="text-sm font-medium flex items-center gap-1"
+          className={`text-sm font-medium flex items-center gap-1 ${isAiSearch ? "text-(--color-accent-primary)" : ""}`}
         >
-          <Sparkles />
+          <Sparkles size={20} />
           AI Search
         </label>
         <button
           id="ai-toggle"
           onClick={handletoggle}
-          className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors border-2"
+          className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors border-2 cursor-pointer"
           style={{
             backgroundColor: isAiSearch
               ? "var(--color-accent-primary)"
@@ -109,7 +109,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
               />
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors hover:opacity-70"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors hover:opacity-70 cursor-pointer"
                 style={{ color: "var(--color-accent-primary)" }}
                 aria-label="Submit AI search"
               >

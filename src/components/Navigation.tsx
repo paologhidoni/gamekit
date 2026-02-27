@@ -1,16 +1,13 @@
 // import SearchBar from "./SearchBar";
 import { NavLink, useLocation, useNavigate } from "react-router";
-import { Cog, User2, LogOut, Sparkles, Search } from "lucide-react";
+import { Cog, User2, LogOut } from "lucide-react";
 import Logo from "./Logo";
 import { useAuth } from "../hooks/useAuth";
-import { useSearch } from "../context/SearchContext";
 
 export default function Navigation() {
   const { user, signOut } = useAuth();
-  const location = useLocation();
   const AuthIcon = user ? LogOut : User2;
   const navigate = useNavigate();
-  const { isAiSearch, setIsAiSearch } = useSearch();
 
   const handleAuthAction = async () => {
     if (user) {
@@ -38,24 +35,6 @@ export default function Navigation() {
                   <Cog />
                   <span className="sr-only">Settings</span>
                 </NavLink>
-              </li>
-            )}
-
-            {location.pathname === "/" && (
-              <li>
-                <button
-                  type="button"
-                  onClick={() => setIsAiSearch(!isAiSearch)}
-                  className="cursor-pointer transition-colors duration-200 hover:text-(--color-accent-primary)"
-                  title={
-                    isAiSearch
-                      ? "Switch to Standard Search"
-                      : "Switch to AI Search"
-                  }
-                >
-                  {isAiSearch ? <Search /> : <Sparkles />}
-                  <span className="sr-only">Toggle AI Search</span>
-                </button>
               </li>
             )}
 
