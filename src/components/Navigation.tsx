@@ -1,5 +1,4 @@
-// import SearchBar from "./SearchBar";
-import { NavLink, useLocation, useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { Cog, User2, LogOut } from "lucide-react";
 import Logo from "./Logo";
 import { useAuth } from "../hooks/useAuth";
