@@ -7,6 +7,7 @@ import { ThemeContextProvider } from "./context/ThemeContext";
 import ErrorElement from "./components/ErrorElement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoadingSpinner from "./components/LoadingSpinner";
+import { SearchContextProvider } from "./context/SearchContext";
 
 // Lazy load page components
 const Home = lazy(() => import("./pages/Home"));
@@ -68,7 +69,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeContextProvider>
-        <RouterProvider router={router} />
+        <SearchContextProvider>
+          <RouterProvider router={router} />
+        </SearchContextProvider>
       </ThemeContextProvider>
     </QueryClientProvider>
   );

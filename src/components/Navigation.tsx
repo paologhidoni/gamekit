@@ -1,4 +1,3 @@
-// import SearchBar from "./SearchBar";
 import { NavLink, useNavigate } from "react-router";
 import { Cog, User2, LogOut } from "lucide-react";
 import Logo from "./Logo";
@@ -42,7 +41,7 @@ export default function Navigation() {
               <button
                 type="button"
                 onClick={handleAuthAction}
-                className="cursor-pointer"
+                className="cursor-pointer transition-colors duration-200 hover:text-(--color-accent-primary)"
                 title={user ? "Sign Out" : "Log In"}
               >
                 <AuthIcon />

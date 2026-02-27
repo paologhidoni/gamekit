@@ -27,7 +27,7 @@ export function transformGameData(game: Game): Game {
             "Online Co-Op",
             "Co-operative",
             "Coop",
-          ].includes(tag.name)
+          ].includes(tag.name),
         )
       : [],
   };

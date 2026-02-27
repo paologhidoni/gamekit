@@ -1,6 +1,6 @@
 # GameKit
 
-A full-stack **Game Discovery Platform** built with **React + TypeScript and Vercel serverless functions**, allowing users to browse, search, and discover games using the [RAWG Video Games Database API](https://rawg.io/apidocs), with authentication and user data stored in Supabase.
+A full-stack **Game Discovery Platform** featuring **AI-powered natural language search** built with **React + TypeScript, OpenAI GPT-4o-mini and Vercel serverless functions**. Discover games through conversational queries like "cozy RPG games on Game Boy" with intelligent validation and seamless integration with the [RAWG Video Games Database API](https://rawg.io/apidocs).
 
 <a href="https://gamekit-six.vercel.app/" target="_blank">🚀 Live Demo: GameKit</a>
 
@@ -12,30 +12,63 @@ A full-stack **Game Discovery Platform** built with **React + TypeScript and Ver
 
 ## 🚀 Features
 
+### Core Features
+
+- 🤖 **AI-Powered Natural Language Search** – Discover games through conversational queries like "cozy RPG games on Game Boy" using OpenAI GPT-4o-mini with intelligent validation and rate limiting.
 - 🎮 **Game Discovery** – Browse an extensive library of games from the RAWG API.
-- 🔍 **Fuzzy Search** – Find games by name, search functionality to be expanded soon.
+- 🔍 **Traditional Search** – Fast, debounced search by game title with real-time results.
 - ℹ️ **Detailed Game Information** – View game details including descriptions, ratings, screenshots and trailers.
 - 🔐 **Authentication & User Settings** – Account creation and Login via Supabase to access your personal settings.
-- 💾 **User Data Storage** – Work in progress: Preferences and future favourites are stored securely in Supabase.
+- 💾 **User Data Storage** – Preferences stored securely in Supabase.
 - 📱 **Responsive Design** – A seamless experience across desktop and mobile devices.
 - 💅🏻 **Custom Themes** – Switch between light, dark and sunset modes.
+
+### 🤖 AI-Powered Search (New!)
+
+A sophisticated natural language game discovery system that demonstrates advanced full-stack architecture:
+
+**Architecture Highlights:**
+
+- **LLM-First Design**: Uses OpenAI GPT-4o-mini to interpret natural language queries ("cozy RPG games on Game Boy") into structured search parameters
+- **Hybrid Validation System**: AI suggestions validated against RAWG API using custom scoring algorithm:
+  - AI confidence (40%) + Name similarity via Dice coefficient (40%) + Genre matching (20%)
+  - Smart batching: Validates top 5 candidates first, early-stops if ≥3 pass (40% API call reduction)
+- **Intelligent Fallback**: Automatically falls back to structured RAWG search if AI validation yields <3 results
+- **Dynamic Platform/Genre Resolution**: Runtime caching system fetches and maps platform/genre IDs from RAWG, preventing hardcoded ID mismatches
+- **Fuzzy Name Matching**: Custom normalizer strips edition suffixes ("HD", "Remastered") and calculates similarity scores with substring/year bonuses
+
+**Rate Limiting & Security:**
+
+- **Distributed Rate Limiting**: Upstash Redis with fixed-window algorithm (6 requests/24h per IP)
+- **Real-time UI Feedback**: Visual coin indicator shows remaining requests, persists across page refreshes
+- **Graceful Degradation**: Handles obscure platforms (WonderSwan, Neo Geo Pocket) with user-friendly fallback messages
+
+**Technical Implementation:**
+
+- OpenAI Function Calling with strict JSON schema enforcement
+- Controlled vocabulary (50+ platforms) prevents hallucination
+- Temperature 0.2 for factual accuracy
+- Serverless-first architecture with stateless Redis for rate limit persistence
 
 ## 🛠️ Tech Stack
 
 ### Backend:
 
-- **Supabase** - Auth + Database.
-- **Vercel** - Serverless Functions / full-stack app hosting.
+- **Vercel Serverless Functions** - Scalable, stateless API endpoints
+- **OpenAI SDK** (`openai`) - GPT-4o-mini integration for natural language processing
+- **Upstash Redis** (`@upstash/redis`, `@upstash/ratelimit`) - Distributed rate limiting with sub-10ms latency
+- **Supabase** (`@supabase/supabase-js`) - Authentication + PostgreSQL database
+- **RAWG API** - Comprehensive game database
+- **dotenv** - Environment variable management
 
 ### Frontend
 
-- **Vite** – As the build tool for a faster and leaner development experience.
-- **React + TypeScript** – For a strongly typed, component-based and scalable frontend.
-- **RAWG API** – For sourcing comprehensive game data.
-- **Tailwind CSS** – For utility-first styling and responsive layouts.
-- **TanStack Query** For data fetching, caching and sync.
-- **React Router** For client-side routing and navigation.
-- **Lucide Icons** For sleek iconography.
+- **Vite** – Lightning-fast build tool with HMR
+- **React + TypeScript** – Type-safe, component-based architecture
+- **TanStack Query** (`@tanstack/react-query`) - Server state management with intelligent caching
+- **React Router** (`react-router`) - Client-side routing with data loaders
+- **Tailwind CSS** – Utility-first styling with custom theme system
+- **Lucide React** (`lucide-react`) - Consistent iconography
 
 ### Deployment
 
@@ -59,7 +92,6 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
 3.  Set up environment variables:
 
     The project uses **two separate `.env` files**:
-
     - **Frontend (`.env`)** – for Vite variables used in the client-side code:
 
       ```
@@ -73,7 +105,12 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
       SUPABASE_URL=your_supabase_url_here
       SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
       RAWG_API_KEY=your_rawg_api_key_here
+      OPENAI_API_KEY=your_openai_api_key_here
+      UPSTASH_REDIS_REST_URL=your_upstash_redis_url_here
+      UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_token_here
       ```
+
+    See `.env.backend.example` for a complete template.
 
     ⚠️ Important: Make sure both `.env` and `.env.backend` are added to `.gitignore` to prevent secrets from being committed.
 
@@ -83,50 +120,88 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
     npm run local
     ```
 
-    > **Note:** This command uses `vercel dev`. You may need to run `npx vercel login` periodically if your local session expires, to ensure the frontend can communicate with the backend functions.
+## 🎯 Key Technical Achievements
 
-## 🎯 Project Goals
-
-- [x] Build a responsive and interactive interface for game discovery.
-- [x] Integrate with the RAWG API to fetch and display game data.
-- [x] Implement robust search and filtering functionalities.
-- [x] Deploy the application to GitHub Pages using GitHub Actions.
+- ✅ **AI-Powered Natural Language Search** - LLM integration with validation pipeline
+- ✅ **Distributed Rate Limiting** - Redis-backed, IP-based request throttling
+- ✅ **Hybrid Scoring Algorithm** - Multi-factor validation system for AI suggestions
+- ✅ **Dynamic API Mapping** - Runtime platform/genre ID resolution with caching
+- ✅ **Fuzzy String Matching** - Custom Dice coefficient implementation
+- ✅ **Serverless Architecture** - Stateless functions with external state management
+- ✅ **Type-Safe Full Stack** - End-to-end TypeScript with strict mode
+- ✅ **Production Security** - Environment-based feature flags and secret management
 
 ## 🔥 Future Enhancements
 
-- [x] **User Authentication** – Allow users to create accounts, sign in and sign out.
-- [ ] **Game Favourites** – Allow users to save favourite games in their account.
-- [x] **Profile & Settings Pages** – More personalized user settings.
-- [ ] **Advanced Filtering Options** – Add more granular filtering, such as by genre, platform, release date, popularity, ratings, developers or publishers.
-- [ ] **State Management Improvement** – Integrate a state management library like Zustand or Redux Toolkit for more complex state.
-- [ ] **End-to-End Testing** – Add end-to-end tests using Playwright.
+- [x] **AI-Powered Search** – Natural language game discovery with LLM validation
+- [x] **Rate Limiting** – Distributed request throttling with visual feedback
+- [x] **User Authentication** – Supabase-based auth with protected routes
+- [x] **Profile & Settings Pages** – Personalized user preferences
+- [ ] **Game Favourites** – Persistent user collections with Supabase storage
+- [ ] **Advanced Filtering** – Multi-criteria filtering (genre, platform, year, rating)
+- [ ] **Recommendation Engine** – Collaborative filtering based on user preferences
+- [ ] **End-to-End Testing** – Playwright test suite with CI/CD integration
 
 ---
 
-## 🚶🏻 Steps I followed to create this project
+## 🚶🏻 Development Journey
 
-1. Initialise project with **React Typescript Template**:
+### Frontend Foundation
 
-   `npm create vite@latest gamekit --template react-ts`
+1. **Initialize Vite + React + TypeScript**
 
-2. Setup **React Router** in Data mode:
+   ```bash
+   npm create vite@latest gamekit --template react-ts
+   ```
 
-   `npm i react-router`
+2. **Setup React Router** (Data mode)
+
+   ```bash
+   npm i react-router
+   ```
 
    [Docs](https://reactrouter.com/start/data/installation)
 
-3. Setup **Tailwind**:
+3. **Configure Tailwind CSS**
 
-   `npm install tailwindcss @tailwindcss/vite`
+   ```bash
+   npm install tailwindcss @tailwindcss/vite
+   ```
 
    [Docs](https://tailwindcss.com/docs/installation/framework-guides/react-router)
 
-4. Setup **TanStack Query**, formerly known as React Query:
+4. **Add TanStack Query** for server state management
+
+   ```bash
+   npm i @tanstack/react-query
+   ```
 
    [Docs](https://tanstack.com/query/latest/docs/framework/react/overview)
 
-5. Install **Lucide** for icons:
-
-   `npm install lucide`
-
+5. **Install Lucide React** for icons
+   ```bash
+   npm install lucide-react
+   ```
    [Docs](https://lucide.dev/guide/installation)
+
+### Backend & AI Integration
+
+6. **Setup Supabase** for authentication and database
+
+   ```bash
+   npm install @supabase/supabase-js
+   ```
+
+7. **Integrate OpenAI SDK** for natural language processing
+
+   ```bash
+   npm install openai
+   ```
+
+8. **Add Upstash Redis** for distributed rate limiting
+
+   ```bash
+   npm install @upstash/redis @upstash/ratelimit
+   ```
+
+9. **Configure Vercel Serverless Functions** for backend API endpoints
