@@ -45,7 +45,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   return (
     <div className="flex flex-col gap-2">
       {/* AI Mode Toggle */}
-      <div className="flex items-center justify-end gap-2">
+      <div className="flex items-center justify-end gap-2 flex-wrap">
         <label
           htmlFor="ai-toggle"
           className={`text-sm font-medium flex items-center gap-1 ${isAiSearch ? "text-(--color-accent-primary)" : ""}`}
