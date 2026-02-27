@@ -8,6 +8,7 @@ import {
   getGenreId,
 } from "./utils/rawgCache.js";
 import { transformGameData } from "./utils/transformGameData.js";
+import { checkRateLimit } from "./utils/rateLimiter.js";
 
 config({ path: ".env.backend" });
 
@@ -32,6 +33,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { query } = req.query;
     if (!query || typeof query !== "string") {
       return res.status(400).json({ error: "Query parameter required" });
+    }
+
+    // Rate limiting: Extract IP and check limit
+    const ip = (req.headers["x-forwarded-for"] as string) || "unknown";
+    const { success, remaining, reset } = await checkRateLimit(ip);
+
+    if (!success) {
+      return res.status(429).json({
+        error: "Daily limit reached. Try again tomorrow!",
+        remaining: 0,
+        reset: reset.toISOString(),
+      });
     }
 
     // Step 1: LLM interprets user query
@@ -66,6 +79,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(200).json({
       explanation,
       games,
+      remaining,
       metadata: {
         intent,
         validatedCount: validatedGames.length,
