@@ -2,13 +2,14 @@ import { Search, Sparkles, Send } from "lucide-react";
 import { useCallback, useState, type ChangeEvent, type FormEvent } from "react";
 import useDebounce from "../hooks/useDebounce";
 import { useSearch } from "../context/SearchContext";
+import RateLimitIndicator from "./RateLimitIndicator";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
 }
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
-  const { isAiSearch, setIsAiSearch } = useSearch();
+  const { isAiSearch, setIsAiSearch, remainingAiRequests } = useSearch();
   const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = useCallback(
@@ -45,32 +46,37 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   return (
     <div className="flex flex-col gap-2">
       {/* AI Mode Toggle */}
-      <div className="flex items-center justify-end gap-2 flex-wrap">
-        <label
-          htmlFor="ai-toggle"
-          className={`text-sm font-medium flex items-center gap-1 ${isAiSearch ? "text-(--color-accent-primary)" : ""}`}
-        >
-          <Sparkles size={20} />
-          AI Search
-        </label>
-        <button
-          id="ai-toggle"
-          onClick={handletoggle}
-          className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors border-2 cursor-pointer"
-          style={{
-            backgroundColor: isAiSearch
-              ? "var(--color-accent-primary)"
-              : "var(--color-bg-tertiary)",
-            borderColor: "var(--color-bg-secondary)",
-          }}
-        >
-          <span
-            className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        {/* Rate Limit Indicator */}
+        {isAiSearch && <RateLimitIndicator remaining={remainingAiRequests} />}
+
+        <div className="flex items-center gap-2 ml-auto">
+          <label
+            htmlFor="ai-toggle"
+            className={`text-sm font-medium flex items-center gap-1 ${isAiSearch ? "text-(--color-accent-primary)" : ""}`}
+          >
+            <Sparkles size={20} />
+            AI Search
+          </label>
+          <button
+            id="ai-toggle"
+            onClick={handletoggle}
+            className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors border-2 cursor-pointer"
             style={{
-              transform: isAiSearch ? "translateX(24px)" : "translateX(4px)",
+              backgroundColor: isAiSearch
+                ? "var(--color-accent-primary)"
+                : "var(--color-bg-tertiary)",
+              borderColor: "var(--color-bg-secondary)",
             }}
-          />
-        </button>
+          >
+            <span
+              className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+              style={{
+                transform: isAiSearch ? "translateX(24px)" : "translateX(4px)",
+              }}
+            />
+          </button>
+        </div>
       </div>
 
       {/* Search Input */}
@@ -109,7 +115,8 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
               />
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors hover:opacity-70 cursor-pointer"
+                disabled={remainingAiRequests === 0}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors hover:opacity-70 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                 style={{ color: "var(--color-accent-primary)" }}
                 aria-label="Submit AI search"
               >
