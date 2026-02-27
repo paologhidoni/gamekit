@@ -20,7 +20,8 @@ export default function Home() {
         ? fetchAiGames({ signal, query: { searchTerm: query } })
         : fetchGames({ signal, query: { searchTerm: query } }),
     staleTime: 5000,
-    enabled: isAiSearch ? query.trim().length > 0 : true, // AI search requires query, regular search works without
+    enabled: isAiSearch ? query.trim().length > 0 : true,
+    retry: isAiSearch ? false : 3, // Disable retries for AI search to prevent rate limit burn
   });
 
   // Handle AI search response structure

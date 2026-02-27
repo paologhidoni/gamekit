@@ -107,13 +107,13 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
         const response = await fetch(`/api/ai-search?${params}`, { signal });
         const data = await response.json();
 
-        if (!response.ok) {
-          throw new Error(data.error || "AI search failed");
-        }
-
-        // Update remaining requests
+        // Update remaining requests from response (works for both success and error)
         if (data.remaining !== undefined) {
           setRemainingAiRequests(data.remaining);
+        }
+
+        if (!response.ok) {
+          throw new Error(data.error || "AI search failed");
         }
 
         return {
@@ -130,13 +130,6 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
           metadata: data.metadata,
         };
       } catch (err: unknown) {
-        // If rate limited, set remaining to 0
-        if (
-          err instanceof Error &&
-          err.message?.includes("Daily limit reached")
-        ) {
-          setRemainingAiRequests(0);
-        }
         throw err;
       }
     },
