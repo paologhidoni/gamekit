@@ -64,11 +64,11 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   return (
     <div className="flex flex-col gap-2">
       {/* AI Mode Toggle */}
-      <div className="flex items-center justify-between gap-2 flex-wrap">
+      <div className="flex items-center gap-2 flex-wrap justify-center md:justify-between">
         {/* Rate Limit Indicator */}
         {isAiSearch && <RateLimitIndicator remaining={remainingAiRequests} />}
 
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="flex items-center gap-2 md:ml-auto">
           <label
             htmlFor="ai-toggle"
             className={`text-sm font-medium flex items-center gap-1 ${isAiSearch ? "text-(--color-accent-primary)" : ""}`}
@@ -76,6 +76,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             <Sparkles size={20} />
             AI Search
           </label>
+
           <button
             id="ai-toggle"
             onClick={handletoggle}
@@ -131,7 +132,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
                   minHeight: "2.5rem",
                   maxHeight: "10rem",
                 }}
-                placeholder="Describe games... e.g. 'cozy RPG on Game Boy'"
+                placeholder="'cozy RPG on Game Boy'"
                 rows={1}
               />
               <button

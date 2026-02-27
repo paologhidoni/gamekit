@@ -14,7 +14,7 @@ export default function RateLimitIndicator({
   const { resetRateLimit } = useSearch();
 
   return (
-    <div className="flex items-center gap-2 text-sm flex-wrap">
+    <div className="flex items-center justify-center gap-2 text-sm flex-wrap">
       <div className="flex gap-1">
         {Array.from({ length: total }).map((_, i) => (
           <Coins
