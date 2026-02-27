@@ -80,7 +80,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           <button
             id="ai-toggle"
             onClick={handletoggle}
-            className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors border-2 cursor-pointer"
+            className="relative inline-flex h-8 w-13 md:h-6 md:w-11 items-center rounded-full transition-colors border-2 cursor-pointer"
             style={{
               backgroundColor: isAiSearch
                 ? "var(--color-accent-primary)"
@@ -89,7 +89,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             }}
           >
             <span
-              className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+              className="inline-block h-5 w-5 md:h-4 md:w-4 transform rounded-full bg-white transition-transform"
               style={{
                 transform: isAiSearch ? "translateX(24px)" : "translateX(4px)",
               }}
