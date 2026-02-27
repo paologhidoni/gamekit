@@ -62,13 +62,15 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       {/* AI Mode Toggle */}
       <div className="flex items-center gap-2 flex-wrap justify-center md:justify-between">
         {/* Rate Limit Indicator */}
-        {isAiSearch && <RateLimitIndicator remaining={remainingAiRequests} />}
+        <div className="order-2 min-[470px]:order-1">
+          {isAiSearch && <RateLimitIndicator remaining={remainingAiRequests} />}
+        </div>
 
-        <div className="flex items-center gap-2 md:ml-auto">
+        <div className="flex items-center gap-2 md:ml-auto order-1 min-[470px]:order-2">
           <label
             htmlFor="ai-toggle"
             className={`text-sm font-medium flex items-center gap-1 ${isAiSearch ? "text-(--color-accent-primary)" : ""}`}
