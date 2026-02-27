@@ -39,13 +39,15 @@ export default function RateLimitIndicator({
       </span>
 
       {/* Reset rate limit button - development only */}
-      <button
-        onClick={resetRateLimit}
-        className="opacity-0 hover:opacity-20 transition-opacity text-xs"
-        title="Admin reset"
-      >
-        🔄
-      </button>
+      {import.meta.env.DEV && (
+        <button
+          onClick={resetRateLimit}
+          className="opacity-0 hover:opacity-20 transition-opacity text-xs"
+          title="Admin reset"
+        >
+          🔄
+        </button>
+      )}
     </div>
   );
 }
