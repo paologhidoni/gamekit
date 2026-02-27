@@ -1,5 +1,11 @@
 import { Search, Sparkles, Send } from "lucide-react";
-import { useCallback, useState, type ChangeEvent, type FormEvent } from "react";
+import {
+  useCallback,
+  useState,
+  useRef,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
 import useDebounce from "../hooks/useDebounce";
 import { useSearch } from "../context/SearchContext";
 import RateLimitIndicator from "./RateLimitIndicator";
@@ -11,6 +17,7 @@ interface SearchBarProps {
 export default function SearchBar({ onSearch }: SearchBarProps) {
   const { isAiSearch, setIsAiSearch, remainingAiRequests } = useSearch();
   const [inputValue, setInputValue] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleInputChange = useCallback(
     (value: string) => {
@@ -28,6 +35,12 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   ) => {
     setInputValue(e.target.value);
     debouncedInputChange(e.target.value);
+
+    // Auto-resize textarea
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -41,6 +54,11 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     setInputValue("");
     onSearch(""); // Clear parent query state
     setIsAiSearch(!isAiSearch);
+
+    // Reset textarea height when toggling
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
   };
 
   return (
@@ -101,14 +119,17 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           {isAiSearch ? (
             <>
               <textarea
+                ref={textareaRef}
                 id="search-game-input"
                 value={inputValue}
                 onChange={handleChange}
-                className="py-2 pl-10 pr-12 w-full rounded-full outline-none resize-none flex items-center"
+                className="py-2 pl-10 pr-12 w-full rounded-full outline-none resize-none flex items-center overflow-hidden"
                 style={{
                   lineHeight: "1.5rem",
                   paddingTop: "0.5rem",
                   paddingBottom: "0.5rem",
+                  minHeight: "2.5rem",
+                  maxHeight: "10rem",
                 }}
                 placeholder="Describe games... e.g. 'cozy RPG on Game Boy'"
                 rows={1}
