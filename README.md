@@ -2,11 +2,13 @@
 
 A full-stack **Game Discovery Platform** featuring **AI-powered natural language search** built with **React + TypeScript, OpenAI GPT-4o-mini and Vercel serverless functions**. Discover games through conversational queries like "cozy RPG games on Game Boy" with intelligent validation and seamless integration with the [RAWG Video Games Database API](https://rawg.io/apidocs).
 
-<a href="https://gamekit-six.vercel.app/" target="_blank">🚀 Live Demo: GameKit</a>
-
 <img src="./public/gamekit.png" alt="GameKit Homepage Preview, dark theme"/>
 
+<img src="./public/ai-search.png" alt="GameKit Ai Search functionality"/>
+
 <img src="./public/gamekit-2.png" alt="GameKit game detail page Preview, sunset theme"/>
+
+<a href="https://gamekit-six.vercel.app/" target="_blank">🚀 Live Demo: GameKit</a>
 
 <img src="./public/gamekit-3.png" alt="GameKit Homepage Preview, light theme"/>
 
