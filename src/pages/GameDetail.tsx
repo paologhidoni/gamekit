@@ -5,9 +5,9 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorElement from "../components/ErrorElement";
 import GameRating from "../components/GameRating";
 import BgImage from "../components/BgImage";
-import DOMPurify from "dompurify";
 import { useSearch } from "../context/SearchContext";
 import AiGameInfoButton from "../components/AiGameInfoButton";
+import RichTextRenderer from "../components/RichTextRenderer";
 
 export default function GameDetail() {
   const { id } = useParams();
@@ -20,7 +20,7 @@ export default function GameDetail() {
   });
 
   const description = data?.description
-    ? DOMPurify.sanitize(data.description)
+    ? data.description
     : "";
 
   return (
@@ -64,12 +64,7 @@ export default function GameDetail() {
               {/* Ask AI Button */}
               <AiGameInfoButton gameName={data.name} />
             </div>
-            <p
-              dangerouslySetInnerHTML={{
-                __html: description,
-              }}
-              className="leading-6.5"
-            />
+            <RichTextRenderer content={description} className="leading-6.5" />
           </section>
         </div>
       )}

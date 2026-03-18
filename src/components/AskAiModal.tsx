@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { X } from "lucide-react";
 import RateLimitIndicator from "./RateLimitIndicator";
+import RichTextRenderer from "./RichTextRenderer";
 import { useSearch } from "../context/SearchContext";
 
 interface AskAiModalProps {
@@ -134,9 +135,10 @@ const AskAiModal = ({ gameName, isOpen, onClose }: AskAiModalProps) => {
             {answer && (
               <div className="p-4 rounded-xl border border-white/10 bg-black/10">
                 <div className="max-h-[40dvh] overflow-y-auto pr-2">
-                  <p className="leading-6 whitespace-pre-wrap wrap-break-word">
-                    {answer}
-                  </p>
+                  <RichTextRenderer
+                    content={answer}
+                    className="text-sm leading-6"
+                  />
                 </div>
               </div>
             )}
