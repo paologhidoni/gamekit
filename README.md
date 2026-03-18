@@ -4,11 +4,27 @@ A full-stack **Game Discovery Platform** featuring **AI-powered natural language
 
 <a href="https://gamekit-six.vercel.app/" target="_blank">🚀 Live Demo: GameKit</a>
 
+### Home Page
+
 <img src="./public/gamekit.png" alt="GameKit Homepage Preview, dark theme"/>
+
+### Game Detail Page
+
+<img src="./public/ask-ai-1.png" alt="Ask Ai functionality"/>
+
+### Ask Ai Modal
+
+<img src="./public/ask-ai-2.png" alt="Ask Ai functionality modal"/>
+
+### Ai Search Functionality
 
 <img src="./public/ai-search.png" alt="GameKit Ai Search functionality"/>
 
+### Game Detail Page - Alternative Theme
+
 <img src="./public/gamekit-2.png" alt="GameKit game detail page Preview, sunset theme"/>
+
+### Home Page - Alternative Theme
 
 <img src="./public/gamekit-3.png" alt="GameKit Homepage Preview, light theme"/>
 
@@ -16,6 +32,7 @@ A full-stack **Game Discovery Platform** featuring **AI-powered natural language
 
 ### Core Features
 
+- ✨ **Ask AI (Game Detail)** – Open a modal on any game detail page and ask questions specific to that game (story, mechanics, tips). Powered by OpenAI, with IP-based rate limiting and remaining-requests indicator on the UI.
 - 🤖 **AI-Powered Natural Language Search** – Discover games through conversational queries like "cozy RPG games on Game Boy" using OpenAI GPT-4o-mini with intelligent validation and rate limiting.
 - 🎮 **Game Discovery** – Browse an extensive library of games from the RAWG API.
 - 🔍 **Traditional Search** – Fast, debounced search by game title with real-time results.
@@ -25,13 +42,16 @@ A full-stack **Game Discovery Platform** featuring **AI-powered natural language
 - 📱 **Responsive Design** – A seamless experience across desktop and mobile devices.
 - 💅🏻 **Custom Themes** – Switch between light, dark and sunset modes.
 
-### 🤖 AI-Powered Search (New!)
+### 🤖 AI Features
 
-A sophisticated natural language game discovery system that demonstrates advanced full-stack architecture:
+GameKit includes two AI-powered experiences:
 
-**Architecture Highlights:**
+- **AI-Powered Search**: Turn natural language queries (e.g. "cozy RPG games on Game Boy") into validated results from RAWG.
+- **Ask AI (Game Detail)**: Open a modal on a specific game and ask contextual questions (story, mechanics, tips).
 
-- **LLM-First Design**: Uses OpenAI GPT-4o-mini to interpret natural language queries ("cozy RPG games on Game Boy") into structured search parameters
+**AI-Powered Search Architecture Highlights:**
+
+- **LLM-First Design**: Uses OpenAI GPT-4o-mini to interpret natural language queries into structured search parameters
 - **Hybrid Validation System**: AI suggestions validated against RAWG API using custom scoring algorithm:
   - AI confidence (40%) + Name similarity via Dice coefficient (40%) + Genre matching (20%)
   - Smart batching: Validates top 5 candidates first, early-stops if ≥3 pass (40% API call reduction)
@@ -39,10 +59,17 @@ A sophisticated natural language game discovery system that demonstrates advance
 - **Dynamic Platform/Genre Resolution**: Runtime caching system fetches and maps platform/genre IDs from RAWG, preventing hardcoded ID mismatches
 - **Fuzzy Name Matching**: Custom normalizer strips edition suffixes ("HD", "Remastered") and calculates similarity scores with substring/year bonuses
 
+**Ask AI (Game Detail) Architecture Highlights:**
+
+- **Contextual Q&A**: The Game Detail page opens a modal where users ask questions scoped to the current game (name + question)
+- **System-Level Priming**: The backend prompt is primed with a system message instructing the AI to act as a helpful game expert and only answer questions related to the provided game, reducing off-topic responses.
+- **Serverless API Endpoint**: Uses `POST /api/ask-ai` so the `OPENAI_API_KEY` stays server-side
+- **UI/UX**: Viewport-capped modal with scrollable content for long answers to avoid overflow
+
 **Rate Limiting & Security:**
 
 - **Distributed Rate Limiting**: Upstash Redis with fixed-window algorithm (6 requests/24h per IP)
-- **Real-time UI Feedback**: Visual coin indicator shows remaining requests, persists across page refreshes
+- **Real-time UI Feedback**: Visual coin indicator shows remaining requests (used by both AI Search and Ask AI), persists across page refreshes
 - **Graceful Degradation**: Handles obscure platforms (WonderSwan, Neo Geo Pocket) with user-friendly fallback messages
 
 **Technical Implementation:**
@@ -125,6 +152,7 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
 ## 🎯 Key Technical Achievements
 
 - ✅ **AI-Powered Natural Language Search** - LLM integration with validation pipeline
+- ✅ **Ask AI Integration** - Context-aware game Q&A with shared rate limiting
 - ✅ **Distributed Rate Limiting** - Redis-backed, IP-based request throttling
 - ✅ **Hybrid Scoring Algorithm** - Multi-factor validation system for AI suggestions
 - ✅ **Dynamic API Mapping** - Runtime platform/genre ID resolution with caching
@@ -136,6 +164,7 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
 ## 🔥 Future Enhancements
 
 - [x] **AI-Powered Search** – Natural language game discovery with LLM validation
+- [x] **Ask AI (Game Detail)** – Context-aware chatbot for game-specific queries
 - [x] **Rate Limiting** – Distributed request throttling with visual feedback
 - [x] **User Authentication** – Supabase-based auth with protected routes
 - [x] **Profile & Settings Pages** – Personalized user preferences
