@@ -42,7 +42,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         { role: "user", content: question },
       ],
       temperature: 0.5,
-      max_output_tokens: 256,
+      max_output_tokens: 512,
     });
 
     res
