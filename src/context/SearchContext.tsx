@@ -7,6 +7,7 @@ import {
   useEffect,
 } from "react";
 import getCroppedImageUrl from "../util/image-url";
+import type { AskAiResponse } from "../../types";
 
 interface QueryType {
   id?: string;
@@ -29,6 +30,10 @@ interface SearchContextType {
     signal: AbortSignal;
     query?: QueryType;
   }) => Promise<any>;
+  askAiAboutGame: (args: {
+    gameName: string;
+    question: string;
+  }) => Promise<string>;
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
@@ -136,6 +141,42 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
     [setRemainingAiRequests],
   );
 
+  const askAiAboutGame = useCallback(
+    async ({ gameName, question }: { gameName: string; question: string }) => {
+      try {
+        const response = await fetch("/api/ask-ai", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            gameName,
+            question,
+          }),
+        });
+
+        const data = (await response.json()) as AskAiResponse;
+
+        if (data?.remaining !== undefined) {
+          setRemainingAiRequests(data.remaining);
+        }
+
+        if (!response.ok) {
+          // Log technical error, return friendly message
+          console.error("Ask AI API error:", data?.error || response.statusText);
+          return "Something went wrong while asking the AI. Please try again later.";
+        }
+
+        return data?.answer || "No answer returned.";
+      } catch (err) {
+        // Network/parsing errors
+        console.error("Ask AI request failed:", err);
+        return "Something went wrong while asking the AI. Please try again later.";
+      }
+    },
+    [setRemainingAiRequests],
+  );
+
   /**
    * Only used in development, reset
    */
@@ -166,6 +207,7 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
         resetRateLimit,
         fetchGames,
         fetchAiGames,
+        askAiAboutGame,
       }}
     >
       {children}

@@ -7,6 +7,7 @@ import GameRating from "../components/GameRating";
 import BgImage from "../components/BgImage";
 import DOMPurify from "dompurify";
 import { useSearch } from "../context/SearchContext";
+import AiGameInfoButton from "../components/AiGameInfoButton";
 
 export default function GameDetail() {
   const { id } = useParams();
@@ -55,8 +56,14 @@ export default function GameDetail() {
             <GameDetailSidebar game={data} />
           </section>
 
-          {/* DESCRIPTION */}
+          {/* DESCRIPTION + Ask AI Button */}
           <section className="bg-(--color-bg-secondary) rounded-2xl py-6 px-4 md:px-6 border-y-2 border-y-(--color-accent-secondary) order-2 lg:order-0">
+            <div className="flex items-center justify-between mb-6">
+              <span className="font-semibold text-lg">Description</span>
+
+              {/* Ask AI Button */}
+              <AiGameInfoButton gameName={data.name} />
+            </div>
             <p
               dangerouslySetInnerHTML={{
                 __html: description,
