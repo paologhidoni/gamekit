@@ -1,14 +1,18 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { config } from "dotenv";
-import { interpretQuery } from "./utils/openaiClient.js";
-import { validateCandidates } from "./utils/gameValidator.js";
+import { interpretQuery } from "../src/server/utils/openaiClient.js";
+import { validateCandidates } from "../src/server/utils/gameValidator.js";
 import {
   initializeCache,
   getPlatformId,
   getGenreId,
-} from "./utils/rawgCache.js";
-import { transformGameData } from "./utils/transformGameData.js";
-import { checkRateLimit, getRemainingRequests } from "./utils/rateLimiter.js";
+} from "../src/server/utils/rawgCache.js";
+import { transformGameData } from "../src/util/transformGameData.js";
+import {
+  checkRateLimit,
+  getRemainingRequests,
+} from "../src/server/utils/rateLimiter.js";
+import type { Game } from "../types";
 
 config({ path: ".env.backend" });
 
@@ -59,7 +63,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Step 2: Validate candidates against RAWG
     // The AI's candidates are passed to your gameValidator, which uses the hybrid scoring system to check them against the real
     // RAWG database. The result is a list of games that are confirmed to exist and are highly relevant.
-    let validatedGames = await validateCandidates(candidates, intent);
+    // validateCandidates returns a RAWG-shaped game list; we cast it to our local `Game`
+    // shape because `transformGameData` expects this structure.
+    let validatedGames = (await validateCandidates(
+      candidates,
+      intent,
+    )) as unknown as Game[];
 
     // Step 3: Fallback to structured RAWG search if validation failed
     // If the AI's suggestions were poor and very few (less than 3) passed validation, the system doesn't fail. Instead, it calls the
@@ -100,12 +109,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 }
 
+interface AiIntent {
+  genre: string | null;
+  platform: string | null;
+  mood: string | null;
+  year_from?: number | null;
+  year_to?: number | null;
+}
+
 /**
  * Fallback, simplified version of /api/games.ts endpoint. It takes the structured intent from the AI
  * (e.g., { platform: "Game Boy", genre: "RPG" }), looks up the correct IDs from the rawgCache,
  * and builds a standard API request to RAWG.
  */
-async function fallbackSearch(intent: any): Promise<any[]> {
+async function fallbackSearch(intent: AiIntent): Promise<Game[]> {
   const params = new URLSearchParams({
     key: process.env.RAWG_API_KEY!,
     page_size: "15",
@@ -123,17 +140,18 @@ async function fallbackSearch(intent: any): Promise<any[]> {
   }
 
   const res = await fetch(`https://api.rawg.io/api/games?${params}`);
-  const data = await res.json();
+  const data: unknown = await res.json();
 
-  return data.results || [];
+  const results = (data as { results?: Game[] }).results;
+  return results ?? [];
 }
 
 /**
  * simple utility that constructs a user-friendly sentence based on the search criteria,
  * like "Found 5 cozy RPG games on Game Boy that match your search."
  */
-function generateExplanation(intent: any, games: any[]): string {
-  const parts = [];
+function generateExplanation(intent: AiIntent, games: Game[]): string {
+  const parts: string[] = [];
 
   if (intent.mood) parts.push(intent.mood);
   if (intent.genre) parts.push(intent.genre);

@@ -35,3 +35,4 @@ export async function requireAuth(req: VercelRequest, res: VercelResponse) {
 
   return user;
 }
+

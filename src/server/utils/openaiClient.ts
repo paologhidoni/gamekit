@@ -9,7 +9,6 @@ config({ path: ".env.backend" });
  * It coerces a powerful, creative AI into acting like a predictable, structured data-extraction engine,
  * which is the foundation of my AI search feature.
  */
-
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -17,9 +16,6 @@ const client = new OpenAI({
 /**
  * This is the AI's "master instruction manual." Before it even sees the user's query, it reads this prompt
  * to understand its role, constraints and output format.
- * It forces the AI to use a specific, predefined list of platform names. This makes it much easier for the rawgCache.ts file
- * to map these names to the correct RAWG platform IDs, preventing errors.
- * It also tells the AI it must use the recommend_games tool (function) to format its response.
  */
 const SYSTEM_PROMPT = `ROLE: Video game discovery engine that interprets natural language queries.
 
@@ -130,8 +126,6 @@ export async function interpretQuery(userQuery: string) {
     (item) => item.type === "function_call" && item.name === "recommend_games",
   );
 
-  // If the AI didn't use the recommend_games tool, it means the query wasn't game-related.
-  // We throw a helpful error to guide the user back to valid queries.
   if (!toolCall || toolCall.type !== "function_call") {
     throw new Error(
       "Please enter a game-related question. Try something like: 'cozy RPG games on Game Boy' or 'action games on PS5'",
@@ -140,3 +134,4 @@ export async function interpretQuery(userQuery: string) {
 
   return JSON.parse(toolCall.arguments);
 }
+

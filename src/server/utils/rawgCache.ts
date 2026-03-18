@@ -5,23 +5,7 @@ interface CacheData {
 }
 
 // The `cache.platforms` Map stores normalized platform names and their synonyms
-// as keys, all pointing to the same RAWG API platform ID. For example, after
-// initialization, it will hold data conceptually like this:
-//
-// 'playstation'   => 7
-// 'ps1'           => 7
-// 'psx'           => 7
-// 'playstation 1' => 7
-// 'playstation 2'   => 18
-// 'ps2'           => 18
-// ...etc.
-
-// The `cache.genres` Map is similar, but for genres instead of platforms.
-
-// lastUpdated holds its value because it's part of a module-level
-// object that Node.js keeps in memory for the duration of a single server
-// process. This module caching behavior effectively creates a singleton pattern,
-// resulting in a simple, fast and efficient in-memory cache.
+// as keys, all pointing to the same RAWG API platform ID.
 const cache: CacheData = {
   platforms: new Map(),
   genres: new Map(),
@@ -73,16 +57,20 @@ export async function initializeCache(): Promise<void> {
     const platformsRes = await fetch(
       `https://api.rawg.io/api/platforms?key=${apiKey}`,
     );
-    const platformsData = await platformsRes.json();
+    const platformsData: {
+      results?: Array<{ name?: unknown; id?: unknown }>;
+    } = await platformsRes.json();
 
     cache.platforms.clear();
-    platformsData.results?.forEach((p: any) => {
+    platformsData.results?.forEach((p) => {
+      if (typeof p.name !== "string" || typeof p.id !== "number") return;
       const normalized = normalize(p.name);
-      cache.platforms.set(normalized, p.id);
+      const platformId: number = p.id;
+      cache.platforms.set(normalized, platformId);
 
       // Add synonyms
       PLATFORM_SYNONYMS[normalized]?.forEach((syn) => {
-        cache.platforms.set(normalize(syn), p.id);
+        cache.platforms.set(normalize(syn), platformId);
       });
     });
 
@@ -90,10 +78,13 @@ export async function initializeCache(): Promise<void> {
     const genresRes = await fetch(
       `https://api.rawg.io/api/genres?key=${apiKey}`,
     );
-    const genresData = await genresRes.json();
+    const genresData: {
+      results?: Array<{ name?: unknown; id?: unknown }>;
+    } = await genresRes.json();
 
     cache.genres.clear();
-    genresData.results?.forEach((g: any) => {
+    genresData.results?.forEach((g) => {
+      if (typeof g.name !== "string" || typeof g.id !== "number") return;
       cache.genres.set(normalize(g.name), g.id);
     });
 
@@ -111,3 +102,4 @@ export function getPlatformId(name: string): number | null {
 export function getGenreId(name: string): number | null {
   return cache.genres.get(normalize(name)) || null;
 }
+

@@ -1,7 +1,10 @@
 import { config } from "dotenv";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import OpenAI from "openai";
-import { checkRateLimit, getRemainingRequests } from "./utils/rateLimiter.js";
+import {
+  checkRateLimit,
+  getRemainingRequests,
+} from "../src/server/utils/rateLimiter.js";
 import type { AskAiRequest, AskAiResponse } from "../types.js";
 
 config({ path: ".env.backend" });

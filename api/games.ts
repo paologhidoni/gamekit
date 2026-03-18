@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 // import { requireAuth } from "./utils/auth.js";
-import { transformGameData } from "./utils/transformGameData.js";
+import { transformGameData } from "../src/util/transformGameData.js";
 import { config } from "dotenv";
 
 config({ path: ".env.backend" });

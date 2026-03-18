@@ -34,3 +34,4 @@ export async function getRemainingRequests(identifier: string) {
   const { remaining } = await ratelimit.getRemaining(identifier);
   return remaining;
 }
+
