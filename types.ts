@@ -16,3 +16,20 @@ export interface Game {
 export interface Theme {
   name: "light" | "dark";
 }
+
+/**
+ * /api/ask-ai endpoint
+ */
+export interface AskAiRequest {
+  gameName: string;
+  question: string;
+}
+
+/**
+ * /api/ask-ai endpoint response
+ */
+export interface AskAiResponse {
+  answer?: string;
+  error?: string;
+  remaining?: number;
+}

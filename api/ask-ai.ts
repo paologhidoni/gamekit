@@ -32,9 +32,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const { gameName, question } = req.body as AskAiRequest;
 
-    const response = await client.chat.completions.create({
+    const response = await client.responses.create({
       model: "gpt-4o-mini",
-      messages: [
+      input: [
         {
           role: "system",
           content: `You are a helpful assistant knowledgeable about video games. Answer the user's question about the game: ${gameName}.`,
@@ -42,11 +42,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         { role: "user", content: question },
       ],
       temperature: 0.5,
-      max_tokens: 256,
+      max_output_tokens: 256,
     });
 
-    const answer = response.choices[0].message?.content;
-    res.status(200).json({ answer, remaining } as AskAiResponse);
+    res
+      .status(200)
+      .json({ answer: response.output_text, remaining } as AskAiResponse);
   } catch (err: unknown) {
     console.error(err);
 
