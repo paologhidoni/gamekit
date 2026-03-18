@@ -46,7 +46,7 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const getRateLimitStatus = async () => {
       try {
-        const res = await fetch("/api/rate-limit-status");
+        const res = await fetch("/api/rate-limit");
         if (res.ok) {
           const data = await res.json();
           setRemainingAiRequests(data.remaining);
@@ -185,7 +185,9 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
     if (!secret) return;
 
     try {
-      const res = await fetch(`/api/reset-limit?secret=${secret}`);
+      const res = await fetch(`/api/rate-limit?secret=${secret}`, {
+        method: "POST",
+      });
       if (res.ok) {
         alert("Rate limit reset! Refresh the page.");
         window.location.reload();
