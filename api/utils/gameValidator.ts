@@ -63,25 +63,24 @@ export async function validateCandidates(
     return [];
   }
 
-  // Smart batching: validate top 5 first
-  // Instead of wastefully calling the RAWG API for all 8 candidates at once, it first creates a "batch" of only the top 5.
-  // This is an optimization based on the idea that the AI's best suggestions are usually listed first.
-  const batch1 = candidates.slice(0, 5);
+  // Smart batching: validate a larger first batch first.
+  // This saves time when the AI's top suggestions are already high quality, but still allows us to
+  // return up to the new (expanded) candidate cap.
+  const batch1 = candidates.slice(0, 10);
 
-  // It sends this first batch to the validateBatch function. If that function returns 3 or more successfully validated games, it assumes
-  // the quality of the AI's response is high and immediately returns the results. This saves time and API quota by avoiding unnecessary work.
+  // If we already have enough validated games, early-stop to save time and API quota.
   const validated1 = await validateBatch(batch1, platformId, genreId);
 
-  // Early stopping: if we have 3+ good results, stop here
-  if (validated1.length >= 3) {
-    return validated1.slice(0, 8);
+  // With expanded candidate max (up to 15), only early-stop once we have at least 5 good results.
+  if (validated1.length >= 5) {
+    return validated1.slice(0, 15);
   }
 
   // Otherwise, validate remaining candidates
-  const batch2 = candidates.slice(5);
+  const batch2 = candidates.slice(10);
   const validated2 = await validateBatch(batch2, platformId, genreId);
 
-  return [...validated1, ...validated2].slice(0, 8);
+  return [...validated1, ...validated2].slice(0, 15);
 }
 
 /**

@@ -108,7 +108,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 async function fallbackSearch(intent: any): Promise<any[]> {
   const params = new URLSearchParams({
     key: process.env.RAWG_API_KEY!,
-    page_size: "8",
+    page_size: "15",
     ordering: "-rating",
   });
 

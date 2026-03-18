@@ -29,7 +29,7 @@ RULES:
 - Only suggest games you are highly confident exist on the specified platform
 - If uncertain about platform availability, omit the game
 - Do not estimate release years or metadata
-- Provide 3-8 candidates only
+- Provide 3-15 candidates only
 - Use official release titles
 - Platform must match allowed vocabulary exactly
 - Confidence reflects certainty the game fits ALL criteria (0.0 to 1.0)
@@ -51,93 +51,92 @@ OUTPUT: Use recommend_games tool ONLY for game-related queries`;
  * Instead of just getting a block of text from the AI, we define a strict JSON "shape"
  * that the AI's response must conform to.
  */
-const TOOL_SCHEMA: OpenAI.Chat.ChatCompletionTool = {
-  type: "function",
-  function: {
-    name: "recommend_games",
-    description: "Interpret user intent and suggest candidate games",
-    parameters: {
-      type: "object",
-      properties: {
-        intent: {
-          type: "object",
-          properties: {
-            genre: {
-              type: ["string", "null"],
-              description: "Primary genre inferred from request",
-            },
-            platform: {
-              type: ["string", "null"],
-              description: "Platform from controlled vocabulary",
-            },
-            mood: {
-              type: ["string", "null"],
-              description:
-                "Emotional descriptor (cozy, dark, fast-paced, etc.)",
-            },
-            year_from: {
-              type: ["integer", "null"],
-              description: "Lower bound of release year if specified",
-            },
-            year_to: {
-              type: ["integer", "null"],
-              description: "Upper bound of release year if specified",
-            },
+const TOOL_SCHEMA = {
+  type: "function" as const,
+  name: "recommend_games",
+  description: "Interpret user intent and suggest candidate games",
+  strict: true,
+  parameters: {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      intent: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          genre: {
+            type: ["string", "null"],
+            description: "Primary genre inferred from request",
           },
-          required: ["genre", "platform"],
+          platform: {
+            type: ["string", "null"],
+            description: "Platform from controlled vocabulary",
+          },
+          mood: {
+            type: ["string", "null"],
+            description: "Emotional descriptor (cozy, dark, fast-paced, etc.)",
+          },
+          year_from: {
+            type: ["integer", "null"],
+            description: "Lower bound of release year if specified",
+          },
+          year_to: {
+            type: ["integer", "null"],
+            description: "Upper bound of release year if specified",
+          },
         },
-        candidates: {
-          type: "array",
-          description: "3 to 8 highly relevant candidate games",
-          minItems: 3,
-          maxItems: 8,
-          items: {
-            type: "object",
-            properties: {
-              name: {
-                type: "string",
-                description: "Official release title",
-              },
-              confidence: {
-                type: "number",
-                description: "Model confidence from 0.0 to 1.0",
-                minimum: 0,
-                maximum: 1,
-              },
+        required: ["genre", "platform", "mood", "year_from", "year_to"],
+      },
+      candidates: {
+        type: "array",
+        description: "3 to 15 highly relevant candidate games",
+        minItems: 3,
+        maxItems: 15,
+        items: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            name: {
+              type: "string",
+              description: "Official release title",
             },
-            required: ["name", "confidence"],
+            confidence: {
+              type: "number",
+              description: "Model confidence from 0.0 to 1.0",
+              minimum: 0,
+              maximum: 1,
+            },
           },
+          required: ["name", "confidence"],
         },
       },
-      required: ["intent", "candidates"],
     },
+    required: ["intent", "candidates"],
   },
 };
 
 export async function interpretQuery(userQuery: string) {
-  const response = await client.chat.completions.create({
+  const response = await client.responses.create({
     model: "gpt-4o-mini",
     temperature: 0.2,
-    messages: [
+    input: [
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userQuery },
     ],
     tools: [TOOL_SCHEMA],
-    // Note: We intentionally do NOT force tool_choice here.
-    // This allows the AI to decide whether the query is game-related.
-    // If it's not, the AI won't use the tool and we can reject the request.
   });
 
-  const message = response.choices[0].message;
-  const toolCall = message.tool_calls?.[0];
+  const toolCall = response.output.find(
+    (item) => item.type === "function_call" && item.name === "recommend_games",
+  );
 
   // If the AI didn't use the recommend_games tool, it means the query wasn't game-related.
   // We throw a helpful error to guide the user back to valid queries.
-  if (!toolCall || toolCall.type !== "function") {
+  if (!toolCall || toolCall.type !== "function_call") {
     throw new Error(
       "Please enter a game-related question. Try something like: 'cozy RPG games on Game Boy' or 'action games on PS5'",
     );
   }
 
-  return JSON.parse(toolCall.function.arguments);
+  return JSON.parse(toolCall.arguments);
 }
