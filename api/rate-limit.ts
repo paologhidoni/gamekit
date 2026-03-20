@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { config } from "dotenv";
 import { Redis } from "@upstash/redis";
+import { getClientIpForRateLimit } from "../src/server/utils/clientIp.js";
 import { getRemainingRequests } from "../src/server/utils/rateLimiter.js";
 
 config({ path: ".env.backend" });
@@ -13,7 +14,7 @@ const redis = new Redis({
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === "GET") {
     try {
-      const ip = (req.headers["x-forwarded-for"] as string) || "unknown";
+      const ip = getClientIpForRateLimit(req.headers);
       const remaining = await getRemainingRequests(ip);
       return res.status(200).json({ remaining });
     } catch (err) {
@@ -36,7 +37,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(403).json({ error: "Forbidden" });
       }
 
-      const ip = (req.headers["x-forwarded-for"] as string) || "unknown";
+      const ip = getClientIpForRateLimit(req.headers);
       const keys = await redis.keys(`gamekit:ratelimit:${ip}*`);
 
       if (keys.length > 0) {
@@ -57,4 +58,3 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   return res.status(405).json({ error: "Method Not Allowed" });
 }
-

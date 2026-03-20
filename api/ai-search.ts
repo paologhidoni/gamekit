@@ -8,6 +8,7 @@ import {
   getGenreId,
 } from "../src/server/utils/rawgCache.js";
 import { transformGameData } from "../src/util/transformGameData.js";
+import { getClientIpForRateLimit } from "../src/server/utils/clientIp.js";
 import {
   checkRateLimit,
   getRemainingRequests,
@@ -40,7 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Rate limiting: Extract IP and check limit FIRST to protect OpenAI credits
-    const ip = (req.headers["x-forwarded-for"] as string) || "unknown";
+    const ip = getClientIpForRateLimit(req.headers);
     const { success, remaining, reset } = await checkRateLimit(ip);
 
     if (!success) {
@@ -99,7 +100,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.error("AI search error:", err);
 
     // Get remaining requests for error response (peek without consuming)
-    const ip = (req.headers["x-forwarded-for"] as string) || "unknown";
+    const ip = getClientIpForRateLimit(req.headers);
     const remaining = await getRemainingRequests(ip);
 
     res.status(500).json({

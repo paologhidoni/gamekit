@@ -5,6 +5,7 @@ import {
   checkRateLimit,
   getRemainingRequests,
 } from "../src/server/utils/rateLimiter.js";
+import { getClientIpForRateLimit } from "../src/server/utils/clientIp.js";
 import { askAiRequestSchema } from "../src/schemas/askAi.js";
 
 config({ path: ".env.backend" });
@@ -96,7 +97,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.error(err);
 
     // Get remaining requests for error response (peek without consuming)
-    const ip = (req.headers["x-forwarded-for"] as string) || "unknown";
+    const ip = getClientIpForRateLimit(req.headers);
     const remaining = await getRemainingRequests(ip);
 
     res.status(500).json({
