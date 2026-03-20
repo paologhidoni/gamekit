@@ -121,7 +121,7 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
       UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_token_here
       ```
 
-    See `.env.backend.example` for a complete template.
+    See `.env.example` and `.env.backend.example` for a complete templates.
 
     ⚠️ Important: Make sure both `.env` and `.env.backend` are added to `.gitignore` to prevent secrets from being committed.
 
