@@ -12,7 +12,7 @@ import {
   checkRateLimit,
   getRemainingRequests,
 } from "../src/server/utils/rateLimiter.js";
-import type { Game } from "../types";
+import type { Game } from "../src/schemas/game.js";
 
 config({ path: ".env.backend" });
 

@@ -1,4 +1,4 @@
-import type { Game } from "../../types";
+import type { Game } from "../schemas";
 
 /**
  * Transforms a single game object from the RAWG API into our desired format.
@@ -27,7 +27,7 @@ export function transformGameData(game: Game): Game {
             "Online Co-Op",
             "Co-operative",
             "Coop",
-          ].includes(tag.name)
+          ].includes(tag.name),
         )
       : [],
   };

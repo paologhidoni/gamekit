@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import type { Game } from "../../types";
+import type { Game } from "../schemas";
 import GameBadges from "./GenreBadges";
 import PlatformBadges from "./PlatformBadges";
 import GameRating from "./GameRating";

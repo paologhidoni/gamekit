@@ -7,7 +7,12 @@ import {
   useEffect,
 } from "react";
 import getCroppedImageUrl from "../util/image-url";
-import type { AskAiResponse } from "../../types";
+import {
+  askAiErrorResponseSchema,
+  askAiSuccessResponseSchema,
+  type AskAiAboutGameResult,
+  type AskAiRequest,
+} from "../schemas";
 
 interface QueryType {
   id?: string;
@@ -30,10 +35,7 @@ interface SearchContextType {
     signal: AbortSignal;
     query?: QueryType;
   }) => Promise<any>;
-  askAiAboutGame: (args: {
-    gameName: string;
-    question: string;
-  }) => Promise<string>;
+  askAiAboutGame: (args: AskAiRequest) => Promise<AskAiAboutGameResult>;
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
@@ -142,7 +144,16 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
   );
 
   const askAiAboutGame = useCallback(
-    async ({ gameName, question }: { gameName: string; question: string }) => {
+    async ({
+      gameName,
+      question,
+      prevResId,
+    }: AskAiRequest): Promise<AskAiAboutGameResult> => {
+      const fallback = {
+        answer:
+          "Something went wrong while asking the AI. Please try again later.",
+      };
+
       try {
         const response = await fetch("/api/ask-ai", {
           method: "POST",
@@ -152,26 +163,50 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
           body: JSON.stringify({
             gameName,
             question,
+            prevResId: prevResId ?? undefined,
           }),
         });
 
-        const data = (await response.json()) as AskAiResponse;
+        const raw: unknown = await response.json();
 
-        if (data?.remaining !== undefined) {
-          setRemainingAiRequests(data.remaining);
+        if (response.ok) {
+          const parsed = askAiSuccessResponseSchema.safeParse(raw);
+          if (!parsed.success) {
+            console.error(
+              "Ask AI: invalid success JSON",
+              parsed.error.flatten(),
+            );
+            return fallback;
+          }
+          const body = parsed.data;
+          if (body.remaining !== undefined) {
+            setRemainingAiRequests(body.remaining);
+          }
+          return {
+            answer: body.answer,
+            ...(body.id ? { id: body.id } : {}),
+          };
         }
 
-        if (!response.ok) {
-          // Log technical error, return friendly message
-          console.error("Ask AI API error:", data?.error || response.statusText);
-          return "Something went wrong while asking the AI. Please try again later.";
+        const errParsed = askAiErrorResponseSchema.safeParse(raw);
+        if (!errParsed.success) {
+          console.error(
+            "Ask AI API error:",
+            response.statusText,
+            errParsed.error.flatten(),
+          );
+          return fallback;
         }
-
-        return data?.answer || "No answer returned.";
+        const errBody = errParsed.data;
+        if (errBody.remaining !== undefined) {
+          setRemainingAiRequests(errBody.remaining);
+        }
+        console.error("Ask AI API error:", errBody.error);
+        return fallback;
       } catch (err) {
         // Network/parsing errors
         console.error("Ask AI request failed:", err);
-        return "Something went wrong while asking the AI. Please try again later.";
+        return fallback;
       }
     },
     [setRemainingAiRequests],

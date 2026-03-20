@@ -5,7 +5,7 @@ import {
   checkRateLimit,
   getRemainingRequests,
 } from "../src/server/utils/rateLimiter.js";
-import { parseAskAiRequestBody } from "../src/util/askAiWire.js";
+import { askAiRequestSchema } from "../src/schemas/askAi.js";
 
 config({ path: ".env.backend" });
 
@@ -33,12 +33,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
-    const parsed = parseAskAiRequestBody(req.body);
-    if (!parsed.ok) {
+    const parsed = askAiRequestSchema.safeParse(req.body);
+    if (!parsed.success) {
       res.status(400).json({ error: "Invalid request body" });
       return;
     }
-    const { gameName, question, prevResId } = parsed.value;
+    const { gameName, question, prevResId } = parsed.data;
 
     // Why trim: so we never treat "" or accidental spaces as "continue the old thread" — that would skip the system prompt and break context.
     const trimmedPrev = typeof prevResId === "string" ? prevResId.trim() : "";
