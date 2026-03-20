@@ -64,7 +64,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     If you are unsure whether the question is related, assume it IS related and answer helpfully.
 
-    For non-recommendation answers, keep the focus on ${gameName} unless comparing helps the user.`;
+    For non-recommendation answers, keep the focus on ${gameName} unless comparing helps the user.
+
+    Stop after the substantive answer. Do not add generic sign-offs or invitations to ask follow-up questions.`;
 
     // Why user-only on follow-ups: OpenAI keeps the prior system message + Q&A on file; we only need to send the new question.
     const input = isFirstTurn
