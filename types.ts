@@ -18,11 +18,12 @@ export interface Theme {
 }
 
 /**
- * /api/ask-ai endpoint
+ * /api/ask-ai endpoint request
  */
 export interface AskAiRequest {
   gameName: string;
   question: string;
+  prevResId?: string | null;
 }
 
 /**
@@ -32,4 +33,9 @@ export interface AskAiResponse {
   answer?: string;
   error?: string;
   remaining?: number;
+  id?: string;
 }
+
+/** Return value of askAiAboutGame: always a string answer; optional response id for follow-ups. */
+export type AskAiAboutGameResult = Required<Pick<AskAiResponse, "answer">> &
+  Pick<AskAiResponse, "id">;
