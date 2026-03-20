@@ -1,8 +1,12 @@
 # GameKit
 
-A full-stack **Game Discovery Platform** featuring **AI-powered natural language search** built with **React + TypeScript, OpenAI GPT-4o-mini and Vercel serverless functions**. Discover games through conversational queries like "cozy RPG games on Game Boy" with intelligent validation and seamless integration with the [RAWG Video Games Database API](https://rawg.io/apidocs).
+A full-stack **Game Discovery Platform** featuring an **AI chatbot** for each game's detail page and **AI-powered natural language search**, built with React + TypeScript, OpenAI GPT-4o-mini and Vercel serverless functions. Seamless integration with the [RAWG Video Games Database API](https://rawg.io/apidocs).
 
 <a href="https://gamekit-six.vercel.app/" target="_blank">🚀 Live Demo: GameKit</a>
+
+### Ask AI Chatbot (history + follow-ups)
+
+<img src="./public/ask-ai-2.png" alt="Ask AI modal with chat history and composer"/>
 
 ### Home Page
 
@@ -10,15 +14,11 @@ A full-stack **Game Discovery Platform** featuring **AI-powered natural language
 
 ### Game Detail Page
 
-<img src="./public/ask-ai-1.png" alt="Ask Ai functionality"/>
+<img src="./public/ask-ai-1.png" alt="Game detail page Preview"/>
 
-### Ask Ai Modal
+### AI Search
 
-<img src="./public/ask-ai-2.png" alt="Ask Ai functionality modal"/>
-
-### Ai Search Functionality
-
-<img src="./public/ai-search.png" alt="GameKit Ai Search functionality"/>
+<img src="./public/ai-search.png" alt="GameKit AI Search"/>
 
 ### Game Detail Page - Alternative Theme
 
@@ -30,74 +30,56 @@ A full-stack **Game Discovery Platform** featuring **AI-powered natural language
 
 ## 🚀 Features
 
-### Core Features
-
-- ✨ **Ask AI (Game Detail)** – Open a modal on any game detail page and ask questions specific to that game (story, mechanics, tips). Powered by OpenAI, with IP-based rate limiting and remaining-requests indicator on the UI.
-- 🤖 **AI-Powered Natural Language Search** – Discover games through conversational queries like "cozy RPG games on Game Boy" using OpenAI GPT-4o-mini with intelligent validation and rate limiting.
+- ✨ **Ask AI Chatbot** – Multi-turn game Q&A modal with session history, follow-ups and a ChatGPT-style composer. Powered by OpenAI Responses API with chained turns.
+- 🤖 **AI-Powered Search** – Natural-language queries like "cozy RPG games on Game Boy" interpreted by GPT-4o-mini, validated against RAWG with a custom hybrid scoring algorithm.
 - 🎮 **Game Discovery** – Browse an extensive library of games from the RAWG API.
 - 🔍 **Traditional Search** – Fast, debounced search by game title with real-time results.
-- ℹ️ **Detailed Game Information** – View game details including descriptions, ratings, screenshots and trailers.
-- 🔐 **Authentication & User Settings** – Account creation and Login via Supabase to access your personal settings.
-- 💾 **User Data Storage** – Preferences stored securely in Supabase.
-- 📱 **Responsive Design** – A seamless experience across desktop and mobile devices.
-- 💅🏻 **Custom Themes** – Switch between light, dark and sunset modes.
+- ℹ️ **Game Details** – Descriptions, ratings, screenshots and trailers for every game.
+- 🔐 **Auth & Settings** – Supabase-based account creation, login and personal preferences.
+- 📱 **Responsive Design** – Mobile-first layout across all pages.
+- 💅🏻 **Custom Themes** – Light, dark and sunset modes.
+- 💰 **Rate Limiting** – Upstash Redis (6 req/24h per IP); visual coin indicator shows remaining requests.
 
-### 🤖 AI Features
+### Ask AI Chatbot Architecture
 
-GameKit includes two AI-powered experiences:
+- **Chat UI & session history**: Message thread in a modal with scrollable area above a fixed composer; auto-scroll to latest message; accessible live region for new content.
+- **Multi-turn context**: OpenAI **Responses API** with `store: true` and `previous_response_id`. Follow-ups stay in one conversation without the client storing full transcripts server-side.
+- **Token-efficient prompting**: System instructions sent only on the first turn; continuations send the user message alone and rely on the stored chain.
+- **Game-scoped behavior**: System prompt ties answers to the current game (similar-game recommendations, story, mechanics, tips) with clear refusal for off-topic non-gaming asks.
+- **Strict wire contracts**: Zod schemas validate request bodies server-side and parse responses client-side with `safeParse`. Malformed data falls back to a safe message.
+- **Serverless API**: `POST /api/ask-ai` keeps `OPENAI_API_KEY` server-side; rate limiting runs before the model call.
 
-- **AI-Powered Search**: Turn natural language queries (e.g. "cozy RPG games on Game Boy") into validated results from RAWG.
-- **Ask AI (Game Detail)**: Open a modal on a specific game and ask contextual questions (story, mechanics, tips).
+### AI-Powered Search Architecture
 
-**AI-Powered Search Architecture Highlights:**
-
-- **LLM-First Design**: Uses OpenAI GPT-4o-mini to interpret natural language queries into structured search parameters
-- **Hybrid Validation System**: AI suggestions validated against RAWG API using custom scoring algorithm:
-  - AI confidence (40%) + Name similarity via Dice coefficient (40%) + Genre matching (20%)
-  - Smart batching: Validates top 5 candidates first, early-stops if ≥3 pass (40% API call reduction)
-- **Intelligent Fallback**: Automatically falls back to structured RAWG search if AI validation yields <3 results
-- **Dynamic Platform/Genre Resolution**: Runtime caching system fetches and maps platform/genre IDs from RAWG, preventing hardcoded ID mismatches
-- **Fuzzy Name Matching**: Custom normalizer strips edition suffixes ("HD", "Remastered") and calculates similarity scores with substring/year bonuses
-
-**Ask AI (Game Detail) Architecture Highlights:**
-
-- **Contextual Q&A**: The Game Detail page opens a modal where users ask questions scoped to the current game (name + question)
-- **System-Level Priming**: The backend prompt is primed with a system message instructing the AI to act as a helpful game expert and only answer questions related to the provided game, reducing off-topic responses.
-- **Serverless API Endpoint**: Uses `POST /api/ask-ai` so the `OPENAI_API_KEY` stays server-side
-- **UI/UX**: Viewport-capped modal with scrollable content for long answers to avoid overflow
-
-**Rate Limiting & Security:**
-
-- **Distributed Rate Limiting**: Upstash Redis with fixed-window algorithm (6 requests/24h per IP)
-- **Real-time UI Feedback**: Visual coin indicator shows remaining requests (used by both AI Search and Ask AI), persists across page refreshes
-- **Graceful Degradation**: Handles obscure platforms (WonderSwan, Neo Geo Pocket) with user-friendly fallback messages
-
-**Technical Implementation:**
-
-- OpenAI Function Calling with strict JSON schema enforcement
-- Controlled vocabulary (50+ platforms) prevents hallucination
-- Temperature 0.2 for factual accuracy
-- Serverless-first architecture with stateless Redis for rate limit persistence
+- **LLM-First Design**: GPT-4o-mini interprets natural language into structured search parameters via Function Calling with strict JSON schema enforcement.
+- **Hybrid Validation**: AI suggestions scored against RAWG. AI confidence (40%) + Dice-coefficient name similarity (40%) + genre match (20%). Smart batching validates top 5 first, early-stops if ≥3 pass (40% fewer API calls).
+- **Intelligent Fallback**: Falls back to structured RAWG search when AI validation yields <3 results.
+- **Dynamic Platform/Genre Resolution**: Runtime caching maps platform/genre IDs from RAWG, preventing hardcoded mismatches.
+- **Fuzzy Name Matching**: Custom normalizer strips edition suffixes ("HD", "Remastered") and calculates similarity with substring/year bonuses.
+- **Controlled Vocabulary**: 50+ platforms prevents hallucination; graceful degradation for obscure platforms (WonderSwan, Neo Geo Pocket).
 
 ## 🛠️ Tech Stack
 
-### Backend:
+### Backend
 
-- **Vercel Serverless Functions** - Scalable, stateless API endpoints
-- **OpenAI SDK** (`openai`) - GPT-4o-mini integration for natural language processing
-- **Upstash Redis** (`@upstash/redis`, `@upstash/ratelimit`) - Distributed rate limiting with sub-10ms latency
-- **Supabase** (`@supabase/supabase-js`) - Authentication + PostgreSQL database
-- **RAWG API** - Comprehensive game database
-- **dotenv** - Environment variable management
+- **Vercel Serverless Functions** – Scalable, stateless API endpoints
+- **OpenAI SDK** (`openai`) – GPT-4o-mini integration for natural language processing
+- **Upstash Redis** (`@upstash/redis`, `@upstash/ratelimit`) – Distributed rate limiting
+- **Supabase** (`@supabase/supabase-js`) – Authentication + PostgreSQL database
+- **RAWG API** – Comprehensive game database
+
+### Shared
+
+- **Zod** – Shared schemas in `src/schemas/` for inferred types and runtime validation on both serverless routes and the client
 
 ### Frontend
 
 - **Vite** – Lightning-fast build tool with HMR
 - **React + TypeScript** – Type-safe, component-based architecture
-- **TanStack Query** (`@tanstack/react-query`) - Server state management with intelligent caching
-- **React Router** (`react-router`) - Client-side routing with data loaders
+- **TanStack Query** (`@tanstack/react-query`) – Server state management with intelligent caching
+- **React Router** (`react-router`) – Client-side routing with data loaders
 - **Tailwind CSS** – Utility-first styling with custom theme system
-- **Lucide React** (`lucide-react`) - Consistent iconography
+- **Lucide React** (`lucide-react`) – Consistent iconography
 
 ### Deployment
 
@@ -149,25 +131,9 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
     npm run local
     ```
 
-## 🎯 Key Technical Achievements
-
-- ✅ **AI-Powered Natural Language Search** - LLM integration with validation pipeline
-- ✅ **Ask AI Integration** - Context-aware game Q&A with shared rate limiting
-- ✅ **Distributed Rate Limiting** - Redis-backed, IP-based request throttling
-- ✅ **Hybrid Scoring Algorithm** - Multi-factor validation system for AI suggestions
-- ✅ **Dynamic API Mapping** - Runtime platform/genre ID resolution with caching
-- ✅ **Fuzzy String Matching** - Custom Dice coefficient implementation
-- ✅ **Serverless Architecture** - Stateless functions with external state management
-- ✅ **Type-Safe Full Stack** - End-to-end TypeScript with strict mode
-- ✅ **Production Security** - Environment-based feature flags and secret management
-
 ## 🔥 Future Enhancements
 
-- [x] **AI-Powered Search** – Natural language game discovery with LLM validation
-- [x] **Ask AI (Game Detail)** – Context-aware chatbot for game-specific queries
-- [x] **Rate Limiting** – Distributed request throttling with visual feedback
-- [x] **User Authentication** – Supabase-based auth with protected routes
-- [x] **Profile & Settings Pages** – Personalized user preferences
+- [ ] **Persist Ask AI history** – Save or restore chat across modal close / page reload (today history is per open session only)
 - [ ] **Game Favourites** – Persistent user collections with Supabase storage
 - [ ] **Advanced Filtering** – Multi-criteria filtering (genre, platform, year, rating)
 - [ ] **Recommendation Engine** – Collaborative filtering based on user preferences
@@ -236,3 +202,8 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
    ```
 
 9. **Configure Vercel Serverless Functions** for backend API endpoints
+
+10. **Add Zod** for type safety and runtime validation
+    ```bash
+    npm install zod
+    ```

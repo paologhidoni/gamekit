@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { Game } from "../../types";
+import type { Game } from "../schemas";
 import GameCard from "../components/GameCard";
 import { useState } from "react";
 import SearchBar from "../components/SearchBar";
