@@ -19,7 +19,7 @@ export default function Navigation() {
 
   return (
     <div className="bg-(--color-bg-primary) text-(--color-text-primary) py-4 px-2 flex flex-wrap items-center justify-between gap-2 md:px-20 lg:px-24">
-      <Logo extraClasses="md:w-1/3 order-1 md:order-1" />
+      <Logo extraClasses="md:w-1/3 order-1 md:order-1 -ml-3" />
 
       <div className="flex md:w-1/3 justify-end order-2 md:order-3">
         <nav>
