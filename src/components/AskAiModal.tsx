@@ -1,5 +1,12 @@
-import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { X } from "lucide-react";
+import {
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Bot, User, X } from "lucide-react";
 import RateLimitIndicator from "./RateLimitIndicator";
 import RichTextRenderer from "./RichTextRenderer";
 import { useSearch } from "../context/SearchContext";
@@ -10,14 +17,28 @@ interface AskAiModalProps {
   onClose: () => void;
 }
 
+type ChatRole = "user" | "assistant";
+
+interface ChatMessage {
+  id: string;
+  role: ChatRole;
+  content: string;
+}
+
+function newMessageId(): string {
+  return crypto.randomUUID();
+}
+
 const AskAiModal = ({ gameName, isOpen, onClose }: AskAiModalProps) => {
   const [question, setQuestion] = useState<string>("");
-  const [answer, setAnswer] = useState<string>("");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [prevResId, setPrevResId] = useState<string | null>(null);
   const { remainingAiRequests, askAiAboutGame } = useSearch();
 
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement | null>(null);
+  const threadRef = useRef<HTMLDivElement | null>(null);
 
   const canSubmit = useMemo<boolean>(
     () => question.trim().length > 0,
@@ -41,21 +62,42 @@ const AskAiModal = ({ gameName, isOpen, onClose }: AskAiModalProps) => {
     dialogRef.current?.focus();
   }, [isOpen]);
 
+  useLayoutEffect(() => {
+    const el = threadRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [messages, isLoading]);
+
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
     if (!canSubmit || isLoading || isRateLimited) return;
 
+    const trimmed = question.trim();
+    const userId = newMessageId();
+    const thinkingId = newMessageId();
+
+    setMessages((prev) => [
+      ...prev,
+      { id: userId, role: "user", content: trimmed },
+      { id: thinkingId, role: "assistant", content: "Thinking…" },
+    ]);
+    setQuestion("");
     setIsLoading(true);
-    setAnswer("");
 
     try {
       const result = await askAiAboutGame({
         gameName,
-        question: question.trim(),
+        question: trimmed,
+        prevResId: prevResId ?? undefined,
       });
-      setAnswer(result);
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === thinkingId ? { ...m, content: result.answer } : m,
+        ),
+      );
+      if (result.id) setPrevResId(result.id);
     } finally {
       setIsLoading(false);
     }
@@ -80,7 +122,7 @@ const AskAiModal = ({ gameName, isOpen, onClose }: AskAiModalProps) => {
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-2xl max-h-[calc(100dvh-2rem)] overflow-hidden rounded-2xl bg-(--color-bg-secondary) border-2 border-(--color-accent-secondary) shadow-xl outline-none flex flex-col"
       >
-        <div className="flex items-start justify-between gap-4 border-b border-white/10 p-4 md:p-5">
+        <div className="shrink-0 flex items-start justify-between gap-4 border-b border-white/10 p-4 md:p-5">
           <div className="min-w-0">
             <h2 id={titleId} className="text-lg md:text-xl font-semibold">
               Ask AI about {gameName}
@@ -101,17 +143,69 @@ const AskAiModal = ({ gameName, isOpen, onClose }: AskAiModalProps) => {
           </button>
         </div>
 
-        <div className="p-4 md:p-5 overflow-y-auto">
-          <div className="space-y-4">
+        <div className="flex flex-col flex-1 min-h-0">
+          <div
+            ref={threadRef}
+            role="region"
+            aria-label={`Chat about ${gameName}`}
+            aria-live="polite"
+            aria-busy={isLoading}
+            className={`flex-1 min-h-0 overflow-y-auto px-4 md:px-5 space-y-4 ${
+              messages.length > 0 ? "py-4" : ""
+            }`}
+          >
+            {messages.map((m) => (
+              <div
+                key={m.id}
+                className={
+                  m.role === "user"
+                    ? "flex justify-end"
+                    : "flex w-full min-w-0 justify-start"
+                }
+              >
+                {m.role === "user" ? (
+                  <div className="flex max-w-[min(85%,28rem)] flex-row-reverse items-start gap-2.5 rounded-2xl bg-(--color-accent) px-3 py-2.5 text-sm leading-6 text-white shadow-sm">
+                    <User
+                      size={18}
+                      className="mt-0.5 shrink-0 text-white/70"
+                      aria-hidden
+                    />
+                    <p className="min-w-0 flex-1 whitespace-pre-wrap wrap-break-word">
+                      {m.content}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex w-full min-w-0 items-start gap-2.5 rounded-xl border border-white/10 bg-black/10 px-3 py-2.5 text-sm leading-6">
+                    <Bot
+                      size={18}
+                      className="mt-0.5 shrink-0 opacity-70 text-(--color-accent-secondary)"
+                      aria-hidden
+                    />
+                    <div className="min-w-0 flex-1">
+                      {m.content === "Thinking…" ? (
+                        <p className="opacity-70 italic">Thinking…</p>
+                      ) : (
+                        <RichTextRenderer
+                          content={m.content}
+                          className="text-sm leading-6"
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="shrink-0 border-t border-white/10 p-4 md:p-5 pt-3 space-y-3">
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <RateLimitIndicator remaining={remainingAiRequests} total={6} />
             </div>
 
-            {/* Question Input */}
             <form onSubmit={handleSubmit} className="space-y-3">
               <textarea
-                className="w-full p-3 rounded-xl border border-white/10 bg-black/10 focus:outline-none focus:ring-2 focus:ring-(--color-accent-secondary) focus:border-(--color-accent-secondary) resize-none disabled:opacity-60 disabled:cursor-not-allowed"
-                rows={4}
+                className="w-full p-3 rounded-xl border border-white/10 bg-black/10 focus:outline-none focus:ring-2 focus:ring-(--color-accent-secondary) focus:border-(--color-accent-secondary) resize-none disabled:opacity-60 disabled:cursor-not-allowed text-sm md:text-base min-h-22 md:min-h-28"
+                rows={3}
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
                 placeholder={
@@ -124,24 +218,12 @@ const AskAiModal = ({ gameName, isOpen, onClose }: AskAiModalProps) => {
 
               <button
                 type="submit"
-                className="px-4 py-2 rounded-lg bg-(--color-accent) text-white hover:bg-(--color-accent-secondary) transition-colors duration-200 font-medium cursor-pointer border-2 border-(--color-accent-secondary) disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-4 py-2 rounded-lg bg-(--color-accent) text-white hover:bg-(--color-accent-secondary) transition-colors duration-200 font-medium cursor-pointer border-2 border-(--color-accent-secondary) disabled:opacity-60 disabled:cursor-not-allowed min-h-10"
                 disabled={!canSubmit || isLoading || isRateLimited}
               >
-                {isLoading ? "Thinking..." : "Ask"}
+                {isLoading ? "Thinking…" : "Send"}
               </button>
             </form>
-
-            {/* Answer */}
-            {answer && (
-              <div className="p-4 rounded-xl border border-white/10 bg-black/10">
-                <div className="max-h-[40dvh] overflow-y-auto pr-2">
-                  <RichTextRenderer
-                    content={answer}
-                    className="text-sm leading-6"
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
