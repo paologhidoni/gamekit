@@ -15,7 +15,7 @@ export default function AiSearch() {
 
   const query = searchParams.get("q") ?? "";
 
-  // Keep the last committed AI query available across route changes.
+  // Why: sync URL-backed q into context so toggling back to AI can restore the same query key and cached results.
   useEffect(() => {
     if (query) {
       setLastAiQuery(query);
@@ -59,7 +59,7 @@ export default function AiSearch() {
           showSubmitButton
           showRateLimit
           icon="sparkles"
-          placeholder="'cozy RPG on Game Boy'"
+          placeholder="'Cozy RPG on Game Boy'"
         />
       </div>
 
