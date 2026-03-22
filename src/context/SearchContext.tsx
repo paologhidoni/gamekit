@@ -1,12 +1,13 @@
 import {
   createContext,
+  useCallback,
   useContext,
+  useEffect,
   useState,
   type ReactNode,
-  useCallback,
-  useEffect,
 } from "react";
 import getCroppedImageUrl from "../util/image-url";
+import * as z from "zod";
 import {
   askAiErrorResponseSchema,
   askAiSuccessResponseSchema,
@@ -22,8 +23,8 @@ interface QueryType {
 }
 
 interface SearchContextType {
-  isAiSearch: boolean;
-  setIsAiSearch: (value: boolean) => void;
+  lastAiQuery: string;
+  setLastAiQuery: (value: string) => void;
   remainingAiRequests: number;
   setRemainingAiRequests: (value: number) => void;
   resetRateLimit: () => Promise<void>;
@@ -41,7 +42,8 @@ interface SearchContextType {
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
 export function SearchContextProvider({ children }: { children: ReactNode }) {
-  const [isAiSearch, setIsAiSearch] = useState(false);
+  // Why: TanStack Query caches by search term but cannot infer which term to show if the URL lost ?q (e.g. logo → home).
+  const [lastAiQuery, setLastAiQuery] = useState("");
   const [remainingAiRequests, setRemainingAiRequests] = useState(6);
 
   // Fetch initial rate limit status on mount
@@ -174,7 +176,7 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
           if (!parsed.success) {
             console.error(
               "Ask AI: invalid success JSON",
-              parsed.error.flatten(),
+              z.flattenError(parsed.error),
             );
             return fallback;
           }
@@ -193,7 +195,7 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
           console.error(
             "Ask AI API error:",
             response.statusText,
-            errParsed.error.flatten(),
+            z.flattenError(errParsed.error),
           );
           return fallback;
         }
@@ -238,8 +240,8 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
   return (
     <SearchContext.Provider
       value={{
-        isAiSearch,
-        setIsAiSearch,
+        lastAiQuery,
+        setLastAiQuery,
         remainingAiRequests,
         setRemainingAiRequests,
         resetRateLimit,
