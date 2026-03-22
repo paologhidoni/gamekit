@@ -13,7 +13,7 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const { isAiSearch, fetchGames, fetchAiGames } = useSearch();
 
-  const { data, isPending, isError, error } = useQuery({
+  const { data, isPending, isFetching, isError, error } = useQuery({
     queryKey: ["games", { searchTerm: query, isAiSearch }],
     queryFn: ({ signal }) =>
       isAiSearch
@@ -34,7 +34,10 @@ export default function Home() {
         <SearchBar onSearch={setQuery} />
       </div>
 
-      {isPending && query.trim().length > 0 && <LoadingSpinner />}
+      {/* Show while fetching for default list or AI with a term; isPending && isFetching matches v5 loading and skips disabled empty AI queries. */}
+      {isPending && isFetching && (!isAiSearch || query.trim().length > 0) && (
+        <LoadingSpinner />
+      )}
 
       {isError && <ErrorElement errorMessage={error.message} />}
 
