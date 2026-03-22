@@ -1,106 +1,74 @@
 import { Search, Sparkles, Send } from "lucide-react";
-import {
-  useCallback,
-  useState,
-  useRef,
-  type ChangeEvent,
-  type FormEvent,
-} from "react";
+import { useCallback, useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import useDebounce from "../hooks/useDebounce";
 import { useSearch } from "../context/SearchContext";
+import AiSearchToggle from "./AiSearchToggle";
 import RateLimitIndicator from "./RateLimitIndicator";
 
 interface SearchBarProps {
-  onSearch: (query: string) => void;
+  committedQuery?: string;
+  placeholder?: string;
+  /** Classic mode: fires debounced on every keystroke. */
+  onDebouncedChange?: (value: string) => void;
+  /** AI mode: fires on explicit Send / Enter. */
+  onSubmit?: (value: string) => void;
+  showSubmitButton?: boolean;
+  showRateLimit?: boolean;
+  icon?: "search" | "sparkles";
 }
 
-export default function SearchBar({ onSearch }: SearchBarProps) {
-  const { isAiSearch, setIsAiSearch, remainingAiRequests } = useSearch();
-  const [inputValue, setInputValue] = useState("");
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+export default function SearchBar({
+  committedQuery = "",
+  placeholder = "Search games by title...",
+  onDebouncedChange,
+  onSubmit,
+  showSubmitButton = false,
+  showRateLimit = false,
+  icon = "search",
+}: SearchBarProps) {
+  const { remainingAiRequests } = useSearch();
+  const [inputValue, setInputValue] = useState(committedQuery);
 
-  const handleInputChange = useCallback(
-    (value: string) => {
-      if (!isAiSearch) {
-        onSearch(value);
-      }
-    },
-    [onSearch, isAiSearch],
+  useEffect(() => {
+    setInputValue(committedQuery);
+  }, [committedQuery]);
+
+  const fireDebouncedChange = useCallback(
+    (value: string) => onDebouncedChange?.(value),
+    [onDebouncedChange],
   );
+  const debouncedChange = useDebounce(fireDebouncedChange);
 
-  const debouncedInputChange = useDebounce(handleInputChange);
-
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setInputValue(e.target.value);
-    debouncedInputChange(e.target.value);
-
-    // Auto-resize textarea
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+    if (onDebouncedChange) {
+      debouncedChange(value);
     }
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (isAiSearch && inputValue.trim()) {
-      onSearch(inputValue);
+    if (onSubmit && inputValue.trim()) {
+      onSubmit(inputValue.trim());
     }
   };
 
-  const handletoggle = () => {
-    setInputValue("");
-    onSearch(""); // Clear parent query state
-    setIsAiSearch(!isAiSearch);
-
-    // Reset textarea height when toggling
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-    }
-  };
+  const Icon = icon === "sparkles" ? Sparkles : Search;
 
   return (
     <div className="flex flex-col gap-3">
-      {/* AI Mode Toggle */}
       <div className="flex items-center gap-2 flex-wrap justify-center md:justify-between">
-        {/* Rate Limit Indicator */}
         <div className="order-2 min-[470px]:order-1">
-          {isAiSearch && <RateLimitIndicator remaining={remainingAiRequests} />}
+          {showRateLimit && (
+            <RateLimitIndicator remaining={remainingAiRequests} />
+          )}
         </div>
-
-        <div className="flex items-center gap-2 md:ml-auto order-1 min-[470px]:order-2">
-          <label
-            htmlFor="ai-toggle"
-            className={`text-sm font-medium flex items-center gap-1 ${isAiSearch ? "text-(--color-accent-primary)" : ""}`}
-          >
-            <Sparkles size={20} />
-            AI Search
-          </label>
-
-          <button
-            id="ai-toggle"
-            onClick={handletoggle}
-            className="relative inline-flex h-8 w-13 md:h-6 md:w-11 items-center rounded-full transition-colors border-2 cursor-pointer"
-            style={{
-              backgroundColor: isAiSearch
-                ? "var(--color-accent-primary)"
-                : "var(--color-bg-tertiary)",
-              borderColor: "var(--color-bg-secondary)",
-            }}
-          >
-            <span
-              className="inline-block h-5 w-5 md:h-4 md:w-4 transform rounded-full bg-white transition-transform"
-              style={{
-                transform: isAiSearch ? "translateX(24px)" : "translateX(4px)",
-              }}
-            />
-          </button>
+        <div className="order-1 min-[470px]:order-2">
+          <AiSearchToggle />
         </div>
       </div>
 
-      {/* Search Input */}
       <div
         className="rounded-full w-full transition duration-300 relative"
         style={{
@@ -108,54 +76,32 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           color: "var(--color-text-primary)",
         }}
       >
-        {isAiSearch ? (
-          <Sparkles className="absolute left-2 top-1/2 -translate-y-1/2" />
-        ) : (
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2" />
-        )}
+        <Icon className="absolute left-2 top-1/2 -translate-y-1/2" />
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="search-game-input" className="sr-only">
             Search for a game
           </label>
 
-          {isAiSearch ? (
-            <>
-              <textarea
-                ref={textareaRef}
-                id="search-game-input"
-                value={inputValue}
-                onChange={handleChange}
-                className="py-2 pl-10 pr-12 w-full rounded-full outline-none resize-none flex items-center overflow-hidden"
-                style={{
-                  lineHeight: "1.5rem",
-                  paddingTop: "0.5rem",
-                  paddingBottom: "0.5rem",
-                  minHeight: "2.5rem",
-                  maxHeight: "10rem",
-                }}
-                placeholder="'cozy RPG on Game Boy'"
-                rows={1}
-              />
-              <button
-                type="submit"
-                disabled={remainingAiRequests === 0}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors hover:opacity-70 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                style={{ color: "var(--color-accent-primary)" }}
-                aria-label="Submit AI search"
-              >
-                <Send size={20} />
-              </button>
-            </>
-          ) : (
-            <input
-              id="search-game-input"
-              value={inputValue}
-              onChange={handleChange}
-              type="text"
-              className="py-2 pl-10 pr-6 w-full rounded-full outline-none"
-              placeholder="Search games by title..."
-            />
+          <input
+            id="search-game-input"
+            value={inputValue}
+            onChange={handleChange}
+            type="text"
+            className={`py-2 pl-10 w-full rounded-full outline-none ${showSubmitButton ? "pr-12" : "pr-6"}`}
+            placeholder={placeholder}
+          />
+
+          {showSubmitButton && (
+            <button
+              type="submit"
+              disabled={remainingAiRequests === 0}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors hover:opacity-70 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ color: "var(--color-accent-primary)" }}
+              aria-label="Submit AI search"
+            >
+              <Send size={20} />
+            </button>
           )}
         </form>
       </div>
