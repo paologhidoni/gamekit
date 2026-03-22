@@ -8,11 +8,13 @@ import ErrorElement from "./components/ErrorElement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { SearchContextProvider } from "./context/SearchContext";
+import { ToastProvider } from "./context/ToastContext";
 
 // Lazy load page components
 const Home = lazy(() => import("./pages/Home"));
 const GameDetail = lazy(() => import("./pages/GameDetail"));
 const Settings = lazy(() => import("./pages/Settings"));
+const Favourites = lazy(() => import("./pages/Favourites"));
 const Authentication = lazy(() => import("./pages/Authentication"));
 
 const queryClient = new QueryClient();
@@ -59,6 +61,14 @@ const router = createBrowserRouter([
               </Suspense>
             ),
           },
+          {
+            path: "favourites",
+            element: (
+              <Suspense fallback={<LoadingSpinner />}>
+                <Favourites />
+              </Suspense>
+            ),
+          },
         ],
       },
     ],
@@ -70,7 +80,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeContextProvider>
         <SearchContextProvider>
-          <RouterProvider router={router} />
+          <ToastProvider>
+            <RouterProvider router={router} />
+          </ToastProvider>
         </SearchContextProvider>
       </ThemeContextProvider>
     </QueryClientProvider>
