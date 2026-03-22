@@ -5,6 +5,7 @@ import { useState } from "react";
 import SearchBar from "../components/SearchBar";
 import LoadingSpinner from "../components/LoadingSpinner";
 import noGames from "../assets/no-games.webp";
+import aiSearchNoResults from "../assets/ai-search.webp";
 import ErrorElement from "../components/ErrorElement";
 import { useSearch } from "../context/SearchContext";
 import AiExplanation from "../components/AiExplanation";
@@ -54,6 +55,22 @@ export default function Home() {
             Search again
           </h1>
           <img src={noGames} alt="No games found" className="w-50" />
+        </div>
+      )}
+
+      {/* Ai game search, no query entered yet */}
+      {isAiSearch && !query && (
+        <div className="flex flex-col gap-4 items-center">
+          <h1 className="text-2xl font-bold text-center">
+            Use ✨ AI to search for games
+            <br />
+            Your results will appear here!
+          </h1>
+          <img
+            src={aiSearchNoResults}
+            alt="llustration: AI game search"
+            className="w-110"
+          />
         </div>
       )}
 

@@ -216,13 +216,14 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
    * Only used in development, reset
    */
   const resetRateLimit = useCallback(async () => {
-    const secret = prompt("Enter admin secret:");
+    const secret = import.meta.env.VITE_ADMIN_SECRET;
     if (!secret) return;
 
     try {
-      const res = await fetch(`/api/rate-limit?secret=${secret}`, {
-        method: "POST",
-      });
+      const res = await fetch(
+        `/api/rate-limit?secret=${encodeURIComponent(secret)}`,
+        { method: "POST" },
+      );
       if (res.ok) {
         alert("Rate limit reset! Refresh the page.");
         window.location.reload();

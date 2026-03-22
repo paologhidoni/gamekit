@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router";
-import { Cog, User2, LogOut } from "lucide-react";
+import { Cog, Heart, User2, LogOut } from "lucide-react";
 import Logo from "./Logo";
 import { useAuth } from "../hooks/useAuth";
 
@@ -25,12 +25,28 @@ export default function Navigation() {
         <nav>
           <ul className="flex gap-3 justify-center text-center md:justify-end">
             {user && (
-              <li>
-                <NavLink to="/settings" title="Settings">
-                  <Cog />
-                  <span className="sr-only">Settings</span>
-                </NavLink>
-              </li>
+              <>
+                <li>
+                  <NavLink
+                    to="/favourites"
+                    title="Favourites"
+                    className="cursor-pointer transition-colors duration-200 hover:text-(--color-accent-primary)"
+                  >
+                    <Heart />
+                    <span className="sr-only">Favourites</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/settings"
+                    title="Settings"
+                    className="cursor-pointer transition-colors duration-200 hover:text-(--color-accent-primary)"
+                  >
+                    <Cog />
+                    <span className="sr-only">Settings</span>
+                  </NavLink>
+                </li>
+              </>
             )}
 
             <li>
