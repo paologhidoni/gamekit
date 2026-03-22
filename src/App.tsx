@@ -15,6 +15,7 @@ const Home = lazy(() => import("./pages/Home"));
 const GameDetail = lazy(() => import("./pages/GameDetail"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Favourites = lazy(() => import("./pages/Favourites"));
+const AiSearch = lazy(() => import("./pages/AiSearch"));
 const Authentication = lazy(() => import("./pages/Authentication"));
 
 const queryClient = new QueryClient();
@@ -38,6 +39,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<LoadingSpinner />}>
             <Home />
+          </Suspense>
+        ),
+      },
+      {
+        path: "ai-search",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <AiSearch />
           </Suspense>
         ),
       },
