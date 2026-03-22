@@ -8,6 +8,7 @@ import BgImage from "../components/BgImage";
 import { useSearch } from "../context/SearchContext";
 import AiGameInfoButton from "../components/AiGameInfoButton";
 import RichTextRenderer from "../components/RichTextRenderer";
+import FavouriteButton from "../components/FavouriteButton";
 
 export default function GameDetail() {
   const { id } = useParams();
@@ -33,6 +34,10 @@ export default function GameDetail() {
         <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
           {/* HERO */}
           <section className="rounded-2xl p-4 border-y-2 border-y-black min-h-[30vh] max-h-[50vh] relative order-1 lg:order-0">
+            <div className="absolute z-50 top-0 left-0 py-2 px-4">
+              <FavouriteButton gameId={data.id} gameName={data.name} />
+            </div>
+
             <div className="absolute z-50 top-0 right-0 py-2 px-4 bg-black opacity-70 rounded-bl-2xl rounded-tr-2xl">
               <GameRating rating={data.rating} />
             </div>
