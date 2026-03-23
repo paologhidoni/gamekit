@@ -39,8 +39,10 @@ export default function Authentication() {
       } else {
         setIsSignedUp(true);
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred.",
+      );
     } finally {
       setEmail("");
       setPassword("");

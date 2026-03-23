@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- theme values and hook intentionally live with the provider */
 import {
   createContext,
   useContext,
