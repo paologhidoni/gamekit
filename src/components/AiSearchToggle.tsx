@@ -5,13 +5,17 @@ import { useSearch } from "../context/SearchContext";
 export default function AiSearchToggle() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { lastAiQuery } = useSearch();
+  const { lastAiQuery, lastClassicQuery } = useSearch();
   const isAi = location.pathname === "/ai-search";
 
   const handleToggle = () => {
     if (isAi) {
-      navigate("/");
+      const search = lastClassicQuery
+        ? `?q=${encodeURIComponent(lastClassicQuery)}`
+        : "";
+      navigate(`/${search}`);
     } else {
+      // Why: each mode remembers its own committed query, but only AI requires explicit submit to create results.
       const search = lastAiQuery ? `?q=${encodeURIComponent(lastAiQuery)}` : "";
       navigate(`/ai-search${search}`);
     }
