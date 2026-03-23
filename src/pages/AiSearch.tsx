@@ -1,5 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { useCallback, useEffect } from "react";
+import {
+  useIsRestoring,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useSearchParams } from "react-router";
 import SearchBar from "../components/SearchBar";
 import GameGrid from "../components/GameGrid";
@@ -10,10 +14,20 @@ import { useSearch } from "../context/SearchContext";
 
 export default function AiSearch() {
   const location = useLocation();
+  const queryClient = useQueryClient();
+  const isRestoring = useIsRestoring();
   const [searchParams, setSearchParams] = useSearchParams();
   const { fetchAiGames, setLastAiQuery } = useSearch();
+  const [submittedQuery, setSubmittedQuery] = useState("");
 
   const query = searchParams.get("q") ?? "";
+  // Why: restored prompt text should only auto-run when we already have cached data for the same AI query key.
+  const aiQueryKey = ["games-ai", { searchTerm: query }] as const;
+  const hasCachedAiResult = queryClient.getQueryData(aiQueryKey) !== undefined;
+  const shouldRunAiSearch =
+    !isRestoring &&
+    query.length > 0 &&
+    (hasCachedAiResult || submittedQuery === query);
 
   // Why: sync URL-backed q into context so toggling back to AI can restore the same query key and cached results.
   useEffect(() => {
@@ -24,10 +38,12 @@ export default function AiSearch() {
 
   const commitQuery = useCallback(
     (value: string) => {
+      const trimmed = value.trim();
+      setSubmittedQuery(trimmed);
       setSearchParams(
         (prev) => {
           const next = new URLSearchParams(prev);
-          if (value) next.set("q", value);
+          if (trimmed) next.set("q", trimmed);
           else next.delete("q");
           return next;
         },
@@ -38,10 +54,10 @@ export default function AiSearch() {
   );
 
   const { data, isPending, isFetching, isError, error } = useQuery({
-    queryKey: ["games-ai", { searchTerm: query }],
+    queryKey: aiQueryKey,
     queryFn: ({ signal }) =>
       fetchAiGames({ signal, query: { searchTerm: query } }),
-    enabled: query.length > 0,
+    enabled: shouldRunAiSearch,
     retry: false,
     staleTime: Infinity,
   });
@@ -49,6 +65,8 @@ export default function AiSearch() {
   const games = data?.games;
   const explanation = data?.explanation;
   const hasQuery = query.length > 0;
+  // Why: after cache expiry we still restore the prompt text, but we force an explicit resend to protect rate limits.
+  const needsSubmit = hasQuery && !hasCachedAiResult && submittedQuery !== query;
 
   return (
     <>
@@ -62,6 +80,12 @@ export default function AiSearch() {
           placeholder="'Cozy RPG on Game Boy'"
         />
       </div>
+
+      {needsSubmit && (
+        <p className="mb-6 text-center text-sm text-(--color-text-tertiary)">
+          Press send to run this AI search.
+        </p>
+      )}
 
       {explanation && games && games.length > 0 && (
         <AiExplanation explanation={explanation} gameCount={games.length} />
