@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef } from "react";
 
-export default function useDebounce<T extends (...args: any[]) => void>(
-  callback: T,
-  delay: number = 500
+export default function useDebounce<Args extends unknown[]>(
+  callback: (...args: Args) => void,
+  delay: number = 500,
 ) {
   // useRef to store the timer ID
   // (ReturnType<typeof setTimeout> works in both browser + Node)
@@ -17,7 +17,7 @@ export default function useDebounce<T extends (...args: any[]) => void>(
 
   // Wrap the callback in useCallback to maintain function identity
   const debounced = useCallback(
-    (...args: Parameters<T>) => {
+    (...args: Args) => {
       // Clear the previous timer on every call
       if (timerRef.current) clearTimeout(timerRef.current);
 
