@@ -47,68 +47,36 @@ export default function RichTextRenderer({
         rehypePlugins={[rehypeSanitize]}
         skipHtml={true}
         components={{
-          h1: ({
-            node,
-            ...props
-          }: {
-            node?: unknown;
-          } & HTMLAttributes<HTMLHeadingElement>): ReactElement => (
+          h1: (
+            props: HTMLAttributes<HTMLHeadingElement>,
+          ): ReactElement => (
             <h3 className="text-base font-semibold mt-3 mb-1" {...props} />
           ),
-          h2: ({
-            node,
-            ...props
-          }: {
-            node?: unknown;
-          } & HTMLAttributes<HTMLHeadingElement>): ReactElement => (
+          h2: (
+            props: HTMLAttributes<HTMLHeadingElement>,
+          ): ReactElement => (
             <h3 className="text-base font-semibold mt-3 mb-1" {...props} />
           ),
-          h3: ({
-            node,
-            ...props
-          }: {
-            node?: unknown;
-          } & HTMLAttributes<HTMLHeadingElement>): ReactElement => (
+          h3: (
+            props: HTMLAttributes<HTMLHeadingElement>,
+          ): ReactElement => (
             <h3 className="text-base font-semibold mt-3 mb-1" {...props} />
           ),
-          h4: ({
-            node,
-            ...props
-          }: {
-            node?: unknown;
-          } & HTMLAttributes<HTMLHeadingElement>): ReactElement => (
+          h4: (
+            props: HTMLAttributes<HTMLHeadingElement>,
+          ): ReactElement => (
             <h3 className="text-base font-semibold mt-3 mb-1" {...props} />
           ),
-          p: ({
-            node,
-            ...props
-          }: {
-            node?: unknown;
-          } & HTMLAttributes<HTMLParagraphElement>): ReactElement => (
+          p: (props: HTMLAttributes<HTMLParagraphElement>): ReactElement => (
             <p className="mb-2 last:mb-0" {...props} />
           ),
-          ul: ({
-            node,
-            ...props
-          }: {
-            node?: unknown;
-          } & HTMLAttributes<HTMLUListElement>): ReactElement => (
+          ul: (props: HTMLAttributes<HTMLUListElement>): ReactElement => (
             <ul className="list-disc pl-5 space-y-1 mb-2" {...props} />
           ),
-          ol: ({
-            node,
-            ...props
-          }: {
-            node?: unknown;
-          } & OlHTMLAttributes<HTMLOListElement>): ReactElement => (
+          ol: (props: OlHTMLAttributes<HTMLOListElement>): ReactElement => (
             <ol className="list-decimal pl-5 space-y-1 mb-2" {...props} />
           ),
-          li: ({
-            node,
-            ...props
-          }: {
-            node?: unknown;
-          } & LiHTMLAttributes<HTMLLIElement>): ReactElement => (
+          li: (props: LiHTMLAttributes<HTMLLIElement>): ReactElement => (
             <li className="mb-0" {...props} />
           ),
         }}
