@@ -5,7 +5,7 @@ interface PlatformBadgesProps {
   game: Game;
 }
 
-function Badge({ platform }: { platform: Record<string, any> }) {
+function Badge({ platform }: { platform: Game["platforms"][number] }) {
   return <span>{platform.platform.name}</span>;
 }
 

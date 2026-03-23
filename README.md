@@ -24,9 +24,9 @@ A full-stack **Game Discovery Platform** featuring an **AI chatbot** for each ga
 
 <img src="./public/gamekit-2.png" alt="GameKit game detail page Preview, sunset theme"/>
 
-### Home Page - Alternative Theme
+### Favourites Page - Alternative Theme
 
-<img src="./public/gamekit-3.png" alt="GameKit Homepage Preview, light theme"/>
+<img src="./public/gamekit-3.png" alt="GameKit Favourites page Preview, light theme"/>
 
 ## 🚀 Features
 
@@ -39,6 +39,8 @@ A full-stack **Game Discovery Platform** featuring an **AI chatbot** for each ga
 - 📱 **Responsive Design** – Mobile-first layout across all pages.
 - 💅🏻 **Custom Themes** – Light, dark and sunset modes.
 - 💰 **Rate Limiting** – Upstash Redis (6 req/24h per IP); visual coin indicator shows remaining requests.
+- 💾 **Session persistence** – Query cache and search workspaces survive refresh within the browser tab session; logout clears persisted data.
+- ❤️ **Favourites** – Per-user list at `/favourites` with heart control on cards and detail; backed by Supabase RLS.
 
 ### Ask AI Chatbot Architecture
 
@@ -58,6 +60,13 @@ A full-stack **Game Discovery Platform** featuring an **AI chatbot** for each ga
 - **Fuzzy Name Matching**: Custom normalizer strips edition suffixes ("HD", "Remastered") and calculates similarity with substring/year bonuses.
 - **Controlled Vocabulary**: 50+ platforms prevents hallucination; graceful degradation for obscure platforms (WonderSwan, Neo Geo Pocket).
 
+### Client persistence
+
+- **TanStack cache → `sessionStorage`** (`gamekit_query_cache`): `PersistQueryClientProvider` + async storage persister; reload rehydrates the **entire** persisted query cache (classic search, game detail, favourites queries, etc.) within a 24h `maxAge`, aligned with default `gcTime`. AI search is the main **rate-limited** case that motivated persistence; classic list results rehydrate the same way.
+- **Search workspaces → `sessionStorage`** (`gamekit_session_state:{guest|userId}`): `SearchContext` keeps `lastClassicQuery` / `lastAiQuery` in memory and syncs them to `sessionStorage` via `sessionDB`, so the **right `?q=`** is in the URL when you land on `/` or `/ai-search`; the page reads `q` from the URL and `useQuery` uses a **key derived from that `q`**—TanStack then serves **cached data for that key** if it exists, or fetches. TanStack never chooses your URL or your key for you; it only answers “do I already have this `queryKey`?”
+- **AI search execution**: runs on explicit submit, or immediately if valid cached data already exists for the same key—cold loads with `?q=` alone do not consume quota.
+- **Logout**: clears in-memory `QueryClient` and removes `gamekit_query_cache`; user-scoped session state keys are cleared on sign-out in `SearchContext`.
+
 ## 🛠️ Tech Stack
 
 ### Backend
@@ -76,7 +85,7 @@ A full-stack **Game Discovery Platform** featuring an **AI chatbot** for each ga
 
 - **Vite** – Lightning-fast build tool with HMR
 - **React + TypeScript** – Type-safe, component-based architecture
-- **TanStack Query** (`@tanstack/react-query`) – Server state management with intelligent caching
+- **TanStack Query** (`@tanstack/react-query`, `@tanstack/react-query-persist-client`, `@tanstack/query-async-storage-persister`) – Server state, caching, and session-scoped cache persistence
 - **React Router** (`react-router`) – Client-side routing with data loaders
 - **Tailwind CSS** – Utility-first styling with custom theme system
 - **Lucide React** (`lucide-react`) – Consistent iconography
@@ -134,10 +143,11 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
 ## 🔥 Future Enhancements
 
 - [ ] **Persist Ask AI history** – Save or restore chat across modal close / page reload (today history is per open session only)
-- [ ] **Game Favourites** – Persistent user collections with Supabase storage
 - [ ] **Advanced Filtering** – Multi-criteria filtering (genre, platform, year, rating)
 - [ ] **Recommendation Engine** – Collaborative filtering based on user preferences
 - [ ] **End-to-End Testing** – Playwright test suite with CI/CD integration
+- [ ] **Social sharing** – Share Game Details on Instagram, WhatsApp
+- [ ] **Scroll to top** – Control for long pages (e.g. search results)
 
 ---
 
@@ -170,10 +180,10 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
 4. **Add TanStack Query** for server state management
 
    ```bash
-   npm i @tanstack/react-query
+   npm i @tanstack/react-query @tanstack/react-query-persist-client @tanstack/query-async-storage-persister
    ```
 
-   [Docs](https://tanstack.com/query/latest/docs/framework/react/overview)
+   [Docs](https://tanstack.com/query/latest/docs/framework/react/overview) · [Persistence](https://tanstack.com/query/latest/docs/framework/react/plugins/persistQueryClient)
 
 5. **Install Lucide React** for icons
    ```bash

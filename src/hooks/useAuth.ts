@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { QUERY_CACHE_PERSIST_KEY, queryClient } from "../lib/queryClient";
 import { supabase } from "../lib/supabaseClient";
 import {
   type SignInWithPasswordCredentials,
@@ -35,7 +36,15 @@ export function useAuth() {
     []
   );
 
-  const signOut = useCallback(() => supabase.auth.signOut(), []);
+  const signOut = useCallback(async () => {
+    const result = await supabase.auth.signOut();
+    if (!result.error) {
+      // Why: any sign-out must drop private query data from memory and persisted session cache.
+      queryClient.clear();
+      window.sessionStorage.removeItem(QUERY_CACHE_PERSIST_KEY);
+    }
+    return result;
+  }, []);
 
   return {
     loading,

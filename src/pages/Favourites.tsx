@@ -1,19 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "react-router";
 import type { Game } from "../schemas";
-import GameCard from "../components/GameCard";
-import LoadingSpinner from "../components/LoadingSpinner";
 import noGames from "../assets/no-games.webp";
-import ErrorElement from "../components/ErrorElement";
 import { useSearch } from "../context/SearchContext";
 import { useAuth } from "../hooks/useAuth";
 import { useFavouriteGamesQuery } from "../hooks/useGameFavourites";
 import { mapWithConcurrency } from "../util/mapWithConcurrency";
+import GameGrid from "../components/GameGrid";
 
 // Caps parallel /api/game calls; see mapWithConcurrency.ts.
 const RAWG_CONCURRENCY = 5;
 
 export default function Favourites() {
-  const { user } = useAuth();
+  const location = useLocation();
+  const { user, loading: authLoading } = useAuth();
   const { fetchGames } = useSearch();
 
   // Phase 1: Supabase rows (game_id + created_at). Order is newest first from the hook.
@@ -43,10 +43,17 @@ export default function Favourites() {
     staleTime: 5000,
   });
 
-  const games = hydratedQuery.data;
-  // Spinner while loading ids, or ids are loaded and games are still fetching.
   const loading =
-    favouriteQuery.isPending || (rows.length > 0 && hydratedQuery.isPending);
+    authLoading ||
+    favouriteQuery.isPending ||
+    (rows.length > 0 && hydratedQuery.isPending);
+
+  const games = hydratedQuery.data;
+  const errorMessage = favouriteQuery.isError
+    ? favouriteQuery.error.message
+    : hydratedQuery.isError
+      ? hydratedQuery.error.message
+      : null;
 
   return (
     <>
@@ -54,40 +61,22 @@ export default function Favourites() {
         Favourites
       </h1>
 
-      {loading && <LoadingSpinner />}
-
-      {favouriteQuery.isError && (
-        <ErrorElement errorMessage={favouriteQuery.error.message} />
-      )}
-
-      {hydratedQuery.isError && (
-        <ErrorElement errorMessage={hydratedQuery.error.message} />
-      )}
-
-      {/* Empty only after favourites query settled with zero rows and no errors. */}
-      {!loading &&
-        !favouriteQuery.isError &&
-        !hydratedQuery.isError &&
-        rows.length === 0 && (
-          <div className="flex flex-col items-center gap-4">
-            <h2 className="text-center text-2xl font-bold">
-              No favourites yet <br />
-              Add games from search or a game page
-            </h2>
-            <img src={noGames} alt="" className="w-50" />
-          </div>
-        )}
-
-      {/* Grid mirrors Home: same card component and priority for above-the-fold images. */}
-      {!loading && games && games.length > 0 && !hydratedQuery.isError && (
-        <ul className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
-          {games.map((game: Game, index: number) => (
-            <li key={game.id}>
-              <GameCard game={game} priority={index < 4} />
-            </li>
-          ))}
-        </ul>
-      )}
+      <GameGrid
+        games={games}
+        isLoading={loading}
+        error={errorMessage}
+        emptyImage={noGames}
+        detailLinkState={{
+          backTo: `${location.pathname}${location.search}`,
+          backLabel: "Back to favourites",
+        }}
+        emptyMessage={
+          <>
+            No favourites yet <br />
+            Add games from search or a game page
+          </>
+        }
+      />
     </>
   );
 }
