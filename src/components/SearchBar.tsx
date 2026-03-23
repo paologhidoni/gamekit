@@ -34,7 +34,9 @@ export default function SearchBar({
   }, [committedQuery]);
 
   const fireDebouncedChange = useCallback(
-    (value: string) => onDebouncedChange?.(value),
+    (value: string): void => {
+      if (onDebouncedChange) onDebouncedChange(value);
+    },
     [onDebouncedChange],
   );
   const debouncedChange = useDebounce(fireDebouncedChange);
