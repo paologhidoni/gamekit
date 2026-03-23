@@ -1,88 +1,77 @@
 import { useQuery } from "@tanstack/react-query";
-import type { Game } from "../schemas";
-import GameCard from "../components/GameCard";
-import { useState } from "react";
+import { useCallback, useEffect } from "react";
+import { useLocation, useSearchParams } from "react-router";
 import SearchBar from "../components/SearchBar";
-import LoadingSpinner from "../components/LoadingSpinner";
+import GameGrid from "../components/GameGrid";
 import noGames from "../assets/no-games.webp";
-import aiSearchNoResults from "../assets/ai-search.webp";
-import ErrorElement from "../components/ErrorElement";
 import { useSearch } from "../context/SearchContext";
-import AiExplanation from "../components/AiExplanation";
 
 export default function Home() {
-  const [query, setQuery] = useState("");
-  const { isAiSearch, fetchGames, fetchAiGames } = useSearch();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { fetchGames, setLastClassicQuery } = useSearch();
 
-  const { data, isPending, isFetching, isError, error } = useQuery({
-    queryKey: ["games", { searchTerm: query, isAiSearch }],
-    queryFn: ({ signal }) =>
-      isAiSearch
-        ? fetchAiGames({ signal, query: { searchTerm: query } })
-        : fetchGames({ signal, query: { searchTerm: query } }),
+  const query = searchParams.get("q") ?? "";
+
+  // Why: sync URL-backed q into context so switching back from AI restores the last classic results.
+  useEffect(() => {
+    setLastClassicQuery(query);
+  }, [query, setLastClassicQuery]);
+
+  const commitQuery = useCallback(
+    (value: string) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          const trimmed = value.trim();
+          if (trimmed) next.set("q", trimmed);
+          else next.delete("q");
+          return next;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
+
+  const { data: games, isPending, isFetching, isError, error } = useQuery({
+    queryKey: ["games", { searchTerm: query }],
+    queryFn: async ({ signal }) => {
+      const result = await fetchGames({
+        signal,
+        query: { searchTerm: query },
+      });
+      return Array.isArray(result) ? result : [];
+    },
     staleTime: 5000,
-    enabled: isAiSearch ? query.trim().length > 0 : true,
-    retry: isAiSearch ? false : 3, // Disable retries for AI search to prevent rate limit burn
   });
-
-  // Handle AI search response structure
-  const games = isAiSearch ? data?.games : data;
-  const explanation = isAiSearch ? data?.explanation : null;
 
   return (
     <>
       <div className="m-auto md:max-w-2/3 lg:max-w-1/2 mb-8">
-        <SearchBar onSearch={setQuery} />
+        <SearchBar
+          committedQuery={query}
+          onDebouncedChange={commitQuery}
+          placeholder="Search games by title..."
+        />
       </div>
 
-      {/* Show while fetching for default list or AI with a term; isPending && isFetching matches v5 loading and skips disabled empty AI queries. */}
-      {isPending && isFetching && (!isAiSearch || query.trim().length > 0) && (
-        <LoadingSpinner />
-      )}
-
-      {isError && <ErrorElement errorMessage={error.message} />}
-
-      {/* AI Explanation */}
-      {isAiSearch && explanation && games && games.length > 0 && (
-        <AiExplanation explanation={explanation} gameCount={games.length} />
-      )}
-
-      {/* No Results */}
-      {!isPending && games && games.length === 0 && (
-        <div className="flex flex-col gap-4 items-center">
-          <h1 className="text-2xl font-bold text-center">
+      <GameGrid
+        games={games}
+        isLoading={isPending && isFetching}
+        error={isError ? error.message : null}
+        emptyImage={noGames}
+        detailLinkState={{
+          backTo: `${location.pathname}${location.search}`,
+          backLabel: "Back to results",
+        }}
+        emptyMessage={
+          <>
             No games found <br />
             Search again
-          </h1>
-          <img src={noGames} alt="No games found" className="w-50" />
-        </div>
-      )}
-
-      {/* Ai game search, no query entered yet */}
-      {isAiSearch && !query && (
-        <div className="flex flex-col gap-4 items-center">
-          <h1 className="text-2xl font-bold text-center">
-            Use ✨ AI to search for games
-            <br />
-            Your results will appear here!
-          </h1>
-          <img
-            src={aiSearchNoResults}
-            alt="llustration: AI game search"
-            className="w-110"
-          />
-        </div>
-      )}
-
-      {/* Game Grid */}
-      <ul className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
-        {games &&
-          games.map((game: Game, index: number) => (
-            <li key={game.id}>
-              <GameCard game={game} priority={index < 4} />
-            </li>
-          ))}
-      </ul>
+          </>
+        }
+      />
     </>
   );
 }
