@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router";
+import { ArrowLeft } from "lucide-react";
+import { Link, useLocation, useParams } from "react-router";
 import GameDetailSidebar from "../components/GameDetailSidebar";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorElement from "../components/ErrorElement";
@@ -10,9 +11,17 @@ import AiGameInfoButton from "../components/AiGameInfoButton";
 import RichTextRenderer from "../components/RichTextRenderer";
 import FavouriteButton from "../components/FavouriteButton";
 
+interface GameDetailLocationState {
+  backTo?: string;
+  backLabel?: string;
+}
+
 export default function GameDetail() {
   const { id } = useParams();
+  const location = useLocation();
   const { fetchGames } = useSearch();
+  const { backTo, backLabel } =
+    (location.state as GameDetailLocationState | null) ?? {};
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["singleGame", { id }],
@@ -20,9 +29,9 @@ export default function GameDetail() {
     staleTime: 5000,
   });
 
-  const description = data?.description
-    ? data.description
-    : "";
+  // fetchGames is Game | Game[]; by-id fetches always return a single Game.
+  const game = data && !Array.isArray(data) ? data : undefined;
+  const description = game?.description ? game.description : "";
 
   return (
     <>
@@ -30,47 +39,59 @@ export default function GameDetail() {
 
       {isError && <ErrorElement errorMessage={error.message} />}
 
-      {data && (
-        <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-          {/* HERO */}
-          <section className="rounded-2xl p-4 border-y-2 border-y-black min-h-[30vh] max-h-[50vh] relative order-1 lg:order-0">
-            <div className="absolute z-50 top-0 left-0 py-2 px-4">
-              <FavouriteButton gameId={data.id} gameName={data.name} />
-            </div>
+      {game && (
+        <div className="flex flex-col gap-4">
+          {backTo && (
+            <Link
+              to={backTo}
+              className="inline-flex w-fit items-center gap-2 rounded-full bg-(--color-bg-secondary) px-4 py-2 text-sm font-medium transition-colors hover:text-(--color-accent-primary)"
+            >
+              <ArrowLeft size={18} />
+              {backLabel ?? "Back to results"}
+            </Link>
+          )}
 
-            <div className="absolute z-50 top-0 right-0 py-2 px-4 bg-black opacity-70 rounded-bl-2xl rounded-tr-2xl">
-              <GameRating rating={data.rating} />
-            </div>
+          <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+            {/* HERO */}
+            <section className="rounded-2xl p-4 border-y-2 border-y-black min-h-[30vh] max-h-[50vh] relative order-1 lg:order-0">
+              <div className="absolute z-50 top-0 left-0 py-2 px-4">
+                <FavouriteButton gameId={game.id} gameName={game.name} />
+              </div>
 
-            <div className="absolute z-50 bottom-4 left-0 bg-black opacity-80 rounded-r-2xl p-4 md:pl-6">
-              <h1 className="font-gonadaltes tracking-wider uppercase text-xl lg:text-2xl font-bold text-white wrap-break-words">
-                {data.name}
-              </h1>
-            </div>
+              <div className="absolute z-50 top-0 right-0 py-2 px-4 bg-black opacity-70 rounded-bl-2xl rounded-tr-2xl">
+                <GameRating rating={game.rating} />
+              </div>
 
-            <BgImage
-              gameName={data.name}
-              gameBgImage={data.background_image}
-              extraClasses="object-top"
-              priority={true}
-            />
-          </section>
+              <div className="absolute z-50 bottom-4 left-0 bg-black opacity-80 rounded-r-2xl p-4 md:pl-6">
+                <h1 className="font-gonadaltes tracking-wider uppercase text-xl lg:text-2xl font-bold text-white wrap-break-words">
+                  {game.name}
+                </h1>
+              </div>
 
-          {/* SIDEBAR */}
-          <section className="bg-(--color-bg-secondary) rounded-2xl order-3 lg:order-0 lg:row-span-2 border-b-2 border-b-(--color-accent-secondary)">
-            <GameDetailSidebar game={data} />
-          </section>
+              <BgImage
+                gameName={game.name}
+                gameBgImage={game.background_image}
+                extraClasses="object-top"
+                priority={true}
+              />
+            </section>
 
-          {/* DESCRIPTION + Ask AI Button */}
-          <section className="bg-(--color-bg-secondary) rounded-2xl py-6 px-4 md:px-6 border-y-2 border-y-(--color-accent-secondary) order-2 lg:order-0">
-            <div className="flex items-center justify-between mb-6">
-              <span className="font-semibold text-lg">Description</span>
+            {/* SIDEBAR */}
+            <section className="bg-(--color-bg-secondary) rounded-2xl order-3 lg:order-0 lg:row-span-2 border-b-2 border-b-(--color-accent-secondary)">
+              <GameDetailSidebar game={game} />
+            </section>
 
-              {/* Ask AI Button */}
-              <AiGameInfoButton gameName={data.name} />
-            </div>
-            <RichTextRenderer content={description} className="leading-6.5" />
-          </section>
+            {/* DESCRIPTION + Ask AI Button */}
+            <section className="bg-(--color-bg-secondary) rounded-2xl py-6 px-4 md:px-6 border-y-2 border-y-(--color-accent-secondary) order-2 lg:order-0">
+              <div className="flex items-center justify-between mb-6">
+                <span className="font-semibold text-lg">Description</span>
+
+                {/* Ask AI Button */}
+                <AiGameInfoButton gameName={game.name} />
+              </div>
+              <RichTextRenderer content={description} className="leading-6.5" />
+            </section>
+          </div>
         </div>
       )}
     </>
