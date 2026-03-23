@@ -2,13 +2,18 @@ import { Suspense, lazy } from "react";
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router";
 import RootLayout from "./components/RootLayout";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { ThemeContextProvider } from "./context/ThemeContext";
 import ErrorElement from "./components/ErrorElement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { SearchContextProvider } from "./context/SearchContext";
 import { ToastProvider } from "./context/ToastContext";
+import {
+  queryClient,
+  sessionStoragePersister,
+  SESSION_QUERY_MAX_AGE,
+} from "./lib/queryClient";
 
 // Lazy load page components
 const Home = lazy(() => import("./pages/Home"));
@@ -17,8 +22,6 @@ const Settings = lazy(() => import("./pages/Settings"));
 const Favourites = lazy(() => import("./pages/Favourites"));
 const AiSearch = lazy(() => import("./pages/AiSearch"));
 const Authentication = lazy(() => import("./pages/Authentication"));
-
-const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -86,7 +89,13 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister: sessionStoragePersister,
+        maxAge: SESSION_QUERY_MAX_AGE,
+      }}
+    >
       <ThemeContextProvider>
         <SearchContextProvider>
           <ToastProvider>
@@ -94,7 +103,7 @@ function App() {
           </ToastProvider>
         </SearchContextProvider>
       </ThemeContextProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }
 
