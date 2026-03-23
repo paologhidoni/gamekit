@@ -1,5 +1,6 @@
 import logo from "../assets/logo-tr.webp";
 import logoLight from "../assets/logo-light.webp";
+import { useSearch } from "../context/SearchContext";
 import { useTheme } from "../context/ThemeContext";
 import { Link } from "react-router";
 
@@ -8,13 +9,17 @@ interface logoProps {
 }
 
 export default function Logo({ extraClasses }: logoProps) {
+  const { lastClassicQuery } = useSearch();
   const { themeName } = useTheme();
   const logoSource = themeName === "light" ? logo : logoLight;
 
   const classes = `flex ${extraClasses}`;
+  const to = lastClassicQuery
+    ? `/?q=${encodeURIComponent(lastClassicQuery)}`
+    : "/";
 
   return (
-    <Link to="/" className={classes}>
+    <Link to={to} className={classes}>
       <img
         src={logoSource}
         alt="GameKit Home"
