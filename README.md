@@ -130,7 +130,7 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
       UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_token_here
       ```
 
-    See `.env.example` and `.env.backend.example` for a complete templates.
+    See `.env.example` and `.env.backend.example` for complete templates.
 
     ⚠️ Important: Make sure both `.env` and `.env.backend` are added to `.gitignore` to prevent secrets from being committed.
 
@@ -140,12 +140,26 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
     npm run local
     ```
 
+## Testing
+
+The suite uses **Vitest** for fast checks (components and `api/` handlers) and **Playwright** for browser flows. AI routes are mocked in tests so CI stays cheap and stable.
+
+| Command             | What it runs                           |
+| ------------------- | -------------------------------------- |
+| `npm run test:unit` | Vitest — colocated tests under `src/`  |
+| `npm run test:api`  | Vitest — handler tests in `tests/api/` |
+| `npm run test:e2e`  | Playwright — specs in `tests/e2e/`     |
+| `npm run test:all`  | All of the above                       |
+
+Shared fixtures and MSW live under `tests/fixtures` and `tests/msw`. On a fresh machine, install browsers once: `npx playwright install chromium`.
+
+**CI:** pull requests and pushes to `main` run `test:all` via [`.github/workflows/tests.yml`](.github/workflows/tests.yml).
+
 ## 🔥 Future Enhancements
 
 - [ ] **Persist Ask AI history** – Save or restore chat across modal close / page reload (today history is per open session only)
 - [ ] **Advanced Filtering** – Multi-criteria filtering (genre, platform, year, rating)
 - [ ] **Recommendation Engine** – Collaborative filtering based on user preferences
-- [ ] **End-to-End Testing** – Playwright test suite with CI/CD integration
 - [ ] **Social sharing** – Share Game Details on Instagram, WhatsApp
 - [ ] **Scroll to top** – Control for long pages (e.g. search results)
 
