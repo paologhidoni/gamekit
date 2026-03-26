@@ -1,0 +1,37 @@
+{
+  "explanation": "Found 1 cozy RPG on Game Boy that matches your search.",
+  "games": [
+    {
+      "id": 999,
+      "name": "Golden Sun",
+      "genres": [
+        {
+          "name": "Role-playing (RPG)"
+        }
+      ],
+      "rating": 4.6,
+      "platforms": [
+        {
+          "platform": {
+            "name": "Game Boy Advance"
+          }
+        }
+      ],
+      "description": "A classic handheld RPG.",
+      "released": "2001-11-11",
+      "background_image": "/no-image.jpg",
+      "metacritic": 91,
+      "developers": [
+        {
+          "name": "Camelot"
+        }
+      ],
+      "tags": [],
+      "multiplayer": []
+    }
+  ],
+  "remaining": 5,
+  "metadata": {
+    "usedFallback": false
+  }
+}
