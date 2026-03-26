@@ -12,7 +12,6 @@ export default defineConfig({
     env: {
       VITE_SUPABASE_URL: "http://127.0.0.1:54321",
       VITE_SUPABASE_ANON_KEY: "test-anon-key",
-      VITE_ADMIN_SECRET: "test-admin-secret",
     },
   },
 });
