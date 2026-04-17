@@ -10,6 +10,7 @@ export default function Authentication() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isSignedUp, setIsSignedUp] = useState<boolean>(false);
+  const [showSignupLoginHint, setShowSignupLoginHint] = useState<boolean>(false);
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ export default function Authentication() {
     setLoading(true);
     setError(null);
     setIsSignedUp(false);
+    setShowSignupLoginHint(false);
 
     try {
       // Enforce password policy before sign-up request
@@ -33,7 +35,7 @@ export default function Authentication() {
         }
       }
 
-      const { error } = isLogin
+      const authResult = isLogin
         ? await signIn({ email, password })
         : await signUp({
             email,
@@ -42,15 +44,26 @@ export default function Authentication() {
               emailRedirectTo: window.location.origin,
             },
           });
+      const { error } = authResult;
 
       if (error) throw error;
 
       if (isLogin) {
         navigate("/");
       } else {
+        // Supabase may return success without creating a new identity for existing users.
+        const identities = authResult.data.user?.identities ?? [];
+        if (identities.length === 0) {
+          setShowSignupLoginHint(true);
+          return;
+        }
         setIsSignedUp(true);
       }
     } catch (err: unknown) {
+      // Show neutral guidance for signup failures
+      if (!isLogin) {
+        setShowSignupLoginHint(true);
+      }
       setError(
         err instanceof Error ? err.message : "An unexpected error occurred.",
       );
@@ -66,6 +79,7 @@ export default function Authentication() {
     navigate(`?mode=${nextMode}`, { replace: true });
     setError(null);
     setIsSignedUp(false);
+    setShowSignupLoginHint(false);
   };
 
   return (
@@ -113,6 +127,22 @@ export default function Authentication() {
 
         {error && (
           <p className="text-center font-bold text-red-500 mt-2">{error}</p>
+        )}
+
+        {showSignupLoginHint && !isLogin && (
+          <div className="mt-2 rounded-xl bg-(--color-bg-secondary) p-3">
+            <p className="text-sm text-(--color-text-primary)">
+              If an account exists for this email, you can log in or reset your
+              password.
+            </p>
+            <button
+              type="button"
+              onClick={handleAuthChoice}
+              className="mt-2 text-sm font-semibold text-(--color-accent-primary) hover:opacity-80 cursor-pointer"
+            >
+              Switch to Login
+            </button>
+          </div>
         )}
 
         <div className="flex justify-between items-center flex-wrap gap-4">
