@@ -1,5 +1,11 @@
 import { Search, Sparkles, Send } from "lucide-react";
-import { useCallback, useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
 import useDebounce from "../hooks/useDebounce";
 import { useSearch } from "../context/SearchContext";
 import AiSearchToggle from "./AiSearchToggle";
