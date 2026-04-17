@@ -29,14 +29,14 @@ export default function ScrollToTopButton() {
     <button
       type="button"
       onClick={handleClick}
-      className="fixed right-4 bottom-4 z-50 rounded-full p-2 transition-colors hover:opacity-80 md:right-6 md:bottom-6 cursor-pointer"
+      className="fixed right-4 bottom-4 z-50 border-3 border-(--color-accent-primary-t2) rounded-full p-3 transition-colors hover:opacity-80 md:right-6 md:bottom-6 cursor-pointer"
       style={{
         backgroundColor: "var(--color-accent-primary)",
         color: "var(--color-text-on-accent)",
       }}
       aria-label="Scroll to top"
     >
-      <ChevronUp size={20} />
+      <ChevronUp size={35} />
     </button>
   );
 }
