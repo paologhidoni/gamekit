@@ -66,6 +66,8 @@ export default function SearchBar({
     setInputValue("");
     if (onDebouncedChange) onDebouncedChange("");
   };
+  const isAiSearch = showSubmitButton && icon === "sparkles";
+  const showLeftSubmit = isAiSearch && inputValue.trim().length > 0;
 
   const Icon = icon === "sparkles" ? Sparkles : Search;
 
@@ -89,9 +91,22 @@ export default function SearchBar({
           color: "var(--color-text-primary)",
         }}
       >
-        <Icon className="absolute left-2 top-1/2 -translate-y-1/2" />
-
         <form onSubmit={handleSubmit}>
+          {/* Left icon or submit action */}
+          {showLeftSubmit ? (
+            <button
+              type="submit"
+              disabled={remainingAiRequests === 0}
+              className="absolute left-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors hover:opacity-70 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ color: "var(--color-accent-primary)" }}
+              aria-label="Submit AI search"
+            >
+              <Send size={20} />
+            </button>
+          ) : (
+            <Icon className="absolute left-2 top-1/2 -translate-y-1/2" />
+          )}
+
           <label htmlFor="search-game-input" className="sr-only">
             Search for a game
           </label>
@@ -101,7 +116,7 @@ export default function SearchBar({
             value={inputValue}
             onChange={handleChange}
             type="text"
-            className={`py-2 pl-10 w-full rounded-full outline-none ${showSubmitButton ? "pr-20" : "pr-12"}`}
+            className="py-2 pl-10 pr-12 w-full rounded-full outline-none"
             placeholder={placeholder}
           />
 
@@ -109,23 +124,11 @@ export default function SearchBar({
             <button
               type="button"
               onClick={handleClear}
-              className={`absolute top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors hover:opacity-70 cursor-pointer ${showSubmitButton ? "right-10" : "right-2"}`}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors hover:opacity-70 cursor-pointer"
               style={{ color: "var(--color-text-tertiary)" }}
               aria-label="Clear search"
             >
-              <X size={18} />
-            </button>
-          )}
-
-          {showSubmitButton && (
-            <button
-              type="submit"
-              disabled={remainingAiRequests === 0}
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors hover:opacity-70 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-              style={{ color: "var(--color-accent-primary)" }}
-              aria-label="Submit AI search"
-            >
-              <Send size={20} />
+              <X size={24} />
             </button>
           )}
         </form>
