@@ -70,7 +70,7 @@ export default function ForgotPassword() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-fit rounded-xl border-2 border-(--color-accent-primary) bg-(--color-accent-primary) px-4 py-2 font-bold text-(--color-text-secondary) transition-colors hover:bg-(--color-accent-secondary) hover:border-(--color-accent-secondary) disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-fit cursor-pointer rounded-xl border-2 border-(--color-accent-primary) bg-(--color-accent-primary) px-4 py-2 font-bold text-(--color-text-secondary) transition-colors hover:bg-(--color-accent-secondary) hover:border-(--color-accent-secondary) disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSubmitting ? "Sending..." : "Send reset email"}
         </button>
