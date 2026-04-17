@@ -29,8 +29,9 @@ export default function RichTextRenderer({
   className,
 }: RichTextRendererProps) {
   if (!content) return null;
-  // Keep long text inside container
-  const baseTextWrapClass = "break-words [overflow-wrap:anywhere]";
+  // Force wrapping for nested rich text nodes
+  const baseTextWrapClass =
+    "break-words [overflow-wrap:anywhere] [&_*]:break-words [&_*]:[overflow-wrap:anywhere] [&_*]:whitespace-normal";
 
   if (looksLikeHtml(content)) {
     const sanitizedHtml = DOMPurify.sanitize(content);
