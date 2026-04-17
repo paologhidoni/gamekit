@@ -22,6 +22,8 @@ const Settings = lazy(() => import("./pages/Settings"));
 const Favourites = lazy(() => import("./pages/Favourites"));
 const AiSearch = lazy(() => import("./pages/AiSearch"));
 const Authentication = lazy(() => import("./pages/Authentication"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
 const router = createBrowserRouter([
   {
@@ -34,6 +36,22 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<LoadingSpinner />}>
             <Authentication />
+          </Suspense>
+        ),
+      },
+      {
+        path: "forgot-password",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <ForgotPassword />
+          </Suspense>
+        ),
+      },
+      {
+        path: "auth/reset-password",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <ResetPassword />
           </Suspense>
         ),
       },

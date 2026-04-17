@@ -123,6 +123,15 @@ export default function Authentication() {
               Use 8+ chars with uppercase, lowercase, number, and symbol.
             </p>
           )}
+          {isLogin && (
+            <button
+              type="button"
+              onClick={() => navigate("/forgot-password")}
+              className="text-left text-sm font-semibold text-(--color-accent-primary) hover:opacity-80 cursor-pointer"
+            >
+              Forgot password?
+            </button>
+          )}
         </div>
 
         {error && (

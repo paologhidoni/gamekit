@@ -12,6 +12,9 @@ vi.mock("../hooks/useAuth", () => ({
 const signInMock = vi.fn();
 const signUpMock = vi.fn();
 const signOutMock = vi.fn();
+const changePasswordMock = vi.fn();
+const requestPasswordResetMock = vi.fn();
+const resetPasswordMock = vi.fn();
 const mockedUseAuth = vi.mocked(useAuth);
 
 function renderAuthentication(entry: string) {
@@ -29,13 +32,19 @@ describe("Authentication", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     signInMock.mockResolvedValue({ error: null });
-    signUpMock.mockResolvedValue({ error: null });
+    signUpMock.mockResolvedValue({
+      error: null,
+      data: { user: { identities: [{}] } },
+    });
     mockedUseAuth.mockReturnValue({
       loading: false,
       user: null,
       signIn: signInMock,
       signUp: signUpMock,
       signOut: signOutMock,
+      changePassword: changePasswordMock,
+      requestPasswordReset: requestPasswordResetMock,
+      resetPassword: resetPasswordMock,
     });
   });
 

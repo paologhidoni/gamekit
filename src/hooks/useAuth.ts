@@ -75,6 +75,21 @@ export function useAuth() {
     [user?.email]
   );
 
+  const requestPasswordReset = useCallback(async (email: string) => {
+    const redirectTo = `${window.location.origin}/auth/reset-password`;
+    // Send reset email with app-specific redirect target.
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo,
+    });
+    return { error };
+  }, []);
+
+  const resetPassword = useCallback(async (newPassword: string) => {
+    // Update password from reset-link auth context.
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    return { error };
+  }, []);
+
   return {
     loading,
     user,
@@ -82,5 +97,7 @@ export function useAuth() {
     signIn,
     signOut,
     changePassword,
+    requestPasswordReset,
+    resetPassword,
   };
 }
