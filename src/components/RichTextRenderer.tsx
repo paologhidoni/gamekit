@@ -29,12 +29,14 @@ export default function RichTextRenderer({
   className,
 }: RichTextRendererProps) {
   if (!content) return null;
+  // Keep long text inside container
+  const baseTextWrapClass = "break-words [overflow-wrap:anywhere]";
 
   if (looksLikeHtml(content)) {
     const sanitizedHtml = DOMPurify.sanitize(content);
     return (
       <div
-        className={className}
+        className={`${baseTextWrapClass} ${className ?? ""}`.trim()}
         // RAWG descriptions are HTML. We sanitize before rendering.
         dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
       />
@@ -42,7 +44,7 @@ export default function RichTextRenderer({
   }
 
   return (
-    <div className={className}>
+    <div className={`${baseTextWrapClass} ${className ?? ""}`.trim()}>
       <ReactMarkdown
         rehypePlugins={[rehypeSanitize]}
         skipHtml={true}
