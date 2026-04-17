@@ -1,4 +1,4 @@
-import { Search, Sparkles, Send } from "lucide-react";
+import { Search, Sparkles, Send, X } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -61,6 +61,11 @@ export default function SearchBar({
       onSubmit(inputValue.trim());
     }
   };
+  // Clear search input
+  const handleClear = () => {
+    setInputValue("");
+    if (onDebouncedChange) onDebouncedChange("");
+  };
 
   const Icon = icon === "sparkles" ? Sparkles : Search;
 
@@ -96,9 +101,21 @@ export default function SearchBar({
             value={inputValue}
             onChange={handleChange}
             type="text"
-            className={`py-2 pl-10 w-full rounded-full outline-none ${showSubmitButton ? "pr-12" : "pr-6"}`}
+            className={`py-2 pl-10 w-full rounded-full outline-none ${showSubmitButton ? "pr-20" : "pr-12"}`}
             placeholder={placeholder}
           />
+
+          {inputValue.length > 0 && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className={`absolute top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors hover:opacity-70 cursor-pointer ${showSubmitButton ? "right-10" : "right-2"}`}
+              style={{ color: "var(--color-text-tertiary)" }}
+              aria-label="Clear search"
+            >
+              <X size={18} />
+            </button>
+          )}
 
           {showSubmitButton && (
             <button
