@@ -1,6 +1,7 @@
 import { Outlet, ScrollRestoration } from "react-router";
 import Navigation from "./Navigation";
 import Footer from "./Footer";
+import ScrollToTopButton from "./ScrollToTopButton";
 
 export default function RootLayout() {
   return (
@@ -13,6 +14,7 @@ export default function RootLayout() {
       </main>
 
       <Footer />
+      <ScrollToTopButton />
     </div>
   );
 }
