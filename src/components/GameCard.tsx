@@ -60,7 +60,7 @@ export default function GameCard({
         <FavouriteButton
           gameId={game.id}
           gameName={game.name}
-          className="absolute top-2 right-2 z-60"
+          className="absolute top-2 right-2 z-50"
         />
 
         <GameBadges game={game} />
