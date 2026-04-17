@@ -147,16 +147,16 @@ export default function Authentication() {
 
         <div className="flex justify-between items-center flex-wrap gap-4">
           <Button
-            type="button"
-            text={isLogin ? "Create account" : "Login"}
-            handleOnClick={handleAuthChoice}
-            variant="variant-2"
-          />
-
-          <Button
             type="submit"
             text={loading ? "Submitting..." : isLogin ? "Login" : "Create user"}
             disabled={loading}
+          />
+
+          <Button
+            type="button"
+            text={isLogin ? "Switch to create account" : "Switch to login"}
+            handleOnClick={handleAuthChoice}
+            variant="variant-2"
           />
         </div>
       </form>
