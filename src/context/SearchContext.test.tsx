@@ -24,6 +24,9 @@ describe("SearchContextProvider", () => {
       signIn: vi.fn(),
       signUp: vi.fn(),
       signOut: vi.fn(),
+      changePassword: vi.fn(),
+      requestPasswordReset: vi.fn(),
+      resetPassword: vi.fn(),
     });
     window.sessionStorage.clear();
   });

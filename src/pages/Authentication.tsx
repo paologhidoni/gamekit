@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import Button from "../components/Button";
 import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../hooks/useAuth";
+import { validatePasswordPolicy } from "../util/passwordPolicy";
 
 export default function Authentication() {
   const [email, setEmail] = useState<string>("");
@@ -9,6 +10,7 @@ export default function Authentication() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isSignedUp, setIsSignedUp] = useState<boolean>(false);
+  const [showSignupLoginHint, setShowSignupLoginHint] = useState<boolean>(false);
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -20,9 +22,20 @@ export default function Authentication() {
     setLoading(true);
     setError(null);
     setIsSignedUp(false);
+    setShowSignupLoginHint(false);
 
     try {
-      const { error } = isLogin
+      // Enforce password policy before sign-up request
+      if (!isLogin) {
+        const passwordError = validatePasswordPolicy(password);
+        if (passwordError) {
+          setError(passwordError);
+          setLoading(false);
+          return;
+        }
+      }
+
+      const authResult = isLogin
         ? await signIn({ email, password })
         : await signUp({
             email,
@@ -31,15 +44,26 @@ export default function Authentication() {
               emailRedirectTo: window.location.origin,
             },
           });
+      const { error } = authResult;
 
       if (error) throw error;
 
       if (isLogin) {
         navigate("/");
       } else {
+        // Supabase may return success without creating a new identity for existing users.
+        const identities = authResult.data.user?.identities ?? [];
+        if (identities.length === 0) {
+          setShowSignupLoginHint(true);
+          return;
+        }
         setIsSignedUp(true);
       }
     } catch (err: unknown) {
+      // Show neutral guidance for signup failures
+      if (!isLogin) {
+        setShowSignupLoginHint(true);
+      }
       setError(
         err instanceof Error ? err.message : "An unexpected error occurred.",
       );
@@ -55,6 +79,7 @@ export default function Authentication() {
     navigate(`?mode=${nextMode}`, { replace: true });
     setError(null);
     setIsSignedUp(false);
+    setShowSignupLoginHint(false);
   };
 
   return (
@@ -93,24 +118,54 @@ export default function Authentication() {
             onChange={(e) => setPassword(e.target.value)}
             className="py-2 px-4 bg-(--color-bg-secondary) text-(--color-text-primary) rounded-2xl outline-none"
           />
+          {!isLogin && (
+            <p className="text-xs text-(--color-text-tertiary)">
+              Use 8+ chars with uppercase, lowercase, number, and symbol.
+            </p>
+          )}
+          {isLogin && (
+            <button
+              type="button"
+              onClick={() => navigate("/forgot-password")}
+              className="text-left text-sm font-semibold text-(--color-accent-primary) hover:opacity-80 cursor-pointer"
+            >
+              Forgot password?
+            </button>
+          )}
         </div>
 
         {error && (
           <p className="text-center font-bold text-red-500 mt-2">{error}</p>
         )}
 
-        <div className="flex justify-between items-center flex-wrap gap-4">
-          <Button
-            type="button"
-            text={isLogin ? "Create account" : "Login"}
-            handleOnClick={handleAuthChoice}
-            variant="variant-2"
-          />
+        {showSignupLoginHint && !isLogin && (
+          <div className="mt-2 rounded-xl bg-(--color-bg-secondary) p-3">
+            <p className="text-sm text-(--color-text-primary)">
+              If an account exists for this email, you can log in or reset your
+              password.
+            </p>
+            <button
+              type="button"
+              onClick={handleAuthChoice}
+              className="mt-2 text-sm font-semibold text-(--color-accent-primary) hover:opacity-80 cursor-pointer"
+            >
+              Switch to Login
+            </button>
+          </div>
+        )}
 
+        <div className="flex justify-between items-center flex-wrap gap-4">
           <Button
             type="submit"
             text={loading ? "Submitting..." : isLogin ? "Login" : "Create user"}
             disabled={loading}
+          />
+
+          <Button
+            type="button"
+            text={isLogin ? "Switch to create account" : "Switch to login"}
+            handleOnClick={handleAuthChoice}
+            variant="variant-2"
           />
         </div>
       </form>
