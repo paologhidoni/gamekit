@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { QUERY_CACHE_PERSIST_KEY, queryClient } from "../lib/queryClient";
 import { supabase } from "../lib/supabaseClient";
 import {
+  AuthError,
   type SignInWithPasswordCredentials,
   type SignUpWithPasswordCredentials,
   type User,
@@ -46,11 +47,40 @@ export function useAuth() {
     return result;
   }, []);
 
+  const changePassword = useCallback(
+    async ({
+      currentPassword,
+      newPassword,
+    }: {
+      currentPassword: string;
+      newPassword: string;
+    }): Promise<{ error: AuthError | null }> => {
+      if (!user?.email) {
+        return { error: new AuthError("Authenticated user email not found.") };
+      }
+
+      // Verify current password before changing credentials.
+      const { error: reauthError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword,
+      });
+      if (reauthError) return { error: reauthError };
+
+      // Apply the password update for the current user.
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+      return { error: updateError };
+    },
+    [user?.email]
+  );
+
   return {
     loading,
     user,
     signUp,
     signIn,
     signOut,
+    changePassword,
   };
 }

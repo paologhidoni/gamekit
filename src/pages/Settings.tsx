@@ -1,4 +1,5 @@
 import ThemeSelector from "../components/ThemeSelector";
+import PasswordResetForm from "../components/PasswordResetForm/PasswordResetForm";
 
 export default function Settings() {
   return (
@@ -8,6 +9,7 @@ export default function Settings() {
       </h1>
 
       <ThemeSelector />
+      <PasswordResetForm />
     </div>
   );
 }

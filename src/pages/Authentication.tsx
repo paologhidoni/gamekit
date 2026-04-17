@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import Button from "../components/Button";
 import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../hooks/useAuth";
+import { validatePasswordPolicy } from "../util/passwordPolicy";
 
 export default function Authentication() {
   const [email, setEmail] = useState<string>("");
@@ -22,6 +23,16 @@ export default function Authentication() {
     setIsSignedUp(false);
 
     try {
+      // Enforce password policy before sign-up request
+      if (!isLogin) {
+        const passwordError = validatePasswordPolicy(password);
+        if (passwordError) {
+          setError(passwordError);
+          setLoading(false);
+          return;
+        }
+      }
+
       const { error } = isLogin
         ? await signIn({ email, password })
         : await signUp({
@@ -93,6 +104,11 @@ export default function Authentication() {
             onChange={(e) => setPassword(e.target.value)}
             className="py-2 px-4 bg-(--color-bg-secondary) text-(--color-text-primary) rounded-2xl outline-none"
           />
+          {!isLogin && (
+            <p className="text-xs text-(--color-text-tertiary)">
+              Use 8+ chars with uppercase, lowercase, number, and symbol.
+            </p>
+          )}
         </div>
 
         {error && (
