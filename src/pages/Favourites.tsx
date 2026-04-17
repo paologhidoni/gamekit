@@ -57,7 +57,7 @@ export default function Favourites() {
 
   return (
     <>
-      <h1 className="mb-8 text-3xl font-bold text-(--color-text-primary) text-center">
+      <h1 className="mb-8 text-3xl font-gonadaltes tracking-wider uppercase font-bold text-(--color-text-primary) text-center">
         Favourites
       </h1>
 
