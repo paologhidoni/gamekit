@@ -24,6 +24,8 @@ export default function Home() {
         (prev) => {
           const next = new URLSearchParams(prev);
           const trimmed = value.trim();
+          // Don't update the URL if the search value is effectively the same, so that we don't get the undesired space trimming while user is typing.
+          if (trimmed === query) return next;
           if (trimmed) next.set("q", trimmed);
           else next.delete("q");
           return next;
@@ -31,10 +33,16 @@ export default function Home() {
         { replace: true },
       );
     },
-    [setSearchParams],
+    [query, setSearchParams],
   );
 
-  const { data: games, isPending, isFetching, isError, error } = useQuery({
+  const {
+    data: games,
+    isPending,
+    isFetching,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["games", { searchTerm: query }],
     queryFn: async ({ signal }) => {
       const result = await fetchGames({
