@@ -72,7 +72,7 @@ export function useAuth() {
       });
       return { error: updateError };
     },
-    [user?.email]
+    [user]
   );
 
   const requestPasswordReset = useCallback(async (email: string) => {
