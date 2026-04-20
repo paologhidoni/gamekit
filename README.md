@@ -63,7 +63,7 @@ A full-stack **Game Discovery Platform** featuring an **AI chatbot** for each ga
 ### Client persistence
 
 - **TanStack cache → `sessionStorage`** (`gamekit_query_cache`): `PersistQueryClientProvider` + async storage persister; reload rehydrates the **entire** persisted query cache (classic search, game detail, favourites queries, etc.) within a 24h `maxAge`, aligned with default `gcTime`. AI search is the main **rate-limited** case that motivated persistence; classic list results rehydrate the same way.
-- **Search workspaces → `sessionStorage`** (`gamekit_session_state:{guest|userId}`): `SearchContext` keeps `lastClassicQuery` / `lastAiQuery` in memory and syncs them to `sessionStorage` via `sessionDB`, so the **right `?q=`** is in the URL when you land on `/` or `/ai-search`; the page reads `q` from the URL and `useQuery` uses a **key derived from that `q`**—TanStack then serves **cached data for that key** if it exists, or fetches. TanStack never chooses your URL or your key for you; it only answers “do I already have this `queryKey`?”
+- **Search workspaces → `sessionStorage`** (`gamekit_session_state:{guest|userId}`): `SearchContext` keeps `lastClassicQuery` / `lastAiQuery` in memory and syncs them to `sessionStorage` via `sessionDB`, so the **right `?q=`** is in the URL when you land on `/` or `/ai-search`; the page reads `q` from the URL and `useQuery` uses a **key derived from that `q`**. TanStack then serves **cached data for that key** if it exists, or fetches. TanStack never chooses your URL or your key for you; it only answers “do I already have this `queryKey`?”
 - **AI search execution**: runs on explicit submit, or immediately if valid cached data already exists for the same key—cold loads with `?q=` alone do not consume quota.
 - **Logout**: clears in-memory `QueryClient` and removes `gamekit_query_cache`; user-scoped session state keys are cleared on sign-out in `SearchContext`.
 
@@ -85,7 +85,7 @@ A full-stack **Game Discovery Platform** featuring an **AI chatbot** for each ga
 
 - **Vite** – Lightning-fast build tool with HMR
 - **React + TypeScript** – Type-safe, component-based architecture
-- **TanStack Query** (`@tanstack/react-query`, `@tanstack/react-query-persist-client`, `@tanstack/query-async-storage-persister`) – Server state, caching, and session-scoped cache persistence
+- **TanStack Query** (`@tanstack/react-query`, `@tanstack/react-query-persist-client`, `@tanstack/query-async-storage-persister`) – Server state, caching and session-scoped cache persistence
 - **React Router** (`react-router`) – Client-side routing with data loaders
 - **Tailwind CSS** – Utility-first styling with custom theme system
 - **Lucide React** (`lucide-react`) – Consistent iconography
