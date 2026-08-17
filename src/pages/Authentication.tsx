@@ -51,7 +51,7 @@ export default function Authentication() {
       if (isLogin) {
         navigate("/");
       } else {
-        // Supabase may return success without creating a new identity for existing users.
+        // Auth may return success without creating a new identity for existing users.
         const identities = authResult.data.user?.identities ?? [];
         if (identities.length === 0) {
           setShowSignupLoginHint(true);

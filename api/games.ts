@@ -47,6 +47,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const url = `https://api.rawg.io/api/games?${params.toString()}`;
 
     const response = await fetch(url);
+    const contentType = response.headers.get("content-type") ?? "";
+    if (!contentType.includes("application/json")) {
+      return res.status(502).json({
+        error: "Games service is temporarily unavailable. Please try again.",
+      });
+    }
+
     const data = await response.json();
 
     if (!response.ok) {

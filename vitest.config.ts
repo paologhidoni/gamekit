@@ -10,8 +10,8 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./tests/msw/setup.ts"],
     env: {
-      VITE_SUPABASE_URL: "http://127.0.0.1:54321",
-      VITE_SUPABASE_ANON_KEY: "test-anon-key",
+      VITE_NEON_AUTH_URL: "http://127.0.0.1:54321/auth",
+      VITE_NEON_DATA_API_URL: "http://127.0.0.1:54321/rest/v1",
     },
   },
 });

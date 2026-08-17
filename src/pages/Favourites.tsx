@@ -16,7 +16,7 @@ export default function Favourites() {
   const { user, loading: authLoading } = useAuth();
   const { fetchGames } = useSearch();
 
-  // Phase 1: Supabase rows (game_id + created_at). Order is newest first from the hook.
+  // Phase 1: favourite rows (game_id + created_at). Order is newest first from the hook.
   const favouriteQuery = useFavouriteGamesQuery();
   const rows = favouriteQuery.data ?? [];
 

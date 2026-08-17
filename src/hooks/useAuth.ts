@@ -1,23 +1,44 @@
 import { useCallback, useEffect, useState } from "react";
+import { AuthError } from "@neondatabase/neon-js/auth";
 import { QUERY_CACHE_PERSIST_KEY, queryClient } from "../lib/queryClient";
-import { supabase } from "../lib/supabaseClient";
-import {
-  AuthError,
-  type SignInWithPasswordCredentials,
-  type SignUpWithPasswordCredentials,
-  type User,
-} from "@supabase/supabase-js";
+import { neon, neonAuthApi } from "../lib/neonClient";
+
+export type AuthUser = {
+  id: string;
+  email?: string;
+};
+
+type SignInWithPasswordCredentials = {
+  email: string;
+  password: string;
+};
+
+type SignUpWithPasswordCredentials = SignInWithPasswordCredentials & {
+  options?: {
+    emailRedirectTo?: string;
+    data?: Record<string, unknown>;
+  };
+};
+
+function toAuthError(error: unknown): AuthError {
+  if (error instanceof AuthError) return error;
+  if (error && typeof error === "object" && "message" in error) {
+    return new AuthError(String(error.message));
+  }
+  return new AuthError("An unexpected auth error occurred.");
+}
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
+    // Auth state subscription
+    const { data: authListener } = neon.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null);
-        setLoading(false); // Set loading to false after initial check
-      }
+        setLoading(false);
+      },
     );
 
     return () => {
@@ -27,18 +48,18 @@ export function useAuth() {
 
   const signIn = useCallback(
     (credentials: SignInWithPasswordCredentials) =>
-      supabase.auth.signInWithPassword(credentials),
-    []
+      neon.auth.signInWithPassword(credentials),
+    [],
   );
 
   const signUp = useCallback(
     (credentials: SignUpWithPasswordCredentials) =>
-      supabase.auth.signUp(credentials),
-    []
+      neon.auth.signUp(credentials),
+    [],
   );
 
   const signOut = useCallback(async () => {
-    const result = await supabase.auth.signOut();
+    const result = await neon.auth.signOut();
     if (!result.error) {
       // Why: any sign-out must drop private query data from memory and persisted session cache.
       queryClient.clear();
@@ -60,35 +81,39 @@ export function useAuth() {
       }
 
       // Verify current password before changing credentials.
-      const { error: reauthError } = await supabase.auth.signInWithPassword({
+      const { error: reauthError } = await neon.auth.signInWithPassword({
         email: user.email,
         password: currentPassword,
       });
       if (reauthError) return { error: reauthError };
 
-      // Apply the password update for the current user.
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: newPassword,
+      // Neon uses Better Auth changePassword (not updateUser).
+      const result = await neonAuthApi.changePassword({
+        currentPassword,
+        newPassword,
       });
-      return { error: updateError };
+      if (result.error) return { error: toAuthError(result.error) };
+      return { error: null };
     },
-    [user]
+    [user],
   );
 
   const requestPasswordReset = useCallback(async (email: string) => {
     const redirectTo = `${window.location.origin}/auth/reset-password`;
-    // Send reset email with app-specific redirect target.
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    const { error } = await neon.auth.resetPasswordForEmail(email, {
       redirectTo,
     });
     return { error };
   }, []);
 
-  const resetPassword = useCallback(async (newPassword: string) => {
-    // Update password from reset-link auth context.
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
-    return { error };
-  }, []);
+  const resetPassword = useCallback(
+    async (newPassword: string, token: string) => {
+      const result = await neonAuthApi.resetPassword({ newPassword, token });
+      if (result.error) return { error: toAuthError(result.error) };
+      return { error: null };
+    },
+    [],
+  );
 
   return {
     loading,
