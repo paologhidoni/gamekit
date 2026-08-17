@@ -1,42 +1,38 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router";
-import { supabase } from "../lib/supabaseClient";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 import { validatePasswordPolicy } from "../util/passwordPolicy";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { resetPassword } = useAuth();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [hasResetSession, setHasResetSession] = useState(false);
-  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const [resetToken, setResetToken] = useState<string | null>(null);
+  const [isCheckingToken, setIsCheckingToken] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
-
-    // Validate reset-link auth session
-    const validateResetSession = async () => {
-      const { data, error: sessionError } = await supabase.auth.getSession();
-      if (!isMounted) return;
-      setHasResetSession(Boolean(data.session) && !sessionError);
-      setIsCheckingSession(false);
-    };
-
-    validateResetSession();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+    // Read reset token from callback URL
+    const token = searchParams.get("token");
+    const resetError = searchParams.get("error");
+    setResetToken(token);
+    if (resetError) setError("This reset link is invalid or expired. Request a new one.");
+    setIsCheckingToken(false);
+  }, [searchParams]);
 
   // Submit password update
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+
+    if (!resetToken) {
+      setError("This reset link is invalid or expired. Request a new one.");
+      return;
+    }
 
     const policyError = validatePasswordPolicy(newPassword);
     if (policyError) {
@@ -49,7 +45,7 @@ export default function ResetPassword() {
     }
 
     setIsSubmitting(true);
-    const { error: updateError } = await resetPassword(newPassword);
+    const { error: updateError } = await resetPassword(newPassword, resetToken);
     if (updateError) {
       setError("This reset link is invalid or expired. Request a new one.");
       setIsSubmitting(false);
@@ -62,11 +58,11 @@ export default function ResetPassword() {
     setIsSubmitting(false);
   };
 
-  if (isCheckingSession) {
+  if (isCheckingToken) {
     return <p className="text-center">Checking reset link...</p>;
   }
 
-  if (!hasResetSession) {
+  if (!resetToken) {
     return (
       <section className="m-auto max-w-lg rounded-2xl bg-(--color-bg-secondary) p-4 md:p-6">
         <h1 className="mb-3 text-2xl font-bold text-center">Reset link invalid</h1>

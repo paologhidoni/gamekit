@@ -4,7 +4,7 @@ import {
   useQueryClient,
   type UseMutationResult,
 } from "@tanstack/react-query";
-import { supabase } from "../lib/supabaseClient";
+import { neon } from "../lib/neonClient";
 import { useAuth } from "./useAuth";
 
 export type GameFavouriteRow = {
@@ -29,7 +29,7 @@ export function useFavouriteGamesQuery() {
       : ["favouriteGames", "list", "none"],
     queryFn: async (): Promise<GameFavouriteRow[]> => {
       if (!userId) return [];
-      const { data, error } = await supabase
+      const { data, error } = await neon
         .from("game_favourites")
         .select("game_id, created_at")
         .eq("user_id", userId)
@@ -61,13 +61,13 @@ export function useToggleFavouriteMutation(): UseMutationResult<
     mutationFn: async ({ gameId, nextFavourite }) => {
       if (!userId) throw new Error("Not signed in");
       if (nextFavourite) {
-        const { error } = await supabase.from("game_favourites").insert({
+        const { error } = await neon.from("game_favourites").insert({
           user_id: userId,
           game_id: gameId,
         });
         if (error) throw new Error(error.message);
       } else {
-        const { error } = await supabase
+        const { error } = await neon
           .from("game_favourites")
           .delete()
           .eq("user_id", userId)

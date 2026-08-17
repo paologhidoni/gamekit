@@ -35,12 +35,12 @@ A full-stack **Game Discovery Platform** featuring an **AI chatbot** for each ga
 - 🎮 **Game Discovery** – Browse an extensive library of games from the RAWG API.
 - 🔍 **Traditional Search** – Fast, debounced search by game title with real-time results.
 - ℹ️ **Game Details** – Descriptions, ratings, screenshots and trailers for every game.
-- 🔐 **Auth & Settings** – Supabase-based account creation, login and personal preferences.
+- 🔐 **Auth & Settings** – Neon Auth account creation, login and personal preferences.
 - 📱 **Responsive Design** – Mobile-first layout across all pages.
 - 💅🏻 **Custom Themes** – Light, dark and sunset modes.
 - 💰 **Rate Limiting** – Upstash Redis (6 req/24h per IP); visual coin indicator shows remaining requests.
 - 💾 **Session persistence** – Query cache and search workspaces survive refresh within the browser tab session; logout clears persisted data.
-- ❤️ **Favourites** – Per-user list at `/favourites` with heart control on cards and detail; backed by Supabase RLS.
+- ❤️ **Favourites** – Per-user list at `/favourites` with heart control on cards and detail; backed by Neon Data API RLS.
 
 ### Ask AI Chatbot Architecture
 
@@ -74,7 +74,7 @@ A full-stack **Game Discovery Platform** featuring an **AI chatbot** for each ga
 - **Vercel Serverless Functions** – Scalable, stateless API endpoints
 - **OpenAI SDK** (`openai`) – GPT-4o-mini integration for natural language processing
 - **Upstash Redis** (`@upstash/redis`, `@upstash/ratelimit`) – Distributed rate limiting
-- **Supabase** (`@supabase/supabase-js`) – Authentication + PostgreSQL database
+- **Neon** (`@neondatabase/neon-js`) – Authentication + PostgreSQL database (Data API)
 - **RAWG API** – Comprehensive game database
 
 ### Shared
@@ -115,15 +115,15 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
     - **Frontend (`.env`)** – for Vite variables used in the client-side code:
 
       ```
-      VITE_SUPABASE_URL=your_supabase_url_here
-      VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+      VITE_NEON_AUTH_URL=your_neon_auth_url_here
+      VITE_NEON_DATA_API_URL=your_neon_data_api_url_here
       ```
 
     - **Backend (`.env.backend`)** – for server-side secrets used by Vercel serverless functions:
 
       ```
-      SUPABASE_URL=your_supabase_url_here
-      SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+      NEON_AUTH_URL=your_neon_auth_url_here
+      DATABASE_URL=your_neon_database_url_here
       RAWG_API_KEY=your_rawg_api_key_here
       OPENAI_API_KEY=your_openai_api_key_here
       UPSTASH_REDIS_REST_URL=your_upstash_redis_url_here
@@ -134,11 +134,13 @@ The GitHub repository is connected to the Vercel project, which is deployed ever
 
     ⚠️ Important: Make sure both `.env` and `.env.backend` are added to `.gitignore` to prevent secrets from being committed.
 
-4.  Run the development server (both frontend and backend):
+4.  Run the development server:
 
     ```bash
-    npm run local
+    npm run dev
     ```
+
+    API routes under `/api` run locally via a Vite dev plugin. For full Vercel parity, use `npm run local` (requires Vercel CLI login).
 
 ## Testing
 
@@ -207,11 +209,13 @@ Shared fixtures and MSW live under `tests/fixtures` and `tests/msw`. On a fresh 
 
 ### Backend & AI Integration
 
-6. **Setup Supabase** for authentication and database
+6. **Setup Neon** for authentication and database
 
    ```bash
-   npm install @supabase/supabase-js
+   npm install @neondatabase/neon-js
    ```
+
+   Apply `neon/game_favourites.sql` in the Neon SQL editor (or via `DATABASE_URL`) to create the favourites table with RLS.
 
 7. **Integrate OpenAI SDK** for natural language processing
 

@@ -17,7 +17,7 @@ export default defineConfig({
   ],
   webServer: {
     command:
-      "VITE_SUPABASE_URL=http://127.0.0.1:54321 VITE_SUPABASE_ANON_KEY=test-anon-key npm run dev -- --host 127.0.0.1 --port 4173",
+      "VITE_NEON_AUTH_URL=http://127.0.0.1:54321/auth VITE_NEON_DATA_API_URL=http://127.0.0.1:54321/rest/v1 npm run dev -- --host 127.0.0.1 --port 4173",
     url: "http://127.0.0.1:4173",
     reuseExistingServer: !process.env.CI,
     stdout: "ignore",
