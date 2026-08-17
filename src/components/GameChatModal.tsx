@@ -77,7 +77,10 @@ export default function GameChatModal({ isOpen, onClose }: GameChatModalProps) {
               id={titleId}
               className="text-lg md:text-xl font-semibold flex items-center gap-2"
             >
-              <MessageSquare size={20} className="text-(--color-accent-secondary)" />
+              <MessageSquare
+                size={20}
+                className="text-(--color-accent-secondary)"
+              />
               Friendly Gaming Expert Chat
             </h2>
             <p className="text-sm opacity-80 mt-1">
@@ -135,7 +138,10 @@ export default function GameChatModal({ isOpen, onClose }: GameChatModalProps) {
                       aria-hidden
                     />
                     <div className="min-w-0 flex-1">
-                      <RichTextRenderer content={m.content} className="text-sm leading-6" />
+                      <RichTextRenderer
+                        content={m.content}
+                        className="text-sm leading-6"
+                      />
                     </div>
                   </div>
                 )}

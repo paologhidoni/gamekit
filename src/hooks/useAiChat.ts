@@ -64,7 +64,10 @@ export function useAiChat(): UseAiChatResult {
   }, []);
 
   // Submit guard
-  const canSubmit = useMemo<boolean>(() => question.trim().length > 0, [question]);
+  const canSubmit = useMemo<boolean>(
+    () => question.trim().length > 0,
+    [question],
+  );
   const isRateLimited = remainingAiRequests <= 0;
 
   const submitQuestion = useCallback(
@@ -85,6 +88,19 @@ export function useAiChat(): UseAiChatResult {
         // Why: placeholder response until backend logic is added.
         const placeholder =
           "Game chat is ready. Hook up your AI logic in useAiChat to answer this question.";
+
+        const res = await fetch("/api/ai-chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            question: trimmed,
+          }),
+        });
+
+        if (!res.ok) return;
+
         setMessages((prev) => [
           ...prev,
           { id: newMessageId(), role: "assistant", content: placeholder },
