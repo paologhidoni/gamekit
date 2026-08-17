@@ -2,6 +2,7 @@ import { Outlet, ScrollRestoration } from "react-router";
 import Navigation from "./Navigation";
 import Footer from "./Footer";
 import ScrollToTopButton from "./ScrollToTopButton";
+import GameChatButton from "./GameChatButton";
 
 export default function RootLayout() {
   return (
@@ -15,6 +16,7 @@ export default function RootLayout() {
 
       <Footer />
       <ScrollToTopButton />
+      <GameChatButton />
     </div>
   );
 }

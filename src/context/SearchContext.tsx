@@ -194,11 +194,7 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
         explanation: data.explanation,
         games: data.games.map((game: Game) => ({
           ...game,
-          background_image: getCroppedImageUrl(
-            game.background_image,
-            600,
-            400,
-          ),
+          background_image: getCroppedImageUrl(game.background_image, 600, 400),
         })),
         remaining: data.remaining,
         metadata: data.metadata,

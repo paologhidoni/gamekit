@@ -29,7 +29,7 @@ export default function ScrollToTopButton() {
     <button
       type="button"
       onClick={handleClick}
-      className="fixed right-2 sm:right-3 xl:right-6 2xl:right-16 bottom-4 z-50 border-3 border-(--color-accent-primary-t2) rounded-full p-3 transition-colors hover:opacity-80 md:right-6 md:bottom-6 cursor-pointer"
+      className="fixed right-2 sm:right-3 xl:right-6 2xl:right-16 bottom-22 md:bottom-24 z-50 border-3 border-(--color-accent-primary-t2) rounded-full p-3 transition-colors hover:opacity-80 md:right-6 cursor-pointer"
       style={{
         backgroundColor: "var(--color-accent-primary)",
         color: "var(--color-text-on-accent)",
