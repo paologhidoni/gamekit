@@ -8,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { apiFetch } from "../lib/apiFetch";
 import getCroppedImageUrl from "../util/image-url";
 import * as z from "zod";
 import { useAuth } from "./AuthContext";
@@ -104,7 +105,7 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const getRateLimitStatus = async () => {
       try {
-        const res = await fetch("/api/rate-limit");
+        const res = await apiFetch("/api/rate-limit");
         if (res.ok) {
           const data = await res.json();
           setRemainingAiRequests(data.remaining);
@@ -141,7 +142,7 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
 
       url += params.toString();
 
-      const response = await fetch(url, { signal });
+      const response = await apiFetch(url, { signal });
       const data = await response.json();
 
       if (!response.ok) {
@@ -178,7 +179,7 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
       }
 
       const params = new URLSearchParams({ query: query.searchTerm });
-      const response = await fetch(`/api/ai-search?${params}`, { signal });
+      const response = await apiFetch(`/api/ai-search?${params}`, { signal });
       const data = await response.json();
 
       // Update remaining requests from response (works for both success and error)
@@ -219,7 +220,7 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
       };
 
       try {
-        const response = await fetch("/api/ask-ai", {
+        const response = await apiFetch("/api/ask-ai", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -284,7 +285,7 @@ export function SearchContextProvider({ children }: { children: ReactNode }) {
     if (!secret) return;
 
     try {
-      const res = await fetch(
+      const res = await apiFetch(
         `/api/rate-limit?secret=${encodeURIComponent(secret)}`,
         { method: "POST" },
       );

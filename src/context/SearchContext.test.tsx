@@ -9,6 +9,11 @@ vi.mock("./AuthContext", () => ({
   useAuth: vi.fn(),
 }));
 
+vi.mock("../lib/apiFetch", () => ({
+  apiFetch: (input: RequestInfo | URL, init?: RequestInit) =>
+    fetch(input, init),
+}));
+
 const mockedUseAuth = vi.mocked(useAuth);
 
 function RemainingRequestsProbe() {
