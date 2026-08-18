@@ -96,27 +96,27 @@ export default function Authentication() {
 
       <form
         onSubmit={handleSubmitForm}
-        className="flex flex-col gap-5 m-auto sm:max-w-1/2"
+        className="m-auto flex w-fit max-w-full flex-col gap-5"
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex w-full flex-col gap-2">
           <label htmlFor="email">Email</label>
           <input
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="py-2 px-4 bg-(--color-bg-secondary) text-(--color-text-primary) rounded-2xl outline-none"
+            className="w-full py-2 px-4 bg-(--color-bg-secondary) text-(--color-text-primary) rounded-2xl outline-none"
           />
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex w-full flex-col gap-2">
           <label htmlFor="password">Password</label>
           <input
             id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="py-2 px-4 bg-(--color-bg-secondary) text-(--color-text-primary) rounded-2xl outline-none"
+            className="w-full py-2 px-4 bg-(--color-bg-secondary) text-(--color-text-primary) rounded-2xl outline-none"
           />
           {!isLogin && (
             <p className="text-xs text-(--color-text-tertiary)">
@@ -154,18 +154,20 @@ export default function Authentication() {
           </div>
         )}
 
-        <div className="flex justify-between items-center flex-wrap gap-4">
-          <Button
-            type="submit"
-            text={loading ? "Submitting..." : isLogin ? "Login" : "Create user"}
-            disabled={loading}
-          />
-
+        {/* Form actions */}
+        <div className="flex w-full flex-col-reverse gap-4 md:flex-row md:justify-between md:items-center">
           <Button
             type="button"
             text={isLogin ? "Switch to create account" : "Switch to login"}
             handleOnClick={handleAuthChoice}
             variant="variant-2"
+            extraClasses="whitespace-nowrap"
+          />
+
+          <Button
+            type="submit"
+            text={loading ? "Submitting..." : isLogin ? "Login" : "Create user"}
+            disabled={loading}
           />
         </div>
       </form>
