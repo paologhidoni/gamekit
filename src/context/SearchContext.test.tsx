@@ -2,10 +2,10 @@ import { render, screen } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SearchContextProvider, useSearch } from "./SearchContext";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "./AuthContext";
 import { server } from "@tests/msw/server";
 
-vi.mock("../hooks/useAuth", () => ({
+vi.mock("./AuthContext", () => ({
   useAuth: vi.fn(),
 }));
 

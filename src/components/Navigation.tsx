@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router";
 import { Cog, Heart, User2, LogOut } from "lucide-react";
 import Logo from "./Logo";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navigation() {
   const { user, signOut } = useAuth();

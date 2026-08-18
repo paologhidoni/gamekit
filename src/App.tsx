@@ -8,6 +8,7 @@ import ErrorElement from "./components/ErrorElement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { SearchContextProvider } from "./context/SearchContext";
+import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
 import {
   queryClient,
@@ -115,11 +116,13 @@ function App() {
       }}
     >
       <ThemeContextProvider>
-        <SearchContextProvider>
-          <ToastProvider>
-            <RouterProvider router={router} />
-          </ToastProvider>
-        </SearchContextProvider>
+        <AuthProvider>
+          <SearchContextProvider>
+            <ToastProvider>
+              <RouterProvider router={router} />
+            </ToastProvider>
+          </SearchContextProvider>
+        </AuthProvider>
       </ThemeContextProvider>
     </PersistQueryClientProvider>
   );

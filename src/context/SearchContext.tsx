@@ -10,7 +10,7 @@ import {
 } from "react";
 import getCroppedImageUrl from "../util/image-url";
 import * as z from "zod";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "./AuthContext";
 import type { Game } from "../schemas";
 import {
   askAiErrorResponseSchema,

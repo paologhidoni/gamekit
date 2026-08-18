@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import Button from "../components/Button";
 import { useNavigate, useSearchParams } from "react-router";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
 import { validatePasswordPolicy } from "../util/passwordPolicy";
 
 export default function Authentication() {

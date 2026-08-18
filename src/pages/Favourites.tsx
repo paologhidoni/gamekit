@@ -3,7 +3,7 @@ import { useLocation } from "react-router";
 import type { Game } from "../schemas";
 import noGames from "../assets/no-games.webp";
 import { useSearch } from "../context/SearchContext";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
 import { useFavouriteGamesQuery } from "../hooks/useGameFavourites";
 import { mapWithConcurrency } from "../util/mapWithConcurrency";
 import GameGrid from "../components/GameGrid";

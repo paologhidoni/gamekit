@@ -1,6 +1,6 @@
 import { Heart } from "lucide-react";
 import { useNavigate } from "react-router";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
 import {
   useFavouriteGamesQuery,
   useToggleFavouriteMutation,

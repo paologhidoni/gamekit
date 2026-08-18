@@ -3,9 +3,9 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import Authentication from "./Authentication";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
 
-vi.mock("../hooks/useAuth", () => ({
+vi.mock("../context/AuthContext", () => ({
   useAuth: vi.fn(),
 }));
 

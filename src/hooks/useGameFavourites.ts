@@ -5,7 +5,7 @@ import {
   type UseMutationResult,
 } from "@tanstack/react-query";
 import { neon } from "../lib/neonClient";
-import { useAuth } from "./useAuth";
+import { useAuth } from "../context/AuthContext";
 
 export type GameFavouriteRow = {
   game_id: number;
