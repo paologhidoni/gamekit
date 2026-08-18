@@ -29,6 +29,11 @@ describe("apiFetch", () => {
     await expect(getAccessToken()).resolves.toBe("jwt-123");
   });
 
+  it("getAccessToken returns null when getSession throws", async () => {
+    getSessionMock.mockRejectedValue(new Error("Auth unavailable"));
+    await expect(getAccessToken()).resolves.toBeNull();
+  });
+
   it("apiFetch attaches Authorization when signed in", async () => {
     getSessionMock.mockResolvedValue({
       data: { session: { access_token: "jwt-123" } },

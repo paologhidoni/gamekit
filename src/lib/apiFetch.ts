@@ -2,8 +2,13 @@ import { neon } from "./neonClient";
 
 // Neon session JWT for server routes that use requireAuth.
 export async function getAccessToken(): Promise<string | null> {
-  const { data } = await neon.auth.getSession();
-  return data.session?.access_token ?? null;
+  try {
+    const { data } = await neon.auth.getSession();
+    return data.session?.access_token ?? null;
+  } catch {
+    // Why: unauthenticated or unreachable auth should not block public API calls.
+    return null;
+  }
 }
 
 export async function getAuthHeaders(headers?: HeadersInit): Promise<Headers> {
