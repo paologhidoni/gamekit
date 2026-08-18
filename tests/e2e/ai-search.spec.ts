@@ -17,6 +17,4 @@ test("shows mocked AI results after submitting a prompt", async ({ page }) => {
 
   await expect(page.getByText(/Found 1 cozy RPG on Game Boy/i)).toBeVisible();
   await expect(page.getByRole("heading", { name: "Golden Sun" })).toBeVisible();
-
-  await page.pause();
 });

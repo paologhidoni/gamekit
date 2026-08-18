@@ -12,7 +12,7 @@ test("lets the user switch between login and signup modes", async ({
 
   await expect(page.getByRole("heading", { name: "Login" })).toBeVisible();
 
-  await page.getByRole("button", { name: "Create account" }).click();
+  await page.getByRole("button", { name: "Switch to create account" }).click();
 
   await expect(page).toHaveURL(/mode=signup/);
   await expect(

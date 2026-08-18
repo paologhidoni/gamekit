@@ -12,6 +12,13 @@ const rateLimitSuccess = JSON.parse(
 );
 
 export async function mockDefaultApi(page: Page): Promise<void> {
+  // Why: apiFetch reads Neon session before /api calls; stub auth in e2e.
+  await page.route("**/get-session", async (route) => {
+    await route.fulfill({
+      json: { session: null, user: null },
+    });
+  });
+
   await page.route("**/api/rate-limit", async (route) => {
     await route.fulfill({ json: rateLimitSuccess });
   });
