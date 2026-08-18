@@ -12,6 +12,7 @@ export default function ResetPassword() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
   const [resetToken, setResetToken] = useState<string | null>(null);
   const [isCheckingToken, setIsCheckingToken] = useState(true);
 
@@ -45,13 +46,17 @@ export default function ResetPassword() {
     }
 
     setIsSubmitting(true);
-    const { error: updateError } = await resetPassword(newPassword, resetToken);
+    const { error: updateError, signedIn: hasSession } = await resetPassword(
+      newPassword,
+      resetToken,
+    );
     if (updateError) {
       setError("This reset link is invalid or expired. Request a new one.");
       setIsSubmitting(false);
       return;
     }
 
+    setSignedIn(hasSession);
     setSuccess(true);
     setNewPassword("");
     setConfirmPassword("");
@@ -87,12 +92,23 @@ export default function ResetPassword() {
         <p className="text-sm text-(--color-text-primary)">
           Your password was updated successfully.
         </p>
-        <Link
-          to="/auth?mode=login"
-          className="mt-4 inline-block text-sm font-semibold text-(--color-accent-primary) hover:opacity-80"
-        >
-          Go to login
-        </Link>
+        <div className="mt-4 flex flex-col gap-2">
+          {signedIn ? (
+            <Link
+              to="/"
+              className="text-sm font-semibold text-(--color-accent-primary) hover:opacity-80"
+            >
+              Continue to app
+            </Link>
+          ) : (
+            <Link
+              to="/auth?mode=login"
+              className="text-sm font-semibold text-(--color-accent-primary) hover:opacity-80"
+            >
+              Go to login
+            </Link>
+          )}
+        </div>
       </section>
     );
   }

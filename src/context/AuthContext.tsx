@@ -59,7 +59,7 @@ type AuthContextValue = {
   resetPassword: (
     newPassword: string,
     token: string,
-  ) => Promise<{ error: AuthError | null }>;
+  ) => Promise<{ error: AuthError | null; signedIn: boolean }>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -184,12 +184,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const resetPassword = useCallback(
     async (newPassword: string, token: string) => {
       const result = await neonAuthApi.resetPassword({ newPassword, token });
-      if (result.error) return { error: toAuthError(result.error) };
+      if (result.error) {
+        return { error: toAuthError(result.error), signedIn: false };
+      }
 
       // Why: reset may establish a session without a same-tab SIGNED_IN event.
       const { data } = await neon.auth.getSession();
       syncUserFromSession(data.session);
-      return { error: null };
+      return { error: null, signedIn: Boolean(data.session?.user) };
     },
     [syncUserFromSession],
   );
